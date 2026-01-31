@@ -1,0 +1,32 @@
+name: Check Release Stability
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+  push:
+    branches:
+      - main
+
+jobs:
+  check_stability:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install Dependencies
+        run: pnpm install
+        # declare .env variables here
+      - name: Check Formatting
+        run: pnpm fmt
+      - name: Run Linters
+        run: pnpm lint
+      - name: Test Codebase
+        run: pnpm test
