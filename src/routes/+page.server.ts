@@ -21,21 +21,7 @@ import {db} from "$lib/server/db";
 import { accountRoles } from "$lib/server/schema";
 import * as accountDAO from "$lib/server/accountDAO";
 
-db.insert(accountRoles).values({
-    accountRole: "testRole",
-    "canAddAccount": 0,
-    "canViewChangeLogs": 0,
-    "canAddFaculty": 0,
-    "canModifyAccount": 0,
-    "canModifyFaculty": 0,
-});
-
-const result = await db
-    .select()
-    .from(accountRoles)
-console.log(result)
-
-accountDAO.deleteAcc(1);
+console.log(accountDAO.listAll());
 
 console.log ("Page loaded")
 >>>>>>> 182436e (changed from email to id; more test code)
