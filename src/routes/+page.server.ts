@@ -18,6 +18,6 @@ const result = await db
     .from(accountRoles)
 console.log(result)
 
-accountDAO.deleteAccount(1);
+accountDAO.deleteAcc(1);
 
 console.log ("Page loaded")
