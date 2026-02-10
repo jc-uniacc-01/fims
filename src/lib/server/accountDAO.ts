@@ -9,7 +9,8 @@ export type AccountRole = typeof accountRoles.$inferSelect
 creates an account with the following fields:
 email, passwordHash, accountRole
 */
-export async function createAccount(
+
+export async function createAcc(
     email:string,
     passHash:string,
     role:string
@@ -29,7 +30,7 @@ export async function createAccount(
 }
 
 //uses id to delete the account
-export async function deleteAccount(id:number):Promise<boolean> {
+export async function deleteAcc(id:number):Promise<boolean> {
     if (!Number.isInteger(id)) {return false;}
     try {
         await db
@@ -42,7 +43,7 @@ export async function deleteAccount(id:number):Promise<boolean> {
     return false;
 }
 
-export async function listAccounts():Promise<Array<Account>> {
+export async function listAll():Promise<Array<Account>> {
     let res = await db.select().from(accounts);
     return res;
 }
