@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from './db';
 
-import { userrole } from './db/schema';
+import { userrole, role } from './db/schema';
 
 export async function assignRole(id: string, role: string) {
     await db.insert(userrole).values({
@@ -20,4 +20,14 @@ export async function getRole(id: string) {
         .limit(1);
 
     return fetchedUser.role;
+}
+
+export async function getPermissions(userRole: string) {
+    const [fetchedRole] = await db
+        .select()
+        .from(role)
+        .where(eq(role.role, userRole))
+        .limit(1);
+    
+    return fetchedRole;
 }
