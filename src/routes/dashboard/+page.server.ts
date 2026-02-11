@@ -2,15 +2,15 @@
 import { db } from '$lib/server/db/index';
 import { faculty } from '$lib/server/db/schema';
 
-export const load = async () => {
+export async function load() {
     // Task 4: Fetch faculty list from DB
     try {
         const facultyList = await db.select().from(faculty);
         return {
-            facultyList
+            facultyList,
         };
     } catch (e) {
-        console.error("DB Fetch Error:", e);
-        return { facultyList: [], error: "Database connection failed." };
+        console.error('DB Fetch Error:', e);
+        return { facultyList: [], error: 'Database connection failed.' };
     }
-};
+}

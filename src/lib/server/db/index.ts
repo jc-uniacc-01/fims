@@ -1,7 +1,9 @@
 // src/lib/server/db/index.ts
-import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
 import { env } from '$env/dynamic/private';
+
 import * as schema from './schema';
 
 const pool = new pg.Pool({

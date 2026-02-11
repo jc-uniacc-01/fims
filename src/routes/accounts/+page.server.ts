@@ -1,54 +1,46 @@
-import type { Actions } from "@sveltejs/kit";
-import { fail } from "@sveltejs/kit";
-import { auth } from "$lib/server/auth";
-import { assignRole } from "$lib/server/db-helpers";
+import { type Actions, fail } from '@sveltejs/kit';
+import { APIError } from 'better-auth';
+
+import { assignRole } from '$lib/server/db-helpers';
+import { auth } from '$lib/server/auth';
 
 export const actions = {
-  default: async ({ request }) => {
-    const data = await request.formData();
-		const email = data.get('email') as string;
-		const password = data.get('password') as string;
-    const role = data.get('role') as string;
+    async default({ request }) {
+        const data = await request.formData();
+        const email = data.get('email') as string;
+        const password = data.get('password') as string;
+        const role = data.get('role') as string;
 
-    // Validate credentials
-    if (!email || !email.endsWith('@up.edu.ph')) {
-      return fail(400, { error: 'Invalid email.' })
-    }
+        // Validate credentials
+        if (!email || !email.endsWith('@up.edu.ph')) return fail(400, { error: 'Invalid email.' });
 
-    if (!password) {
-      return fail(400, { error: 'Invalid password.' });
-    }
+        if (!password) return fail(400, { error: 'Invalid password.' });
 
-    if (!role) {
-      return fail(400, { error: 'Invalid role.' });
-    }
+        if (!role) return fail(400, { error: 'Invalid role.' });
 
-    // Register as user
-    let responseUser = undefined;
-    try {
-      const response = await auth.api.signUpEmail({
-        body: {
-          email,
-          password,
-          name: 'User',
-        },
-      });
+        // Register as user
+        try {
+            const response = await auth.api.signUpEmail({
+                body: {
+                    email,
+                    password,
+                    name: 'User',
+                },
+            });
 
-      responseUser = response.user;
-    } catch (error) {
-      return fail(500, { error: 'Failed to make new account.' });
-    }
+            if (response.user.id === '') return fail(500, { error: 'Failed to make new account.' });
 
-    if (!responseUser) {
-      return fail(500, { error: 'Failed to make new account.' });
-    }
+            // Assign role
+            await assignRole(response.user.id, role);
+        } catch (error) {
+            return fail(500, {
+                error: error instanceof APIError ? error.message : 'Failed to make new account.',
+            });
+        }
 
-    // Assign role
-    await assignRole(responseUser.id, role);
-
-    return {
-      success: true,
-      message: 'Created account.',
-    };
-  }
-} satisfies Actions
+        return {
+            success: true,
+            message: 'Created account.',
+        };
+    },
+} satisfies Actions;
