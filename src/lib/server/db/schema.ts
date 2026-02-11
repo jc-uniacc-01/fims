@@ -225,8 +225,8 @@ export const facultyextension = pgTable("facultyextension", {
 		}),
 ]);
 
-export const accountrole = pgTable("accountrole", {
-	accountrole: varchar({ length: 50 }).primaryKey().notNull(),
+export const role = pgTable("role", {
+	role: varchar({ length: 50 }).primaryKey().notNull(),
 	canaddfaculty: boolean().notNull(),
 	canmodifyfaculty: boolean().notNull(),
 	canaddaccount: boolean().notNull(),
