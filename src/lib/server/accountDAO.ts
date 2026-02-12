@@ -1,9 +1,11 @@
 import {db} from "$lib/server/db"
-import {accounts, roles} from "$lib/server/schema"
+import { account, user, userrole } from "$lib/server/db/schema"
 import {eq} from "drizzle-orm"
+import { createAuthClient } from "better-auth/client"
+import { auth } from "./auth"
 
-export type User = typeof accounts.$inferSelect
-export type Role = typeof roles.$inferSelect
+export type Account = typeof account.$inferSelect
+const authClient = createAuthClient()
 
 /*
 creates an account with the following fields:
@@ -14,14 +16,24 @@ note: account role factored out as there's no use as of now
 
 export async function createAcc(
     email:string,
+    name:string,
     passHash:string,
     role:string
 ):Promise<boolean> {
     try {
-        await db.insert(accounts)
+        let newAcc = await auth.api.signUpEmail({
+            body: {
+                name: name,
+                email: email,
+                password: passHash,
+            }
+        })
+
+
+        // past this point, account is made. assign role
+        await db.insert(userrole)
         .values({
-            email: email,
-            password: passHash,
+            userid: newAcc.user.id,
             role: role
         })
     } catch(e) {
@@ -32,12 +44,9 @@ export async function createAcc(
 }
 
 //uses id to delete the account
-export async function deleteAcc(id:number):Promise<boolean> {
-    if (!Number.isInteger(id)) {return false;}
+export async function deleteAcc(id:string):Promise<boolean> {
     try {
-        await db
-        .delete(accounts)
-        .where(eq(accounts.id, id))
+        await db.delete(user).where(eq(user.id, id));
     } catch(e) {
         console.log(e);
         return false;
@@ -45,7 +54,7 @@ export async function deleteAcc(id:number):Promise<boolean> {
     return false;
 }
 
-export async function listAll():Promise<Array<User>> {
-    let res = await db.select().from(accounts);
+export async function listAll():Promise<Array<Account>> {
+    let res = await db.select().from(account);
     return res;
 }

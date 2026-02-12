@@ -1,6 +1,8 @@
+//DEPRECATED due to refactor regarding better-auth
+
 import { drizzle } from "drizzle-orm/neon-http"
 import { DATABASE_URL } from "$env/static/private"
-import * as schema from "$lib/server/schema"
+import * as schema from "$lib/server/db/schema"
 import { neon } from "@neondatabase/serverless";
 // for local/dev database, use
 // postgresql://(user):(password)@localhost:(port)/(whatever you name the local database)
