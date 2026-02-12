@@ -1,6 +1,7 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
     import Icon from '@iconify/svelte';
+    import DeleteConfirmation from './DeleteConfirmation.svelte';
 
     interface AccountDTO {
         email: string;
@@ -19,7 +20,15 @@
     const { email, role, userid, logTimestamp, logOperation, logMaker }: AccountDTO =
         $derived(account);
 
-    const userRoles = ['IT', 'Admin'];
+    const userRoles = ['Admin', 'IT'];
+
+    let willDelete = $state(false);
+
+    function toggleModal() {
+        willDelete = !willDelete;
+    }
+
+    let deleteForm: HTMLFormElement | null = null;
 </script>
 
 <div
@@ -61,17 +70,30 @@
             method="POST"
             action="?/deleteAccount"
             class="flex items-center justify-center"
+            bind:this={deleteForm}
             use:enhance
         >
             <button
-                type="submit"
-                name="userid"
-                value={userid}
                 class="flex items-center justify-center rounded-full border-2 border-fims-red bg-white px-4 py-1 text-fims-red hover:bg-fims-red hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
+                onclick={(event) => {
+                    event.preventDefault();
+                    toggleModal();
+                }}
             >
                 <Icon icon="tabler:trash" class="mr-2 h-6 w-6" />
                 <span>Delete</span>
             </button>
+
+            <input type="hidden" name="userid" value={userid} />
+
+            {#if willDelete}
+                <DeleteConfirmation
+                    onDelete={() => {
+                        if (deleteForm) deleteForm.submit();
+                    }}
+                    onCancel={toggleModal}
+                />
+            {/if}
         </form>
     </div>
 </div>

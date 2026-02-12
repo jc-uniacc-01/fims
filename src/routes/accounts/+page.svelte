@@ -1,8 +1,21 @@
-<script>
+<script lang="ts">
     import Icon from '@iconify/svelte';
     import AccountRow from './(ui)/AccountRow.svelte';
+    import SaveConfirmation from './(ui)/SaveConfirmation.svelte';
+    import { enhance } from '$app/forms';
     const { data, form } = $props();
     const { accountList } = $derived(data);
+
+    let isMakingAccount = $state(false);
+    let willMake = $state(false);
+
+    function toggleModal() {
+        willMake = !willMake;
+    }
+
+    let makeForm: HTMLFormElement | null = null;
+
+    const userRoles = ['Admin', 'IT'];
 </script>
 
 {#if form?.error}
@@ -35,8 +48,25 @@
 {/if}
 
 <div>
+    <!-- Make/Save Account Button -->
+    <div class="flex justify-end pr-22">
+        {#if isMakingAccount}
+            <button
+                onclick={toggleModal}
+                class="mt-50 flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
+                >+ Save Account</button
+            >
+        {:else}
+            <button
+                onclick={() => (isMakingAccount = true)}
+                class="mt-50 flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
+                >+ Add Account</button
+            >
+        {/if}
+    </div>
+
     <!-- Account List Table -->
-    <div class="mt-60">
+    <div class="mt-2.5">
         <!-- Header -->
         <div
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-red [&>div]:px-6"
@@ -58,26 +88,52 @@
         {#each accountList as account (account.userid)}
             <AccountRow {account} />
         {/each}
+
+        <!-- Account Creation Form -->
+        {#if isMakingAccount}
+            <form
+                method="POST"
+                action="?/makeAccount"
+                class="flex justify-center [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:bg-white [&>div]:px-6"
+                bind:this={makeForm}
+                use:enhance
+            >
+                <div class="w-25"></div>
+                <div class="w-132">
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        class="h-full w-full p-2"
+                    />
+                </div>
+                <div class="w-50">
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        class="h-full w-full p-2"
+                    />
+                </div>
+                <div class="w-75">
+                    <select name="role" class="w-full text-center">
+                        {#each userRoles as userRole (userRole)}
+                            <option value={userRole}>{userRole}</option>
+                        {/each}
+                    </select>
+                </div>
+                <div class="w-100"></div>
+                <div class="w-50"></div>
+            </form>
+        {/if}
     </div>
 </div>
 
-<form method="POST" action="?/makeAccount" class="mt-20">
-    <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        class="h-12 w-50 rounded-lg border-2 p-1"
+{#if willMake}
+    <SaveConfirmation
+        onSave={() => {
+            if (makeForm) makeForm.submit();
+        }}
+        onCancel={toggleModal}
     />
-    <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        class="h-12 w-50 rounded-lg border-2 p-1"
-    />
-    <input type="role" name="role" placeholder="Role" class="h-12 w-35 rounded-lg border-2 p-1" />
-    <button
-        type="submit"
-        class="h-12 w-25 rounded-lg border-2 border-fims-green text-fims-green hover:bg-fims-green-100"
-        >Submit</button
-    >
-</form>
+{/if}
