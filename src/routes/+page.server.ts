@@ -10,6 +10,9 @@ export async function load() {
             status: 'Active',
             ranktitle: 'Professor 7',
             adminposition: 'Department Chair',
+            logTimestamp: '',
+            logMaker: 'it@up.edu.ph',
+            logOperation: 'Made record.',
         }
     ]
 
