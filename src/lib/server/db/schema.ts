@@ -17,23 +17,34 @@ import { relations } from 'drizzle-orm';
 import { user } from './auth.schema';
 export * from './auth.schema';
 
-export const faculty = pgTable('faculty', {
-    facultyid: serial().primaryKey().notNull(),
-    lastname: varchar({ length: 100 }).notNull(),
-    middlename: varchar({ length: 100 }).notNull(),
-    firstname: varchar({ length: 100 }).notNull(),
-    suffix: varchar({ length: 50 }),
-    birthdate: date().notNull(),
-    status: varchar({ length: 50 }).notNull(),
-    dateoforiginalappointment: date().notNull(),
-    psiitem: varchar({ length: 50 }).notNull(),
-    employeenumber: varchar({ length: 50 }).notNull(),
-    tin: varchar({ length: 50 }).notNull(),
-    gsis: varchar({ length: 50 }).notNull(),
-    philhealth: varchar({ length: 50 }).notNull(),
-    pagibig: varchar({ length: 50 }).notNull(),
-    remarks: text(),
-});
+export const faculty = pgTable(
+    'faculty',
+    {
+        facultyid: serial().primaryKey().notNull(),
+        lastname: varchar({ length: 100 }).notNull(),
+        middlename: varchar({ length: 100 }).notNull(),
+        firstname: varchar({ length: 100 }).notNull(),
+        suffix: varchar({ length: 50 }),
+        birthdate: date().notNull(),
+        status: varchar({ length: 50 }).notNull(),
+        dateoforiginalappointment: date().notNull(),
+        psiitem: varchar({ length: 50 }).notNull(),
+        employeenumber: varchar({ length: 50 }).notNull(),
+        tin: varchar({ length: 50 }).notNull(),
+        gsis: varchar({ length: 50 }).notNull(),
+        philhealth: varchar({ length: 50 }).notNull(),
+        pagibig: varchar({ length: 50 }).notNull(),
+        remarks: text(),
+        latestchangelogid: integer(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.latestchangelogid],
+            foreignColumns: [changelog.logid],
+            name: 'faculty_latestchangelogid_fkey',
+        }),
+    ]
+);
 
 export const facultycontactnumber = pgTable(
     'facultycontactnumber',
@@ -384,7 +395,7 @@ export const facultycontactnumberRelations = relations(facultycontactnumber, ({ 
     }),
 }));
 
-export const facultyRelations = relations(faculty, ({ many }) => ({
+export const facultyRelations = relations(faculty, ({ many, one }) => ({
     facultycontactnumbers: many(facultycontactnumber),
     facultyeducationalattainments: many(facultyeducationalattainment),
     facultyfieldofinterests: many(facultyfieldofinterest),
@@ -395,6 +406,10 @@ export const facultyRelations = relations(faculty, ({ many }) => ({
     facultyteachings: many(facultyteaching),
     facultyresearches: many(facultyresearch),
     facultyextensions: many(facultyextension),
+    changelog: one(changelog, {
+        fields: [faculty.latestchangelogid],
+        references: [changelog.logid],
+    }),
 }));
 
 export const facultyeducationalattainmentRelations = relations(
@@ -567,7 +582,11 @@ export const roleRelations = relations(role, ({ one }) => ({
 }));
 
 export const changelogRelations = relations(changelog, ({ one }) => ({
-    account: one(user, {
+    faculty: one(faculty, {
+        fields: [changelog.logid],
+        references: [faculty.latestchangelogid],
+    }),
+    user: one(user, {
         fields: [changelog.accountid],
         references: [user.id],
     }),
