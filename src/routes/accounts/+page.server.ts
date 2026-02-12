@@ -5,7 +5,14 @@ import { assignRole, getAccountList } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
 
 export async function load() {
-    const accountList = await getAccountList();
+    // const accountList = await getAccountList();
+    const accountList = [
+        {
+            userid: 'sdjvghkadsfhvb',
+            email: 'it@up.edu.ph',
+            role: 'IT',
+        },
+    ];
 
     return { accountList };
 }
