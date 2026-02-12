@@ -23,7 +23,7 @@ export async function load({ locals }) {
 }
 
 export const actions = {
-    async default({ locals, request }) {
+    async makeAccount({ locals, request }) {
         const data = await request.formData();
         const email = data.get('email') as string;
         const password = data.get('password') as string;
@@ -63,4 +63,29 @@ export const actions = {
             message: 'Created account.',
         };
     },
+
+    async deleteAccount({ request }) {
+        const data = await request.formData();
+        const userid = data.get('userid') as string;
+
+        // Validate input
+        if (!userid) return fail(400, { error: 'Failed to delete account.' });
+
+        // Delete!
+        const response = await auth.api.removeUser({
+            body: {
+                userId: userid,
+            },
+            headers: request.headers,
+        });
+
+        console.log(`Did delete?: ${response.success}`);
+
+        return {
+            ...response,
+            message: (response.success)
+                ? 'Deleted account.'
+                : 'Failed to delete account.',
+        };
+    }
 } satisfies Actions;
