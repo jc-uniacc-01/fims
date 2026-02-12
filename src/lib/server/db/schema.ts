@@ -216,6 +216,11 @@ export const facultyhomeaddress = pgTable(
     ],
 );
 
+export const office = pgTable('office', {
+    officeid: serial().primaryKey().notNull(),
+    name: varchar({ length: 100 }).notNull(),
+});
+
 export const facultyadministrative = pgTable(
     'facultyadministrative',
     {
