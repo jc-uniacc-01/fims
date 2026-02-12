@@ -1,6 +1,6 @@
-import { getFacultyRecordList } from "$lib/server/db-helpers";
+import { getFacultyRecordList, getRole, getPermissions } from "$lib/server/db-helpers";
 
-export async function load() {
+export async function load({ locals }) {
     // const facultyRecordList = await getFacultyRecordList();
     const facultyRecordList = [
         {
@@ -14,7 +14,12 @@ export async function load() {
             logMaker: 'it@up.edu.ph',
             logOperation: 'Made record.',
         }
-    ]
+    ];
 
-    return { facultyRecordList }
+    const userRole = await getRole(locals.user.id);
+    const permissions = await getPermissions(userRole);
+
+    const canViewChangeLogs = permissions.canviewchangelogs;
+
+    return { facultyRecordList, canViewChangeLogs };
 }
