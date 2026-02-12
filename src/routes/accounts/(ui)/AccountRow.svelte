@@ -21,7 +21,7 @@
   const userRoles = ['IT', 'Admin'];
 </script>
 
-<div class="flex justify-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:flex [&>div]:items-center [&>div]:h-12 [&>div]:px-6">
+<div class="flex justify-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:flex [&>div]:items-center [&>div]:h-12 [&>div]:px-6 [&>div]:bg-white">
   <div class="justify-center w-25"><input type="checkbox" class="w-5 h-5" /></div>
   <div class="w-132"><span>{email}</span></div>
   <div class="justify-center w-50"><form method="POST" action="?/deleteAccount" class="flex justify-center items-center">
