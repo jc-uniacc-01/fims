@@ -3,18 +3,18 @@
 	export let onCancel = () => {};
 </script>
 
-<div class="modal-overlay">
-  <div class="modal-card">
-    <p class="modal-text">Are you sure you want to save the account?</p>
+<div class="fixed w-full h-full bg-[rgba(0,0,0,0.9)] flex justify-center items-center left-0 top-0">
+  <div class="bg-fims-beige text-center w-[90%] max-w-150 px-10 py-15 rounded-2xl">
+    <p class="text-black mb-7.5">Are you sure you want to save the account?</p>
     
-    <div class="button-container">
-      <button class="btn btn-cancel" on:click={onSave}>Save</button>
-			<button class="btn btn-exit" on:click={onCancel}>Cancel</button>
+    <div class="flex justify-around gap-5">
+      <button class="text-base cursor-pointer transition-opacity duration-200 px-7.5 py-2.5 rounded-3xl hover:opacity-70 border-fims-green text-fims-green border-2 border-solid" on:click={onSave}>Save</button>
+			<button class="text-base cursor-pointer transition-opacity duration-200 px-7.5 py-2.5 rounded-3xl hover:opacity-70 border-fims-red text-fims-red border-2 border-solid" on:click={onCancel}>Cancel</button>
     </div>
   </div>
 </div>
-<div class='overlay'>
-	<div class='modal'>
+<div>
+	<div>
 		<p>Are you sure you want to save the account?</p>
 		<button on:click={onSave}>Save</button>
 		<button on:click={onCancel}>Cancel</button>
