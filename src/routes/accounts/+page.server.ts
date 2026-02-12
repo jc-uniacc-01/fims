@@ -38,11 +38,12 @@ export const actions = {
 
         // Register as user
         try {
-            const response = await auth.api.signUpEmail({
+            const response = await auth.api.createUser({
                 body: {
                     email,
                     password,
                     name: 'User',
+                    role: (role === 'IT') ? 'admin' : 'user',
                 },
             });
 
