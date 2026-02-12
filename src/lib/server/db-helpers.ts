@@ -159,3 +159,12 @@ export async function getAccountList(currentUserId: string) {
 
     return shownFields;
 }
+
+export async function areYouHere(email: string) {
+    const you = await db
+        .select()
+        .from(appuser)
+        .where(eq(appuser.email, email));
+
+    return (you.length !== 0);
+}
