@@ -103,6 +103,7 @@
                     <input
                         type="email"
                         name="email"
+                        id="new-acc-email"
                         placeholder="Email"
                         class="h-full w-full p-2"
                     />
@@ -111,12 +112,13 @@
                     <input
                         type="password"
                         name="password"
+                        id="new-acc-password"
                         placeholder="Password"
                         class="h-full w-full p-2"
                     />
                 </div>
                 <div class="w-75">
-                    <select name="role" class="w-full text-center">
+                    <select name="role" id="new-acc-role" class="w-full text-center">
                         {#each userRoles as userRole (userRole)}
                             <option value={userRole}>{userRole}</option>
                         {/each}
