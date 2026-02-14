@@ -1,62 +1,22 @@
-import { expect, test} from "@playwright/test"
-import { db } from "$lib/server/db"
-import { appuser } from "$lib/server/db/schema"
-import { createAuthClient } from "better-auth/client";
-import { adminClient } from "better-auth/client/plugins";
-
+import { expect, test } from "@playwright/test"
 
 const TEST_ACC_EMAIL = "testacc@up.edu.ph"; //must have an it acocunt that has acocunt editing/viewing permissions
 const TEST_ACC_PASS = "password";
 
 const NON_IT_TEST_EMAIL = "testadmin@up.edu.ph";
 const NON_IT_TEST_PASS = "adminpass"
+
+const NEW_TEST_EMAIL = "newemail@up.edu.ph";
+const NEW_TEST_PASSWORD = "newpass";
+
 const FAIL_ROUTE = "/login?/signInEmail"
 
-/*
-const AUTH_CLIENT = await createAuthClient({
-    baseURL: "https://localhost:5173",
-    plugins: [
-        adminClient()
-    ]
-});
+let newTestID;
 
-let testID:string
-
-test.beforeAll(async () => {
-    // check if there is already an existing vitest account
-    let testAccID:string|null = null
-
-    let accList = await db
-    .select({
-        id: appuser.id,
-        email: appuser.email
-    }).from(appuser)
-
-    if (accList.length > 0) {
-        let fetchedAcc = accList.find((e) => {e.email ==  TEST_ACC_EMAIL});
-        if (fetchedAcc) {
-           testAccID = fetchedAcc.id 
-        }
-    }
- 
-    if (testAccID) {
-        // delete current test account before moving on
-        await AUTH_CLIENT.admin.removeUser({userId: testAccID});
-    }
-
-    //create test account in order
-    let testUser = await AUTH_CLIENT.admin.createUser({
-        email: TEST_ACC_EMAIL,
-        password: "password",
-        name: "Vitest Acc",
-    });
-    testID = testUser.data!.user.id
-})
-
-test.afterAll(async () => {
-    await AUTH_CLIENT.admin.removeUser({userId: testID})
-})
-    */
+// note:
+// if possible, please assign ids to svelte pages
+// as changing the text of buttons rn will make these
+// tests fail
 
 test("viewing accounts as IT", async ({page}) => {
     await page.goto("/login");
@@ -74,13 +34,48 @@ test("viewing accounts as IT", async ({page}) => {
     await expect(page.getByText("testadmin@up.edu.ph")).toBeVisible(); //should check the other account
 })
 
-test("creating accounts as IT", async ({page}) => {
+// note:
+// as of now, you HAVE to delete the newly created account
+// defined in NEW_TEST_EMAIL
+// every attempt at getting db to do it results in some error
 
+test("adding accounts as IT", async ({page}) => {
+    try {
+        //account creation
+        await page.goto("/login");
+
+        await page.locator("#email").fill(TEST_ACC_EMAIL);
+        await page.locator("#password").fill(TEST_ACC_PASS);
+        await page.locator("#password").press("Enter");
+
+        await page.getByText("Accounts").click();
+
+        await page.getByText("+ Add Account").click();
+
+        await page.locator("#new-acc-email").fill(NEW_TEST_EMAIL);
+        await page.locator("#new-acc-password").fill(NEW_TEST_PASSWORD);
+        await page.locator("#new-acc-role").selectOption("IT");
+        await page.getByText("+ Save Account").click();
+        await page.locator("#save-confirm").click();
+        await expect(page.getByText(NEW_TEST_EMAIL)).toBeVisible();
+
+        //attempt login
+        await page.getByText("Log-out").click();
+        await page.waitForURL("/login");
+        
+        await page.locator("#email").fill(NEW_TEST_EMAIL);
+        await page.locator("#password").fill(NEW_TEST_PASSWORD);
+        await page.locator("#password").press("Enter");
+
+        await expect(page).not.toHaveURL(FAIL_ROUTE);
+    } finally {
+    }
 });
 
 test("deleting accounts as IT", async ({page}) => {
 
-});
+})
+
 
 test("attempt to do anything account related as non-IT", async ({page}) => {
     await page.goto("/login");
