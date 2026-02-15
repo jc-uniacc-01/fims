@@ -1,4 +1,6 @@
 import {test, expect} from "@playwright/test"
+import dotenv from "dotenv"
+dotenv.config({path: ".env.e2e"});
 
 /*
 
@@ -10,7 +12,7 @@ accs with invalid roles (that shouldn't be possible i think)
 
 */
 
-const validAcc = "testacc@up.edu.ph"
+const validAcc = process.env.IT_EMAIL!;
 
 const emailFail = "Invalid email."
 const emptyPassFail = "Empty password."

@@ -1,13 +1,13 @@
 import { expect, test as setup } from "@playwright/test";
 
+const itEmail = process.env.IT_EMAIL!;
+const itPass = process.env.IT_PASS!;
+
 // NOTE: Don't simulate Google OAuth na. Hard to mock third-party UIs.
 
-const authFile = 'playwright/.auth/admin.json';
+const authFile = 'playwright/.auth/it.json';
 
-const adminEmail = "testadmin@up.edu.ph"
-const adminPass = "adminpass"
-
-setup('authenticate admin', async ({ page }) => {
+setup('authenticate it', async ({ page }) => {
   // Redirect to /login since no logged-in user yet
   await page.goto('/');
   await expect(page).toHaveURL('/login');
@@ -18,13 +18,13 @@ setup('authenticate admin', async ({ page }) => {
   const emailInput = page.getByRole('textbox', { name: 'Email' });
   await expect(emailInput).toBeEmpty();
   await expect(emailInput).toBeEditable();
-  await emailInput.fill(adminEmail);
+  await emailInput.fill(itEmail);
 
   // Password
   const pwInput = await page.getByRole('textbox', { name: 'Password' });
   await expect(pwInput).toBeEmpty();
   await expect(pwInput).toBeEditable();
-  await pwInput.fill(adminPass);
+  await pwInput.fill(itPass);
   await pwInput.press('Enter');
 
   // Redirected to main page

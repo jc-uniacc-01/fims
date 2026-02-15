@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 // NOTE: Log-out button will be checked in some other test
 // TODO: Add first footer section
 
-const itEmail = "testacc@up.edu.ph"
-const adminEmail = "testadmin@up.edu.ph"
+const itEmail = process.env.IT_EMAIL!
+const adminEmail = process.env.ADMIN_EMAIL!
 
 test.describe('check header and footer as admin', async () => {
   test.use({ storageState: 'playwright/.auth/admin.json' });

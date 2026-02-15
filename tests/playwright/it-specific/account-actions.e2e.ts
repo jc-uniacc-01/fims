@@ -4,8 +4,8 @@ test.use({ storageState: 'playwright/.auth/it.json' });
 
 // NOTE: Account type is 'Admin'
 
-const dummyEmail = 'dummy@up.edu.ph';
-const dummyPw = 'dummypw';
+const dummyEmail = process.env.DUMMY_EMAIL!;
+const dummyPw = process.env.DUMMY_PASS!;
 
 test.describe('add account', async () => {
   test.describe('unsuccessful', async () => {
