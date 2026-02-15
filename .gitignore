@@ -28,3 +28,6 @@ vite.config.ts.timestamp-*
 
 # Drizzle
 drizzle
+
+# VSCode
+/.vscode
