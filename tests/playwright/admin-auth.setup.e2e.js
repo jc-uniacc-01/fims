@@ -4,6 +4,9 @@ import { expect, test as setup } from "@playwright/test";
 
 const authFile = 'playwright/.auth/admin.json';
 
+const adminEmail = "testadmin@up.edu.ph"
+const adminPass = "adminpass"
+
 setup('authenticate admin', async ({ page }) => {
   // Redirect to /login since no logged-in user yet
   await page.goto('/');
@@ -15,13 +18,13 @@ setup('authenticate admin', async ({ page }) => {
   const emailInput = page.getByRole('textbox', { name: 'Email' });
   await expect(emailInput).toBeEmpty();
   await expect(emailInput).toBeEditable();
-  await emailInput.fill('admin@up.edu.ph');
+  await emailInput.fill(adminEmail);
 
   // Password
   const pwInput = await page.getByRole('textbox', { name: 'Password' });
   await expect(pwInput).toBeEmpty();
   await expect(pwInput).toBeEditable();
-  await pwInput.fill('password');
+  await pwInput.fill(adminPass);
   await pwInput.press('Enter');
 
   // Redirected to main page
