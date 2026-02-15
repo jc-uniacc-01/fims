@@ -1,13 +1,22 @@
-// src/lib/server/db/index.ts
-import pg from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-
-import { env } from '$env/dynamic/private';
-
+import { drizzle as neonDrizzle } from 'drizzle-orm/neon-http';
+import { drizzle as localDrizzle } from 'drizzle-orm/node-postgres';
+import { neon } from '@neondatabase/serverless';
+import { Pool } from 'pg';
 import * as schema from './schema';
+import { DATABASE_URL, MODE } from "$env/static/private";
 
-const pool = new pg.Pool({
-    connectionString: env.DATABASE_URL,
-});
+// for local/dev database, use
+// postgresql://(user):(password)@localhost:(port)/(whatever you name the local database)
+// within .env file under DATABASE
+// also switch MODE to schema
+// you can get the port using psql and doing \conninfo
 
-export const db = drizzle(pool, { schema });
+// there has to be a cleaner way to do this
+export const db =
+    MODE === "NEON"
+    ? neonDrizzle(neon(DATABASE_URL), { schema })
+    : MODE === "LOCAL"
+        ? localDrizzle(new Pool({
+            connectionString: DATABASE_URL,
+        }), { schema })
+        : (() => { throw new Error("INVALID MODE") })();
