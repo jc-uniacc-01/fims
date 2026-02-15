@@ -32,8 +32,9 @@ export async function logChange(makerid: string, tupleid: number, operation: str
         .insert(changelog)
         .values({
             userid: makerid,
-            tupleid,
-            operation,
+            tupleid: tupleid,
+            operation: operation,
+            timestamp: new Date()
         })
         .returning();
 
