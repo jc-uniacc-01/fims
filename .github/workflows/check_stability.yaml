@@ -28,6 +28,7 @@ jobs:
         # declare .env variables here
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          MODE: ${{ secrets.MODE }}
           ORIGIN: ${{ secrets.ORIGIN }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
