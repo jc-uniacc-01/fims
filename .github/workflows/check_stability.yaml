@@ -51,6 +51,12 @@ jobs:
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          IT_EMAIL: ${{ secrets.IT_EMAIL }}
+          IT_PASS: ${{ secrets.IT_PASS }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
+          DUMMY_EMAIL: ${{ secrets.DUMMY_EMAIL }}
+          DUMMY_PASS: ${{ secrets.DUMMY_PASS }}
       - name: Upload Test Results
         uses: actions/upload-artifact@v6
         with:
