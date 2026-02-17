@@ -46,7 +46,6 @@
             <input
                 class="mt-3 h-12 w-156 rounded-lg bg-white px-4 py-3 placeholder-fims-gray"
                 name="email"
-                id="email"
                 type="email"
                 placeholder="Email"
                 disabled={isSigningIn}
@@ -59,7 +58,6 @@
                 <input
                     class="mt-3 h-12 w-156 rounded-lg bg-white px-4 py-3 placeholder-fims-gray"
                     name="password"
-                    id="password"
                     type={isPasswordVisible ? 'text' : 'password'}
                     placeholder="Password"
                     disabled={isSigningIn}
