@@ -44,10 +44,10 @@
             }}
         >
             <input
-                class="mt-3 h-12 w-156 rounded-lg bg-white px-4 py-3 placeholder-fims-gray"
+                class="mt-3 h-12 w-156 rounded-lg border-0 bg-white px-4 py-3 placeholder-fims-gray focus:ring-0"
                 name="email"
                 type="email"
-                placeholder="Email"
+                placeholder="Enter email here"
                 disabled={isSigningIn}
                 required
                 onkeypress={(event) => {
@@ -56,10 +56,10 @@
             />
             <div class="relative w-fit">
                 <input
-                    class="mt-3 h-12 w-156 rounded-lg bg-white px-4 py-3 placeholder-fims-gray"
+                    class="mt-3 h-12 w-156 rounded-lg border-0 bg-white px-4 py-3 placeholder-fims-gray focus:ring-0"
                     name="password"
                     type={isPasswordVisible ? 'text' : 'password'}
-                    placeholder="Password"
+                    placeholder="Set initial password"
                     disabled={isSigningIn}
                     required
                     bind:this={passwordInput}
@@ -68,10 +68,10 @@
                     }}
                 />
                 <button
+                    type="button"
                     class="absolute top-1.5 right-4 h-full *:h-6 *:w-6 *:text-fims-gray"
-                    onclick={(event) => {
+                    onclick={() => {
                         isPasswordVisible = !isPasswordVisible;
-                        event.preventDefault();
                     }}
                     disabled={isSigningIn}
                 >
@@ -87,7 +87,7 @@
         <!-- Google SSO -->
         <form method="POST" action="?/signInSocial">
             <button
-                class="h-12 w-47 rounded-lg bg-[#e9e9e9]"
+                class="h-12 w-47 rounded-lg border-0 bg-[#e9e9e9]"
                 name="provider"
                 value="google"
                 type="submit">Sign in with Google</button
