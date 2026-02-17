@@ -9,7 +9,7 @@ export async function load({ locals, parent }) {
     if (!canViewAccounts) throw error(404, { message: 'Insufficient permissions.' });
 
     const accountList = await getAccountList(locals.user.id);
-    
+
     return { accountList };
 }
 
