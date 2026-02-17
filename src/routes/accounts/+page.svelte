@@ -71,7 +71,7 @@
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-red [&>div]:px-6"
         >
             <div class="w-25 justify-center"><span>Select</span></div>
-            <div class="w-132">
+            <div class="w-66 2xl:w-132">
                 <span>Email</span>
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
@@ -79,7 +79,7 @@
             <div class="w-75 justify-center">
                 <span>Type</span>
             </div>
-            <div class="w-100 justify-center"><span>Change Logs</span></div>
+            <div class="w-50 justify-center 2xl:w-100"><span>Change Logs</span></div>
             <div class="w-50 justify-center"><span>Account Action</span></div>
         </div>
 
@@ -98,7 +98,7 @@
                 use:enhance
             >
                 <div class="w-25"></div>
-                <div class="w-132">
+                <div class="w-66 2xl:w-132">
                     <input
                         type="email"
                         name="email"
@@ -117,7 +117,7 @@
                 <div class="w-75">
                     <SelectDropdown name="role" opts={userRoles} selectedOpt={userRoles[0]} />
                 </div>
-                <div class="w-100"></div>
+                <div class="w-50 2xl:w-100"></div>
                 <div class="w-50 justify-center">
                     <button
                         type="button"

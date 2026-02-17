@@ -38,7 +38,7 @@
     <div class="w-25 justify-center">
         <input type="checkbox" class="h-5 w-5 rounded-sm checked:bg-fims-gray focus:ring-0" />
     </div>
-    <div class="w-132"><span>{email}</span></div>
+    <div class="w-66 2xl:w-132"><span>{email}</span></div>
     <div class="w-50 justify-center">
         <form method="POST" action="?/deleteAccount" class="flex items-center justify-center">
             <button
@@ -57,7 +57,7 @@
             <SelectDropdown name="role" opts={userRoles} selectedOpt={role} />
         </form>
     </div>
-    <div class="w-100">
+    <div class="w-50 2xl:w-100">
         <span class="truncate text-[#535353]">{logMaker} ({logTimestamp}): {logOperation}</span>
     </div>
     <div class="w-50 justify-center">

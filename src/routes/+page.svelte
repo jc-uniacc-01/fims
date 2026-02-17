@@ -15,19 +15,19 @@
         >
             <!-- Header -->
             <div class="w-25 justify-center"><span>Select</span></div>
-            <div class={canViewChangeLogs ? 'w-132' : 'w-182'}>
+            <div class={canViewChangeLogs ? 'w-66 2xl:w-132' : 'w-91 2xl:w-182'}>
                 <span>Full Name</span>
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
-            <div class="w-75 justify-center">
+            <div class="w-50 justify-center 2xl:w-75">
                 <span>Status</span>
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
-            <div class="w-75 justify-center">
+            <div class="w-62.5 justify-center 2xl:w-75">
                 <span>Rank</span>
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
-            <div class="w-75 justify-center">
+            <div class="w-62.5 justify-center 2xl:w-75">
                 <span>Administrative Position</span>
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
