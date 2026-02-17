@@ -31,7 +31,9 @@
 <div
     class="flex justify-center [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:bg-white [&>div]:px-6"
 >
-    <div class="w-25 justify-center"><input type="checkbox" class="h-5 w-5" /></div>
+    <div class="w-25 justify-center">
+        <input type="checkbox" class="h-5 w-5 rounded-sm checked:bg-fims-gray focus:ring-0" />
+    </div>
     <div class={canViewChangeLogs ? 'w-132' : 'w-182'}><span>{lastname}, {firstname}</span></div>
     <div class="w-75 justify-center"><span>{status}</span></div>
     <div class="w-75 justify-center"><span>{ranktitle}</span></div>
