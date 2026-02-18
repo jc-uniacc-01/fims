@@ -73,8 +73,8 @@
                     willDelete = false;
                     isDeleting = true;
                     return async ({ update }) => {
-                        isDeleting = false;
                         await update();
+                        isDeleting = false;
                     };
                 }
                 willDelete = true;
