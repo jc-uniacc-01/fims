@@ -32,7 +32,7 @@ export async function logChange(makerid: string, tupleid: number, operation: str
     return logid;
 }
 
-export async function makeUser(makerid: string, id: string, role: string) {
+export async function makeUserInfo(makerid: string, id: string, role: string) {
     // Actual action
     const returnedIds = await db
         .insert(userinfo)
@@ -53,23 +53,6 @@ export async function makeUser(makerid: string, id: string, role: string) {
             latestchangelogid: logid,
         })
         .where(eq(userinfo.userinfoid, tupleid));
-
-    return { success: true };
-}
-
-export async function deleteUser(deleterid: string, id: string) {
-    const returnedIds = await db
-        .select({ id: userinfo.userinfoid })
-        .from(userinfo)
-        .where(eq(userinfo.userid, id));
-
-    const deletedID = returnedIds[0].id;
-
-    // deletion
-    await db.delete(appuser).where(eq(appuser.id, id));
-
-    // log
-    await logChange(deleterid, deletedID, 'Deleted account.');
 
     return { success: true };
 }

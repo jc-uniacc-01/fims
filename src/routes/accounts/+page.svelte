@@ -1,7 +1,8 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
     import AccountRow from './(ui)/AccountRow.svelte';
-    import SaveConfirmation from './(ui)/SaveConfirmation.svelte';
+    import SaveConfirmation from '$lib/ui/SaveConfirmation.svelte';
+    import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
     import { enhance } from '$app/forms';
     const { data, form } = $props();
     const { accountList } = $derived(data);
@@ -48,21 +49,17 @@
 {/if}
 
 <div>
-    <!-- Make/Save Account Button -->
+    <!-- Add Account Button -->
     <div class="flex justify-center">
-        <div class="flex w-432 justify-end">
-            {#if isMakingAccount}
-                <button
-                    onclick={toggleModal}
-                    class="mt-50 flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
-                    >+ Save Account</button
-                >
-            {:else}
+        <div class="flex w-315 justify-end 2xl:w-432">
+            {#if !isMakingAccount}
                 <button
                     onclick={() => (isMakingAccount = true)}
                     class="mt-50 flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
                     >+ Add Account</button
                 >
+            {:else}
+                <div class="mt-59"></div>
             {/if}
         </div>
     </div>
@@ -74,7 +71,7 @@
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-red [&>div]:px-6"
         >
             <div class="w-25 justify-center"><span>Select</span></div>
-            <div class="w-132">
+            <div class="w-66 2xl:w-132">
                 <span>Email</span>
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
@@ -82,7 +79,7 @@
             <div class="w-75 justify-center">
                 <span>Type</span>
             </div>
-            <div class="w-100 justify-center"><span>Change Logs</span></div>
+            <div class="w-50 justify-center 2xl:w-100"><span>Change Logs</span></div>
             <div class="w-50 justify-center"><span>Account Action</span></div>
         </div>
 
@@ -101,33 +98,36 @@
                 use:enhance
             >
                 <div class="w-25"></div>
-                <div class="w-132">
+                <div class="w-66 2xl:w-132">
                     <input
                         type="email"
                         name="email"
-                        id="new-acc-email"
-                        placeholder="Email"
-                        class="h-full w-full p-2"
+                        placeholder="Enter email here"
+                        class="h-full w-full border-0 p-2 focus:ring-0"
                     />
                 </div>
                 <div class="w-50">
                     <input
                         type="password"
                         name="password"
-                        id="new-acc-password"
-                        placeholder="Password"
-                        class="h-full w-full p-2"
+                        placeholder="Set initial password"
+                        class="h-full w-full border-0 p-2 focus:ring-0"
                     />
                 </div>
                 <div class="w-75">
-                    <select name="role" id="new-acc-role" class="w-full text-center">
-                        {#each userRoles as userRole (userRole)}
-                            <option value={userRole}>{userRole}</option>
-                        {/each}
-                    </select>
+                    <SelectDropdown name="role" opts={userRoles} selectedOpt={userRoles[0]} />
                 </div>
-                <div class="w-100"></div>
-                <div class="w-50"></div>
+                <div class="w-50 2xl:w-100"></div>
+                <div class="w-50 justify-center">
+                    <button
+                        type="button"
+                        onclick={toggleModal}
+                        class="flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
+                    >
+                        <Icon icon="tabler:device-floppy" class="mr-2 h-6 w-6" />
+                        <span>Save</span>
+                    </button>
+                </div>
             </form>
         {/if}
     </div>
@@ -139,5 +139,6 @@
             if (makeForm) makeForm.submit();
         }}
         onCancel={toggleModal}
+        text="Are you sure you want to save the account?"
     />
 {/if}
