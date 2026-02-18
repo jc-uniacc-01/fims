@@ -1,5 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+    import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
     import Icon from '@iconify/svelte';
 
     const { form } = $props();
@@ -35,11 +36,9 @@
             action="?/signInEmail"
             bind:this={formElement}
             use:enhance={() => {
-                isSigningIn = true;
-
                 return async ({ update }) => {
+                    isSigningIn = true;
                     await update();
-                    isSigningIn = false;
                 };
             }}
         >
@@ -64,7 +63,7 @@
                     required
                     bind:this={passwordInput}
                     onkeypress={(event) => {
-                        if (event.key === 'Enter' && formElement) formElement.submit();
+                        if (event.key === 'Enter' && formElement) formElement.requestSubmit();
                     }}
                 />
                 <button
@@ -95,3 +94,7 @@
         </form>
     </div>
 </div>
+
+{#if isSigningIn}
+    <LoadingScreen />
+{/if}
