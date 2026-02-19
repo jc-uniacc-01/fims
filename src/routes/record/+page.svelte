@@ -12,6 +12,7 @@
 
 <!-- currently testing components -->
 <div class="mt-20 text-fims-green px-5">
+    <a href={back} class="text-fims-green">Back to List of Faculty Records</a>
     <h1 class="text-3xl font-semibold mb-[65px]" id="name-display">{lastName}, {firstName}</h1>
     <div class= "flex">
         {#each tabs as tab}
