@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, ne } from 'drizzle-orm';
+import { and, desc, eq, inArray, ne, or, ilike, and } from 'drizzle-orm'; 
 
 import { db } from './db';
 
@@ -69,7 +69,7 @@ export async function getPermissions(userRole: string) {
     return fetchedRole;
 }
 
-export async function getFacultyRecordList() {
+export async function getFacultyRecordList(searchQuery: string = '') {
     // find the absolute latest semester
     const [latestSemester] = await db
         .select({
@@ -81,6 +81,16 @@ export async function getFacultyRecordList() {
 
     // fallback ID in case the semester table is completely empty
     const latestSemesterId = latestSemester?.acadsemesterid ?? -1;
+
+    // 3. Define the Search Condition
+    // We search across First Name, Last Name, and Status
+    const searchCondition = searchQuery 
+        ? or(
+            ilike(faculty.firstname, `%${searchQuery}%`),
+            ilike(faculty.lastname, `%${searchQuery}%`),
+            ilike(faculty.status, `%${searchQuery}%`)
+          )
+        : undefined;
 
     const shownFields = await db
         .select({
@@ -113,10 +123,18 @@ export async function getFacultyRecordList() {
             eq(adminposition.adminpositionid, facultyadminposition.adminpositionid),
         )
         .leftJoin(changelog, eq(changelog.logid, faculty.latestchangelogid))
-        .leftJoin(appuser, eq(appuser.id, changelog.userid));
+        .leftJoin(appuser, eq(appuser.id, changelog.userid))
+        .where(
+            // 4. Combine the Semester check AND the Search condition
+            and(
+                eq(facultysemester.acadsemesterid, latestSemester.acadsemesterid),
+                searchCondition
+            )
+        );
 
     return shownFields;
 }
+
 
 export async function getAccountList(currentUserId: string) {
     const userSq = db
