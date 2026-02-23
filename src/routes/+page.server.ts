@@ -1,6 +1,6 @@
 //import { getFacultyRecordList } from '$lib/server/db-helpers';
 
-export async function load() {
+export function load() {
     //const facultyRecordList = await getFacultyRecordList();
     const facultyRecordList = [
         {

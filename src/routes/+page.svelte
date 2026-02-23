@@ -2,22 +2,19 @@
     import Icon from '@iconify/svelte';
     import FacultyRecordRow from './(ui)/FacultyRecordRow.svelte';
     import Button from '$lib/ui/Button.svelte';
-
+    type FacultyRecord = { facultyid: number };
     const { data } = $props();
     const { facultyRecordList, canViewChangeLogs } = $derived(data);
 
     let selectedIds = $state<number[]>([]);
 
     function toggleSelection(id: number) {
-        if (selectedIds.includes(id)) {
-            selectedIds = selectedIds.filter((i) => i !== id);
-        } else {
-            selectedIds = [...selectedIds, id];
-        }
+        if (selectedIds.includes(id)) selectedIds = selectedIds.filter((i) => i !== id);
+        else selectedIds = [...selectedIds, id];
     }
 
     function selectAll() {
-        selectedIds = facultyRecordList.map((f: any) => f.facultyid);
+        selectedIds = facultyRecordList.map((f: FacultyRecord) => f.facultyid);
     }
 
     function deselectAll() {

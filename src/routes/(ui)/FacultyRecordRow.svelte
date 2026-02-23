@@ -20,7 +20,6 @@
 
     const { facultyRecord, canViewChangeLogs, isSelected, onToggle }: Props = $props();
     const {
-        facultyid,
         lastname,
         firstname,
         status,
