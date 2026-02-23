@@ -1,14 +1,54 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
     import FacultyRecordRow from './(ui)/FacultyRecordRow.svelte';
+    import Button from '$lib/ui/Button.svelte';
+
     const { data } = $props();
     const { facultyRecordList, canViewChangeLogs } = $derived(data);
+
+	let selectedIds = $state<number[]>([]);
+
+    function toggleSelection(id: number) {
+        if (selectedIds.includes(id)) {
+            selectedIds = selectedIds.filter(i => i !== id);
+        } else {
+            selectedIds = [...selectedIds, id];
+        }
+    }
+
+    function selectAll() {
+        selectedIds = facultyRecordList.map((f: any) => f.facultyid);
+    }
+
+    function deselectAll() {
+        selectedIds = [];
+    }
 </script>
 
 <br />
 
 <div>
-    <div class="mt-60">
+	<div class="flex justify-center mt-15">
+        <div class="flex w-315 items-end justify-between 2xl:w-432 h-20"> 
+            {#if selectedIds.length > 0}
+                <div class="flex gap-2">
+                    <Button onclick={selectAll} color="green">
+                        Select All
+                    </Button>
+                    <Button onclick={deselectAll} color="red">
+                        Deselect Selection
+                    </Button>
+                </div>
+                <div>
+                    <Button type="submit" color="red">
+                        <Icon icon="tabler:trash" class="mr-2 h-6 w-6" />
+                        <span>Delete ({selectedIds.length})</span>
+                    </Button>
+                </div>
+            {/if}
+        </div>
+    </div>
+    <div class="mt-2.5">
         <!-- Faculty Record List Table -->
         <div
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-green [&>div]:px-6"
@@ -38,7 +78,7 @@
 
         <!-- Rows -->
         {#each facultyRecordList as facultyRecord (facultyRecord.facultyid)}
-            <FacultyRecordRow {facultyRecord} {canViewChangeLogs} />
+            <FacultyRecordRow {facultyRecord} {canViewChangeLogs} isSelected={selectedIds.includes(facultyRecord.facultyid)} onToggle={() => toggleSelection(facultyRecord.facultyid)}/>
         {/each}
     </div>
 </div>
