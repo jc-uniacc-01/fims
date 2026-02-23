@@ -6,11 +6,11 @@
     const { data } = $props();
     const { facultyRecordList, canViewChangeLogs } = $derived(data);
 
-	let selectedIds = $state<number[]>([]);
+    let selectedIds = $state<number[]>([]);
 
     function toggleSelection(id: number) {
         if (selectedIds.includes(id)) {
-            selectedIds = selectedIds.filter(i => i !== id);
+            selectedIds = selectedIds.filter((i) => i !== id);
         } else {
             selectedIds = [...selectedIds, id];
         }
@@ -28,16 +28,12 @@
 <br />
 
 <div>
-	<div class="flex justify-center mt-15">
-        <div class="flex w-315 items-end justify-between 2xl:w-432 h-20"> 
+    <div class="mt-15 flex justify-center">
+        <div class="flex h-20 w-315 items-end justify-between 2xl:w-432">
             {#if selectedIds.length > 0}
                 <div class="flex gap-2">
-                    <Button onclick={selectAll} color="green">
-                        Select All
-                    </Button>
-                    <Button onclick={deselectAll} color="red">
-                        Deselect Selection
-                    </Button>
+                    <Button onclick={selectAll} color="green">Select All</Button>
+                    <Button onclick={deselectAll} color="red">Deselect Selection</Button>
                 </div>
                 <div>
                     <Button type="submit" color="red">
@@ -78,7 +74,12 @@
 
         <!-- Rows -->
         {#each facultyRecordList as facultyRecord (facultyRecord.facultyid)}
-            <FacultyRecordRow {facultyRecord} {canViewChangeLogs} isSelected={selectedIds.includes(facultyRecord.facultyid)} onToggle={() => toggleSelection(facultyRecord.facultyid)}/>
+            <FacultyRecordRow
+                {facultyRecord}
+                {canViewChangeLogs}
+                isSelected={selectedIds.includes(facultyRecord.facultyid)}
+                onToggle={() => toggleSelection(facultyRecord.facultyid)}
+            />
         {/each}
     </div>
 </div>
