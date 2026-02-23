@@ -15,7 +15,8 @@ export const load: PageServerLoad = async ({cookies}) => {
         return {
             recordData: {
                 firstName: fetchedRecord.firstname,
-                lastName: fetchedRecord.lastname
+                lastName: fetchedRecord.lastname,
+                facultyid: fetchedRecord.facultyid,
             }
         }
     } catch(e) {

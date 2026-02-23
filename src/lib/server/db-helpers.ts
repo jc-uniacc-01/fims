@@ -2,6 +2,55 @@ import { desc, eq, ne } from 'drizzle-orm';
 
 import { db } from './db';
 
+// got tired of constantly fixing the ddl script
+// so i made this.
+// should only initialize once since it's in the backend
+let dummyRecordList:{
+    facultyid:number,
+    lastname:string,
+    firstname:string,
+    status:string,
+    ranktitle:string|null,
+    adminposition:string|null,
+    logTimestamp:Date|null,
+    logMaker:string|null,
+    logOperation:string|null
+}[] = [
+    {
+        facultyid: 1,
+        lastname: "Dela Cruz",
+        firstname: "John",
+        status: "Active",
+        ranktitle: "Professor 7",
+        adminposition: "Department Chair",
+        logTimestamp: null,
+        logMaker: null,
+        logOperation: null
+    },
+    {
+        facultyid: 2,
+        lastname: "Doe",
+        firstname: "John",
+        status: "Active",
+        ranktitle: "Assistant Prof. 2",
+        adminposition: "Department Head",
+        logTimestamp: null,
+        logMaker: null,
+        logOperation: null
+    },
+    {
+        facultyid: 3,
+        lastname: "Doe",
+        firstname: "Jane",
+        status: "On Leave",
+        ranktitle: null,
+        adminposition: null,
+        logTimestamp: null,
+        logMaker: null,
+        logOperation: null
+    },
+]
+
 import {
     adminposition,
     appuser,
@@ -113,6 +162,7 @@ export async function getFacultyRecordList() {
 //only difference is that the last where is removed
 //as the lack of changelogs removes everything
 export async function getDummyFacultyRecordList() {
+    /*
     const [currentSemester] = await db
         .select({
             acadsemesterid: semester.acadsemesterid,
@@ -150,10 +200,12 @@ export async function getDummyFacultyRecordList() {
     
 
     return shownFields;
+    */
+    return dummyRecordList;
 }
 
 // grabs an individual record
-// made this as the faculty record list strips information for display
+// made this as the faculty record list only gets display information
 export async function getFacultyRecord(facultyID:number) {
     const query = await db
         .select()
@@ -161,6 +213,17 @@ export async function getFacultyRecord(facultyID:number) {
         .where(eq(faculty.facultyid, facultyID));
 
     return query[0];
+}
+
+// deletes a faculty record by id
+export async function deleteFacultyRecord(facultyID:number) {
+    /*
+    await db
+        .delete(faculty)
+        .where(eq(faculty.facultyid, facultyID));
+    */
+
+    dummyRecordList = dummyRecordList.filter((rec) => rec.facultyid !== facultyID);
 }
 
 export async function getAccountList(currentUserId: string) {

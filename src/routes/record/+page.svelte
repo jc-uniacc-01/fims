@@ -1,11 +1,13 @@
 <script lang="ts">
     import Profile from "./(tabs)/Profile.svelte";
     import Button from "$lib/ui/Button.svelte";
+    import DeleteConfirmation from "$lib/ui/DeleteConfirmation.svelte";
+
     import { goto } from '$app/navigation';
 
     let { data } = $props();
+    let isDeleting = $state(false);
     const { recordData } = $derived(data);
-
     if (!recordData) goto('/');
 
 
@@ -16,7 +18,22 @@
     const lastName = recordData!.lastName;
 
     function deleteAttempt() {
-        console.log("test");
+        isDeleting = true;
+    }
+
+    function confirmDelete() {
+        fetch('/delete-record', {
+            method: "POST",
+            body: JSON.stringify({deleted: recordData!.facultyid}),
+            headers: {
+                "Content-Type": 'application/json'
+            }
+        })
+        goto('/');
+    }
+
+    function cancelDelete() {
+        isDeleting = false
     }
 </script>
 
@@ -37,4 +54,7 @@
     <div id="divider" class="h-0.5 mb-10 w-full bg-fims-green"></div>
     <Profile/>
     <!-- TODO: some hacky way of mimicking the ui in figma-->
+    {#if isDeleting}
+        <DeleteConfirmation onDelete={confirmDelete} onCancel={cancelDelete} text="This will delete the current record. Are you sure?"/>
+    {/if}
 </div>
