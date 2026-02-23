@@ -1,8 +1,23 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
     import FacultyRecordRow from './(ui)/FacultyRecordRow.svelte';
+    import { goto } from '$app/navigation';
+
     const { data } = $props();
     const { facultyRecordList, canViewChangeLogs } = $derived(data);
+
+
+    async function onRecordClick(id:number) {
+        const res = await fetch('/view-record', {
+            method: "POST",
+            body: JSON.stringify({requested:id}),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        goto('/record');
+    }
 </script>
 
 <br />
@@ -38,7 +53,7 @@
 
         <!-- Rows -->
         {#each facultyRecordList as facultyRecord (facultyRecord.facultyid)}
-            <FacultyRecordRow {facultyRecord} {canViewChangeLogs} />
+            <FacultyRecordRow {facultyRecord} {canViewChangeLogs} clickCallback={onRecordClick}/>
         {/each}
     </div>
 </div>

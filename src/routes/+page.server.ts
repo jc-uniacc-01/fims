@@ -36,7 +36,10 @@ export async function load() {
 }
 
 export const actions = {
-    "view-record": async () => {
+    "getRecord": async ({cookies, request}) => {
+        // please do change this if you find a better way
 
+        const data = await request.json();
+        console.log(data);
     }
 }

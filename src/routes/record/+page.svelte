@@ -1,11 +1,18 @@
 <script lang="ts">
     import Profile from "./(tabs)/Profile.svelte";
+    import { goto } from '$app/navigation';
+
+    let { data } = $props();
+    const { recordData } = $derived(data);
+
+    if (!recordData) goto('/');
+
 
     const tabs = ["Profile"]
     const href = "/record";
     const back = "/";
-    const lastName = "LastName"
-    const firstName = "FirstName"
+    const firstName = recordData!.firstName;
+    const lastName = recordData!.lastName;
 </script>
 
 <br/>
@@ -17,7 +24,7 @@
     <div class= "flex">
         {#each tabs as tab}
             <div class="flex px-4 h-fit w-fit border-x-2 border-t-2 rounded-t-xl items-center text-xl">
-                <a {href} class="text-center w-mx m-auto text-center m-auto">{tab}</a>
+                <a {href} class="text-center w-mx m-auto">{tab}</a>
             </div>
         {/each}
     </div>

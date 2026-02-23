@@ -1,5 +1,6 @@
 <script lang="ts">
     interface FacultyRecordDTO {
+        facultyid: number;
         lastname: string;
         firstname: string;
         status: string;
@@ -13,10 +14,12 @@
     interface Props {
         facultyRecord: FacultyRecordDTO;
         canViewChangeLogs: boolean;
+        clickCallback: (id:number) => void;
     }
 
-    const { facultyRecord, canViewChangeLogs }: Props = $props();
+    const { facultyRecord, canViewChangeLogs, clickCallback }: Props = $props();
     const {
+        facultyid,
         lastname,
         firstname,
         status,
@@ -26,6 +29,10 @@
         logMaker,
         logOperation,
     }: FacultyRecordDTO = $derived(facultyRecord);
+
+    function onClick() {
+        clickCallback(facultyid);
+    }
 </script>
 
 <div
@@ -35,7 +42,7 @@
         <input type="checkbox" class="h-5 w-5 rounded-sm checked:bg-fims-gray focus:ring-0" />
     </div>
     <div class={canViewChangeLogs ? 'w-66 2xl:w-132' : 'w-91 2xl:w-182'}>
-        <span><a href="/record">{lastname}, {firstname}</a></span>
+        <span><button class="hover:cursor-pointer" onclick={onClick}>{lastname}, {firstname}</button></span>
     </div>
     <div class="w-50 justify-center 2xl:w-75"><span>{status}</span></div>
     <div class="w-62.5 justify-center 2xl:w-75"><span>{ranktitle}</span></div>
