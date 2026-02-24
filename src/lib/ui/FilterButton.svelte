@@ -1,12 +1,13 @@
 <script lang="ts">
+    import type { FilterObject } from '$lib/types/filter';
     import Icon from '@iconify/svelte';
 
-    interface Props {
-        field: string;
-        opts: string[];
+    interface Props extends FilterObject {
+        isFiltering: boolean;
     }
 
-    const { field, opts }: Props = $props();
+    // eslint-disable-next-line prefer-const -- bindable variable changes state
+    let { name, filter, opts, selectedOpts, isFiltering = $bindable() }: Props = $props();
 
     let isFilterOpen = $state(false);
     let selectedOpts: string[] = $state([]);
@@ -22,7 +23,7 @@
         class="flex items-center justify-center border px-4 py-1 {borderColor} rounded-full bg-white"
         onclick={() => (isFilterOpen = !isFilterOpen)}
     >
-        <span class="mr-1 {textColor}">{field}:</span>
+        <span class="mr-1 {textColor}">{name}:</span>
 
         <span class={selectedColor}>{selectedOpts.length ? selectedOpts.join(', ') : 'All'}</span>
 
