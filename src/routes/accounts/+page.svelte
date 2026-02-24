@@ -127,6 +127,7 @@
                         isSaving = true;
                         return async ({ update }) => {
                             await update();
+                            await goto(page.url.pathname);
                             isSaving = false;
                         };
                     }
