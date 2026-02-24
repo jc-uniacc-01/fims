@@ -102,13 +102,12 @@
             isModalOpen = false;
             isLoading = true;
 
-            return ({ result, update }) => {
-                isLoading = false;
-
+            return async ({ result, update }) => {
                 if (result.type === 'success') {
                     selectedIds = [];
-                    update();
+                    await update();
                 }
+                isLoading = false;
             };
         }}
     >
