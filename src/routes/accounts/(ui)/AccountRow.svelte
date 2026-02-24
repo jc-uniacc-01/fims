@@ -52,12 +52,12 @@
             </RedButton>
         </form>
     </div>
-    <div class="w-75">
+    <div class="w-40">
         <form method="POST" action="" class="w-full">
             <SelectDropdown name="role" opts={userRoles} selectedOpt={role} />
         </form>
     </div>
-    <div class="w-50 2xl:w-100">
+    <div class="w-85 2xl:w-100">
         <span class="truncate text-[#535353]">{logMaker} ({logTimestamp}): {logOperation}</span>
     </div>
     <div class="w-50 justify-center">

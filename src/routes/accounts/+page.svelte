@@ -109,10 +109,10 @@
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
             <div class="w-50 justify-center"><span>Reset Password?</span></div>
-            <div class="w-75 justify-center">
+            <div class="w-40 justify-center">
                 <span>Type</span>
             </div>
-            <div class="w-50 justify-center 2xl:w-100"><span>Change Logs</span></div>
+            <div class="w-85 justify-center 2xl:w-100"><span>Change Logs</span></div>
             <div class="w-50 justify-center"><span>Account Action</span></div>
         </div>
 
