@@ -1,5 +1,7 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+    import { goto } from '$app/navigation';
+    import { page } from '$app/state';
     import RedButton from '$lib/ui/RedButton.svelte';
     import Icon from '@iconify/svelte';
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
@@ -70,6 +72,7 @@
                     isDeleting = true;
                     return async ({ update }) => {
                         await update();
+                        await goto(page.url.pathname);
                         isDeleting = false;
                     };
                 }
