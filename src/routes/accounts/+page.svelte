@@ -7,6 +7,8 @@
     import SaveConfirmation from '$lib/ui/SaveConfirmation.svelte';
     import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
     import { enhance } from '$app/forms';
+    import { goto } from '$app/navigation';
+    import { page } from '$app/state';
     const { data, form } = $props();
     const { accountList, prevCursor, nextCursor, hasPrev, hasNext } = $derived(data);
 
@@ -17,6 +19,14 @@
     function toggleModal() {
         isMakingAccount = !isMakingAccount;
         willMake = !willMake;
+    }
+
+    async function goToPage(isNext: boolean = true) {
+        const cursor = isNext ? nextCursor : prevCursor;
+        const url = new URL(page.url);
+        if (cursor) url.searchParams.set('cursor', cursor.toString());
+        url.searchParams.set('isNext', isNext ? '1' : '0');
+        await goto(url.toString());
     }
 
     let makeForm: HTMLFormElement | null = $state(null);
@@ -153,6 +163,20 @@
                 </div>
             </form>
         {/if}
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="mt-2 flex justify-center">
+        <div class="flex w-315 items-center justify-between 2xl:w-432">
+            <GreenButton onclick={() => (goToPage(false))} type="button" disabled={!hasPrev}>
+                <Icon icon="line-md:arrow-left-circle" class="h-5 w-5 mr-2" />
+                <span>Previous</span>
+            </GreenButton>
+            <GreenButton onclick={() => (goToPage(true))} type="button" disabled={!hasNext}>
+                <span>Next</span>
+                <Icon icon="line-md:arrow-right-circle" class="h-5 w-5 ml-2" />
+            </GreenButton>
+        </div>
     </div>
 </div>
 
