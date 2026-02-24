@@ -8,7 +8,7 @@
     import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
     import { enhance } from '$app/forms';
     const { data, form } = $props();
-    const { accountList } = $derived(data);
+    const { accountList, prevCursor, nextCursor, hasPrev, hasNext } = $derived(data);
 
     let isMakingAccount = $state(false);
     let willMake = $state(false);

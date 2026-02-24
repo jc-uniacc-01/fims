@@ -4,13 +4,42 @@ import { APIError } from 'better-auth';
 import { areYouHere, getAccountList, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
 
-export async function load({ locals, parent }) {
+export async function load({ locals, parent, url }) {
     const { canViewAccounts } = await parent();
     if (!canViewAccounts) throw error(404, { message: 'Insufficient permissions.' });
 
-    const accountList = await getAccountList(locals.user.id);
+    // Extract queries
 
-    return { accountList };
+    // Cursor and Direction
+    const newCursorStr = url.searchParams.get('cursor');
+    const isNextStr = url.searchParams.get('isNext'); // 0 or 1
+
+    const newCursor = newCursorStr ? parseInt(newCursorStr) : undefined;
+    const isNext = isNextStr
+        ? parseInt(isNextStr) === 1
+        : true;
+
+    // Get account list
+    const {
+        accountList,
+        prevCursor,
+        nextCursor,
+        hasPrev,
+        hasNext,
+    } = await getAccountList(
+        locals.user.id,
+        newCursor,
+        isNext,
+        !newCursorStr && !isNextStr,
+    );
+
+    return {
+        accountList,
+        prevCursor,
+        nextCursor,
+        hasPrev,
+        hasNext
+    };
 }
 
 export const actions = {

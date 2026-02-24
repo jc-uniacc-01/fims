@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, ne, or, ilike, and } from 'drizzle-orm'; 
+import { and, desc, eq, inArray, ne, or, ilike, gt, asc, lt } from 'drizzle-orm'; 
 
 import { db } from './db';
 
@@ -136,43 +136,113 @@ export async function getFacultyRecordList(searchQuery: string = '') {
 }
 
 
-export async function getAccountList(currentUserId: string) {
-    const userSq = db
+const pageSize = 100;
+
+export async function getAccountList(
+    currentUserId: string,
+    cursor?: number,
+    isNext: boolean = true,
+    initLoad: boolean = false,
+) {
+    // Get accounts from database
+    const userCountSq = await db
         .select({
             userid: appuser.id,
+            userinfoid: userinfo.userinfoid,
             email: appuser.email,
             role: userinfo.role,
             latestchangelogid: userinfo.latestchangelogid,
         })
         .from(appuser)
         .leftJoin(userinfo, eq(userinfo.userid, appuser.id))
-        .where(ne(appuser.id, currentUserId))
+        .where(
+            and(
+                ne(appuser.id, currentUserId),
+                (
+                    cursor
+                        ? isNext
+                            ? gt(userinfo.userinfoid, cursor)
+                            : lt(userinfo.userinfoid, cursor)
+                        : undefined
+                )
+            )
+        )
+        .orderBy(isNext ? asc(userinfo.userinfoid) : desc(userinfo.userinfoid))
+        .limit(pageSize + 1)
+        .as('usercount_sq');
+
+    // Check if there is a previous/next page
+    let hasPrev = !initLoad;
+    let hasNext = true;
+
+    const userCount = (await db.select().from(userCountSq)).length;
+
+    if (isNext) {
+        hasNext = userCount > pageSize;
+    } else {
+        hasPrev = userCount > pageSize;
+    }
+
+    // Chop off the extra record
+    const userSq = await db
+        .select()
+        .from(userCountSq)
+        .orderBy(isNext ? asc(userCountSq.userinfoid) : desc(userCountSq.userinfoid))
+        .limit(pageSize)
         .as('user_sq');
 
-    const changelogSq = db
+    // Get cursors
+    let [firstId,] = await db
         .select({
-            logid: changelog.logid,
-            timestamp: changelog.timestamp,
-            maker: appuser.email,
-            operation: changelog.operation,
+            value: userSq.userinfoid,
         })
-        .from(changelog)
-        .leftJoin(appuser, eq(appuser.id, changelog.userid))
-        .as('changelog_sq');
+        .from(userSq)
+        .orderBy(asc(userSq.userinfoid))
+        .limit(1);
+
+    let [lastId,] = await db
+        .select({
+            value: userSq.userinfoid,
+        })
+        .from(userSq)
+        .orderBy(desc(userSq.userinfoid))
+        .limit(1);
+
+    // Get changelogs
+    const appuserSq = await db
+        .select({
+            userid: appuser.id,
+            email: appuser.email,
+        })
+        .from(appuser)
+        .as('appuser_sq');
 
     const shownFields = await db
         .select({
             userid: userSq.userid,
             email: userSq.email,
             role: userSq.role,
-            logTimestamp: changelogSq.timestamp,
-            logMaker: changelogSq.maker,
-            logOperation: changelogSq.operation,
+            logTimestamp: changelog.timestamp,
+            logMaker: appuserSq.email,
+            logOperation: changelog.operation,
         })
         .from(userSq)
-        .leftJoin(changelogSq, eq(changelogSq.logid, userSq.latestchangelogid));
+        .leftJoin(changelog, eq(changelog.logid, userSq.latestchangelogid))
+        .leftJoin(appuserSq, eq(appuserSq.userid, changelog.userid));
 
-    return shownFields;
+    // Reverse account list and cursors if previous page
+    if (!isNext) {
+        [lastId, firstId] = [firstId, lastId];
+        shownFields.reverse();
+    }
+
+    return {
+        accountList: shownFields,
+        prevCursor: firstId?.value,
+        nextCursor: lastId?.value,
+        hasPrev,
+        hasNext,
+    };
 }
 
 export async function areYouHere(email: string) {
