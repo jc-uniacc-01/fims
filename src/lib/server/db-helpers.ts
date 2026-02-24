@@ -205,26 +205,18 @@ export async function getAccountList(
         .limit(1);
 
     // Get changelogs
-    const appuserSq = await db
-        .select({
-            userid: appuser.id,
-            email: appuser.email,
-        })
-        .from(appuser)
-        .as('appuser_sq');
-
     const shownFields = await db
         .select({
             userid: userSq.userid,
             email: userSq.email,
             role: userSq.role,
             logTimestamp: changelog.timestamp,
-            logMaker: appuserSq.email,
+            logMaker: appuser.email,
             logOperation: changelog.operation,
         })
         .from(userSq)
         .leftJoin(changelog, eq(changelog.logid, userSq.latestchangelogid))
-        .leftJoin(appuserSq, eq(appuserSq.userid, changelog.userid));
+        .leftJoin(appuser, eq(appuser.id, changelog.userid));
 
     // Reverse account list and cursors if previous page
     if (!isNext) {
