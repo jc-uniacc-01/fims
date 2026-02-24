@@ -1,8 +1,9 @@
 import { type Actions, error, fail } from '@sveltejs/kit';
 import { APIError } from 'better-auth';
 
-import { areYouHere, getAccountList, makeUserInfo } from '$lib/server/db-helpers';
+import { areYouHere, getAccountList, getAllRoles, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
+import type { FilterObject } from '$lib/types/filter';
 
 export async function load({ locals, parent, url }) {
     const { canViewAccounts } = await parent();
@@ -18,6 +19,17 @@ export async function load({ locals, parent, url }) {
     const newCursor = newCursorStr ? parseInt(newCursorStr, 10) : undefined;
     const isNext = isNextStr ? parseInt(isNextStr, 10) === 1 : true;
 
+    // Filter
+
+    const filters: FilterObject[] = [
+        {
+            name: 'Role',
+            filter: 'role',
+            opts: await getAllRoles(),
+            selectedOpts: url.searchParams.getAll('role'),
+        },
+    ];
+
     // Get account list
     const { accountList, prevCursor, nextCursor, hasPrev, hasNext } = await getAccountList(
         locals.user.id,
@@ -32,6 +44,7 @@ export async function load({ locals, parent, url }) {
         nextCursor,
         hasPrev,
         hasNext,
+        filters,
     };
 }
 

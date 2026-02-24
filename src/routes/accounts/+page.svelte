@@ -10,7 +10,7 @@
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
     const { data, form } = $props();
-    const { accountList, prevCursor, nextCursor, hasPrev, hasNext } = $derived(data);
+    const { accountList, prevCursor, nextCursor, hasPrev, hasNext, filters } = $derived(data);
 
     let isMakingAccount = $state(false);
     let willMake = $state(false);
@@ -70,9 +70,11 @@
     <div class="mt-36 flex justify-center">
         <div class="flex w-315 items-center 2xl:w-432">
             <span class="mr-1">Show:</span>
-            <div class="mr-1">
-                <FilterButton field="Role" opts={userRoles} />
-            </div>
+            {#each filters as { name, filter, opts, selectedOpts } (name)}
+                <div class="mr-1">
+                    <FilterButton {name} {filter} {opts} {selectedOpts} bind:isFiltering={isSaving} />
+                </div>
+            {/each}
         </div>
     </div>
 
