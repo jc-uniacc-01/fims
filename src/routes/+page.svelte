@@ -1,12 +1,20 @@
 <script lang="ts">
+    import { enhance } from '$app/forms';
     import Icon from '@iconify/svelte';
     import FacultyRecordRow from './(ui)/FacultyRecordRow.svelte';
     import Button from '$lib/ui/Button.svelte';
+    import DeleteConfirmation from '$lib/ui/DeleteConfirmation.svelte';
+    import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
+
     type FacultyRecord = { facultyid: number };
     const { data } = $props();
     const { facultyRecordList, canViewChangeLogs } = $derived(data);
 
     let selectedIds = $state<number[]>([]);
+
+    let isModalOpen = $state(false);
+    let isLoading = $state(false);
+    let deleteForm: HTMLFormElement | null = $state(null);
 
     function toggleSelection(id: number) {
         if (selectedIds.includes(id)) selectedIds = selectedIds.filter((i) => i !== id);
@@ -33,7 +41,7 @@
                     <Button onclick={deselectAll} color="red">Deselect Selection</Button>
                 </div>
                 <div>
-                    <Button type="submit" color="red">
+                    <Button onclick={() => (isModalOpen = true)} color="red">
                         <Icon icon="tabler:trash" class="mr-2 h-6 w-6" />
                         <span>Delete ({selectedIds.length})</span>
                     </Button>
@@ -80,3 +88,38 @@
         {/each}
     </div>
 </div>
+
+{#if isLoading}
+    <LoadingScreen />
+{/if}
+
+{#if isModalOpen && !isLoading}
+    <form
+        bind:this={deleteForm}
+        method="POST"
+        action="?/delete"
+        use:enhance={() => {
+            isModalOpen = false;
+            isLoading = true;
+
+            return ({ result, update }) => {
+                isLoading = false;
+
+                if (result.type === 'success') {
+                    selectedIds = [];
+                    update();
+                }
+            };
+        }}
+    >
+        <input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
+
+        <DeleteConfirmation
+            text={`Are you sure you want to delete ${selectedIds.length} faculty record(s)?`}
+            onCancel={() => (isModalOpen = false)}
+            onDelete={() => {
+                if (deleteForm) deleteForm.requestSubmit();
+            }}
+        />
+    </form>
+{/if}

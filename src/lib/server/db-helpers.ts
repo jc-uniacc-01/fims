@@ -1,8 +1,20 @@
-import { and, desc, eq, ne } from 'drizzle-orm';
+import { and, desc, eq, inArray, ne } from 'drizzle-orm';
 
 import { db } from './db';
 
-import { adminposition, appuser, changelog, faculty, facultyadminposition, facultyrank, facultysemester, rank, role, semester, userinfo } from './db/schema';
+import {
+    adminposition,
+    appuser,
+    changelog,
+    faculty,
+    facultyadminposition,
+    facultyrank,
+    facultysemester,
+    rank,
+    role,
+    semester,
+    userinfo,
+} from './db/schema';
 
 export async function logChange(makerid: string, tupleid: number, operation: string) {
     const logids = await db
@@ -149,4 +161,11 @@ export async function areYouHere(email: string) {
     const you = await db.select().from(appuser).where(eq(appuser.email, email));
 
     return you.length !== 0;
+}
+
+export async function deleteFacultyRecords(ids: number[]) {
+    if (!ids || ids.length === 0) return { success: false };
+    await db.delete(faculty).where(inArray(faculty.facultyid, ids));
+
+    return { success: true };
 }
