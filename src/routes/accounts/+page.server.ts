@@ -3,7 +3,8 @@ import { APIError } from 'better-auth';
 
 import { areYouHere, getAccountList, getAllRoles, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
-import type { FilterObject } from '$lib/types/filter';
+import type { FilterObject, FilterColumn } from '$lib/types/filter';
+import { userinfo } from '$lib/server/db/schema';
 
 export async function load({ locals, parent, url }) {
     const { canViewAccounts } = await parent();
@@ -30,9 +31,17 @@ export async function load({ locals, parent, url }) {
         },
     ];
 
+    const filterMap: FilterColumn[] = [
+        {
+            obj: filters[0],
+            column: userinfo.role,
+        },
+    ];
+
     // Get account list
     const { accountList, prevCursor, nextCursor, hasPrev, hasNext } = await getAccountList(
         locals.user.id,
+        filterMap,
         newCursor,
         isNext,
         !newCursorStr && !isNextStr,
