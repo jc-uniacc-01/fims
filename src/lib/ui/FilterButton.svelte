@@ -8,7 +8,7 @@
         isFiltering: boolean;
     }
 
-    // eslint-disable-next-line prefer-const -- bindable variable changes state
+    // eslint-disable-next-line prefer-const, no-useless-assignment -- bindable variable changes state and triggers false-positive no-useless-assignment
     let { name, filter, opts, selectedOpts, isFiltering = $bindable() }: Props = $props();
 
     let isFilterOpen = $state(false);
@@ -25,7 +25,9 @@
         url.searchParams.delete(filter);
 
         // Upload filters
-        selectedOpts.forEach(opt => { url.searchParams.append(filter, opt) });
+        selectedOpts.forEach((opt) => {
+            url.searchParams.append(filter, opt);
+        });
 
         await goto(url.toString());
         isFiltering = false;
@@ -63,7 +65,7 @@
                     type="button"
                     class="flex w-full rounded-sm p-3 hover:bg-[#e9e9e9]"
                     onclick={async () => {
-                        selectedOpts = selectedOpts.filter(elem => elem !== opt);
+                        selectedOpts = selectedOpts.filter((elem) => elem !== opt);
                         await filterOpts();
                     }}
                 >

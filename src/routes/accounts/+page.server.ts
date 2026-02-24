@@ -3,7 +3,7 @@ import { APIError } from 'better-auth';
 
 import { areYouHere, getAccountList, getAllRoles, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
-import type { FilterObject, FilterColumn } from '$lib/types/filter';
+import type { FilterColumn, FilterObject } from '$lib/types/filter';
 import { userinfo } from '$lib/server/db/schema';
 
 export async function load({ locals, parent, url }) {

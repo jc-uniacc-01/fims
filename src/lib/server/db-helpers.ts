@@ -1,5 +1,7 @@
 import { and, asc, desc, eq, gt, ilike, inArray, lt, ne, or, type SQL, type SQLWrapper } from 'drizzle-orm';
 
+import type { FilterColumn } from '$lib/types/filter';
+
 import { db } from './db';
 
 import {
@@ -15,7 +17,6 @@ import {
     semester,
     userinfo,
 } from './db/schema';
-import type { FilterColumn } from '$lib/types/filter';
 
 export async function logChange(makerid: string, tupleid: number, operation: string) {
     const logids = await db
@@ -151,13 +152,11 @@ export async function getAccountList(
     filterMap.forEach(({ obj, column }) => {
         const { selectedOpts } = obj;
         const sameColumnQueries: SQLWrapper[] = [];
-        selectedOpts.forEach(opt => {
+        selectedOpts.forEach((opt) => {
             sameColumnQueries.push(eq(column, opt));
         });
 
-        if (sameColumnQueries.length) {
-            filterQueries.push(or(...sameColumnQueries));
-        }
+        if (sameColumnQueries.length) filterQueries.push(or(...sameColumnQueries));
     });
 
     // Get accounts from database
@@ -253,10 +252,10 @@ export async function getAccountList(
 export async function getAllRoles() {
     const uniqueRows = await db
         .select({
-            role: role.role
+            role: role.role,
         })
         .from(role);
-    
+
     const uniqueValues = uniqueRows.map(({ role }) => role);
     return uniqueValues;
 }

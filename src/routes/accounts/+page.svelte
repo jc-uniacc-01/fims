@@ -72,7 +72,13 @@
             <span class="mr-1">Show:</span>
             {#each filters as { name, filter, opts, selectedOpts } (name)}
                 <div class="mr-1">
-                    <FilterButton {name} {filter} {opts} {selectedOpts} bind:isFiltering={isSaving} />
+                    <FilterButton
+                        {name}
+                        {filter}
+                        {opts}
+                        {selectedOpts}
+                        bind:isFiltering={isSaving}
+                    />
                 </div>
             {/each}
         </div>
