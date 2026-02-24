@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, ilike, inArray, lt, ne, or } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, ilike, inArray, lt, ne, or, type SQL, type SQLWrapper } from 'drizzle-orm';
 
 import { db } from './db';
 
@@ -15,6 +15,7 @@ import {
     semester,
     userinfo,
 } from './db/schema';
+import type { FilterColumn } from '$lib/types/filter';
 
 export async function logChange(makerid: string, tupleid: number, operation: string) {
     const logids = await db
@@ -140,10 +141,25 @@ const pageSize = 50;
 
 export async function getAccountList(
     currentUserId: string,
+    filterMap: FilterColumn[],
     cursor?: number,
     isNext: boolean = true,
     initLoad: boolean = false,
 ) {
+    // Process filter queries
+    const filterQueries: Array<SQL | undefined> = [];
+    filterMap.forEach(({ obj, column }) => {
+        const { selectedOpts } = obj;
+        const sameColumnQueries: SQLWrapper[] = [];
+        selectedOpts.forEach(opt => {
+            sameColumnQueries.push(eq(column, opt));
+        });
+
+        if (sameColumnQueries.length) {
+            filterQueries.push(or(...sameColumnQueries));
+        }
+    });
+
     // Get accounts from database
     const userCountSq = await db
         .select({
@@ -164,6 +180,7 @@ export async function getAccountList(
                         : lt(userinfo.userinfoid, cursor)
                     : // eslint-disable-next-line no-undefined -- can't use null in Drizzle WHERE queries
                       undefined,
+                and(...filterQueries),
             ),
         )
         .orderBy(isNext ? asc(userinfo.userinfoid) : desc(userinfo.userinfoid))
