@@ -507,12 +507,8 @@ export const facultyRelations = relations(faculty, ({ many, one }) => ({
     facultyeducationalattainments: many(facultyeducationalattainment),
     facultyfieldofinterests: many(facultyfieldofinterest),
     facultyranks: many(facultyrank),
-    facultyemails: many(facultyemail),
     facultyhomeaddresses: many(facultyhomeaddress),
     facultysemesters: many(facultysemester),
-    facultyteachings: many(facultyteaching),
-    facultyresearches: many(facultyresearch),
-    facultyextensions: many(facultyextension),
     changelog: one(changelog, {
         fields: [faculty.latestchangelogid],
         references: [changelog.logid],
