@@ -291,6 +291,31 @@ export const facultycommmembership = pgTable(
     ],
 )
 
+export const facultyadminwork = pgTable(
+    'facultyadminwork',
+    {
+        facultyadminworkid: serial().primaryKey().notNull(),
+        facultysemesterid: integer(),
+        natureofwork: varchar({ length: 200 }).notNull(),
+        officeid: integer(),
+        startdate: date().notNull(),
+        enddate: date().notNull(),
+        administrativeloadcredit: numeric({ precision: 5, scale: 2 }).notNull(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.facultysemesterid],
+            foreignColumns: [facultysemester.facultysemesterid],
+            name: 'facultyadminwork_facultysemesterid_fkey',
+        }).onDelete('set null'),
+        foreignKey({
+            columns: [table.officeid],
+            foreignColumns: [office.officeid],
+            name: 'facultyadminwork_officeid_fkey',
+        }),
+    ],
+);
+
 export const course = pgTable('course', {
     courseid: serial().primaryKey().notNull(),
     coursename: varchar({ length: 100 }).notNull(),
