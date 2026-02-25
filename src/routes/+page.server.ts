@@ -15,18 +15,21 @@ export async function load({ url }) {
     };
 }
 export const actions = {
-    async delete({ request }) {
+    async delete({ locals, request }) {
         const formData = await request.formData();
         const idsString = formData.get('ids') as string;
 
-        if (!idsString) return fail(400, { message: 'No IDs provided.' });
+        if (!idsString) return fail(400, { error: 'No IDs provided.' });
 
         try {
             const ids = JSON.parse(idsString);
-            await deleteFacultyRecords(ids);
-            return { success: true };
+            const response = await deleteFacultyRecords(locals.user.id, ids);
+            return {
+                ...response,
+                message: response.success ? 'Deleted records.' : 'Failed to delete records.',
+            };
         } catch {
-            return fail(500, { message: 'Failed to delete records.' });
+            return fail(500, { error: 'Failed to delete records.' });
         }
     },
 };

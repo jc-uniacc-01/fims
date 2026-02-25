@@ -2,26 +2,20 @@
     import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
+    import type { AccountDTO } from '$lib/server/account-list-helpers';
     import RedButton from '$lib/ui/RedButton.svelte';
     import Icon from '@iconify/svelte';
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
     import DeleteConfirmation from '$lib/ui/DeleteConfirmation.svelte';
     import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
 
-    interface AccountDTO {
-        email: string | null;
-        role: string | null;
-        userid: string | null;
-        logTimestamp: Date | null;
-        logOperation: string | null;
-        logMaker: string | null;
-    }
-
     interface Props {
         account: AccountDTO;
+        isSelected: boolean;
+        onToggle: () => void;
     }
 
-    const { account }: Props = $props();
+    const { account, isSelected, onToggle }: Props = $props();
     const { email, role, userid, logTimestamp, logOperation, logMaker }: AccountDTO =
         $derived(account);
 
@@ -37,12 +31,17 @@
     let deleteForm: HTMLFormElement | null = $state(null);
 </script>
 
-{#if userid && email}
+{#if email}
     <div
         class="flex justify-center [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:bg-white [&>div]:px-6"
     >
         <div class="w-25 justify-center">
-            <input type="checkbox" class="h-5 w-5 rounded-sm checked:bg-fims-gray focus:ring-0" />
+            <input
+                type="checkbox"
+                checked={isSelected}
+                onchange={onToggle}
+                class="h-5 w-5 rounded-sm checked:bg-fims-gray focus:ring-0"
+            />
         </div>
         <div class="w-66 2xl:w-132"><span>{email}</span></div>
         <div class="w-50 justify-center">

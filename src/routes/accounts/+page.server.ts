@@ -1,7 +1,7 @@
 import { type Actions, error, fail } from '@sveltejs/kit';
 import { APIError } from 'better-auth';
 
-import { areYouHere, makeUserInfo } from '$lib/server/db-helpers';
+import { areYouHere, deleteUsersInfo, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
 import type { FilterColumn, FilterObject } from '$lib/types/filter';
 import {
@@ -116,12 +116,15 @@ export const actions = {
         };
     },
 
-    async deleteAccount({ request }) {
+    async deleteAccount({ locals, request }) {
         const data = await request.formData();
         const userid = data.get('userid') as string;
 
         // Validate input
         if (!userid) return fail(400, { error: 'Failed to delete account.' });
+
+        // Delete user info
+        await deleteUsersInfo(locals.user.id, [userid]);
 
         // Delete!
         const response = await auth.api.removeUser({
@@ -138,5 +141,43 @@ export const actions = {
             ...response,
             message: response.success ? 'Deleted account.' : 'Failed to delete account.',
         };
+    },
+
+    async deleteAccounts({ locals, request }) {
+        const formData = await request.formData();
+        const useridsStr = formData.get('userids') as string;
+
+        // Validate input
+        if (!useridsStr) return fail(400, { error: 'No accounts selected.' });
+
+        try {
+            const userids: string[] = JSON.parse(useridsStr);
+
+            // Delete user info
+            await deleteUsersInfo(locals.user.id, userids);
+
+            // Delete!
+            let success = true;
+            userids.forEach(async (userid) => {
+                const { success: result } = await auth.api.removeUser({
+                    body: {
+                        userId: userid,
+                    },
+                    headers: request.headers,
+                });
+
+                success = result;
+            });
+
+            // Refresh account search view
+            await refreshAccountSearchView();
+
+            return {
+                success,
+                message: success ? 'Deleted accounts.' : 'Failed to delete accounts.',
+            };
+        } catch {
+            return fail(500, { error: 'Failed to delete accounts.' });
+        }
     },
 } satisfies Actions;

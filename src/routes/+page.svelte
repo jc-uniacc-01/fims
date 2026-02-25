@@ -8,7 +8,7 @@
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
 
     type FacultyRecord = { facultyid: number };
-    const { data } = $props();
+    const { data, form } = $props();
     const { facultyRecordList, canViewChangeLogs } = $derived(data);
 
     let selectedIds = $state<number[]>([]);
@@ -31,7 +31,34 @@
     }
 </script>
 
+{#if form?.error}
+    <div
+        class="fixed right-3 bottom-3 flex h-8 w-125 items-center rounded-lg border-2 border-fims-red bg-fims-red-100 px-4 py-6"
+    >
+        <Icon icon="tabler:alert-hexagon" class="h-6 w-6 text-fims-red" />
+        <p class="px-8">{form.error}</p>
+    </div>
+{/if}
+
 <br />
+
+{#if form?.message}
+    {#if form?.success}
+        <div
+            class="fixed right-3 bottom-3 flex h-8 w-125 items-center rounded-lg border-2 border-fims-green bg-fims-green-100 px-4 py-6"
+        >
+            <Icon icon="tabler:check" class="h-6 w-6 text-fims-green" />
+            <p class="px-8">{form.message}</p>
+        </div>
+    {:else}
+        <div
+            class="fixed right-3 bottom-3 flex h-8 w-125 items-center rounded-lg border-2 border-[#ceb676] bg-fims-beige px-4 py-6"
+        >
+            <Icon icon="tabler:alert-hexagon" class="h-6 w-6 text-[#ceb676]" />
+            <p class="px-8">{form.message}</p>
+        </div>
+    {/if}
+{/if}
 
 <div class="mx-auto mt-20 w-full max-w-4xl px-6">
     <form method="GET" action="/" class="flex items-center gap-4">
@@ -126,11 +153,9 @@
             isModalOpen = false;
             isLoading = true;
 
-            return async ({ result, update }) => {
-                if (result.type === 'success') {
-                    selectedIds = [];
-                    await update();
-                }
+            return async ({ update }) => {
+                selectedIds = [];
+                await update();
                 isLoading = false;
             };
         }}
