@@ -160,6 +160,22 @@ export const facultyrank = pgTable(
     ],
 );
 
+export const facultyhomeaddress = pgTable(
+    'facultyhomeaddress',
+    {
+        facultyhomeaddressid: serial().primaryKey().notNull(),
+        facultyid: integer(),
+        homeaddress: text().notNull(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.facultyid],
+            foreignColumns: [faculty.facultyid],
+            name: 'facultyhomeaddress_facultyid_fkey',
+        }).onDelete('cascade'),
+    ],
+);
+
 export const facultyemail = pgTable(
     'facultyemail',
     {
@@ -220,33 +236,6 @@ export const adminposition = pgTable('adminposition', {
     name: varchar({ length: 100 }).notNull(),
 });
 
-export const course = pgTable('course', {
-    courseid: serial().primaryKey().notNull(),
-    coursename: varchar({ length: 100 }).notNull(),
-    units: integer().notNull(),
-});
-
-export const research = pgTable('research', {
-    researchid: serial().primaryKey().notNull(),
-    title: varchar({ length: 200 }).notNull(),
-});
-
-export const facultyhomeaddress = pgTable(
-    'facultyhomeaddress',
-    {
-        facultyhomeaddressid: serial().primaryKey().notNull(),
-        facultyid: integer(),
-        homeaddress: text().notNull(),
-    },
-    (table) => [
-        foreignKey({
-            columns: [table.facultyid],
-            foreignColumns: [faculty.facultyid],
-            name: 'facultyhomeaddress_facultyid_fkey',
-        }).onDelete('cascade'),
-    ],
-);
-
 export const office = pgTable('office', {
     officeid: serial().primaryKey().notNull(),
     name: varchar({ length: 100 }).notNull(),
@@ -282,6 +271,12 @@ export const facultyadminposition = pgTable(
     ],
 );
 
+export const course = pgTable('course', {
+    courseid: serial().primaryKey().notNull(),
+    coursename: varchar({ length: 100 }).notNull(),
+    units: integer().notNull(),
+});
+
 export const facultyteaching = pgTable(
     'facultyteaching',
     {
@@ -312,6 +307,11 @@ export const facultyteaching = pgTable(
         }),
     ],
 );
+
+export const research = pgTable('research', {
+    researchid: serial().primaryKey().notNull(),
+    title: varchar({ length: 200 }).notNull(),
+});
 
 export const facultyresearch = pgTable(
     'facultyresearch',
@@ -631,6 +631,40 @@ export const accountSearchView = pgMaterializedView('account_search_view').as((q
     const view = qb
         .select({
             id: appuser.id,
+            searchcontent: searchcontentQuery.as('search_content'),
+        })
+        .from(appuser)
+        .leftJoin(userinfo, eq(userinfo.userid, appuser.id))
+        .leftJoin(changelogSq, eq(changelogSq.logid, userinfo.latestchangelogid));
+
+    index('account_search_idx').using('gin', sql`${searchcontentQuery} gin_trgm_ops`);
+
+    return view;
+});
+
+export const facultyRecordSearchView = pgMaterializedView('faculty_record_search_view').as((qb) => {
+    const changelogSq = qb
+        .select({
+            logid: changelog.logid,
+            timestamp: changelog.timestamp,
+            maker: appuser.email,
+            operation: changelog.operation,
+        })
+        .from(changelog)
+        .leftJoin(appuser, eq(appuser.id, changelog.userid))
+        .as('changelog_sq');
+
+    const searchcontentQuery = sql<string>`
+            coalesce(${appuser.email}, '')
+            || ' ' || coalesce(${userinfo.role}, '')
+            || ' ' || coalesce(${changelogSq.timestamp}::text, '')
+            || ' ' || coalesce(${changelogSq.maker}, '')
+            || ' ' || coalesce(${changelogSq.operation}, '')
+        `;
+
+    const view = qb
+        .select({
+            id: faculty.facultyid,
             searchcontent: searchcontentQuery.as('search_content'),
         })
         .from(appuser)
