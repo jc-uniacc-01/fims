@@ -159,14 +159,14 @@ export const actions = {
             // Delete!
             let success = true;
             userids.forEach(async (userid) => {
-                const response = await auth.api.removeUser({
+                const { success: result } = await auth.api.removeUser({
                     body: {
                         userId: userid,
                     },
                     headers: request.headers,
                 });
 
-                success = response.success;
+                success = result;
             });
 
             // Refresh account search view
