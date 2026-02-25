@@ -347,6 +347,13 @@ export const facultycourse = pgTable(
     ],
 );
 
+export const student = pgTable('student', {
+    studentnumber: serial().primaryKey().notNull(),
+    lastname: varchar({ length: 100 }).notNull(),
+    middlename: varchar({ length: 100 }).notNull(),
+    firstname: varchar({ length: 100 }).notNull(),
+});
+
 export const research = pgTable('research', {
     researchid: serial().primaryKey().notNull(),
     title: varchar({ length: 200 }).notNull(),
