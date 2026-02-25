@@ -580,8 +580,6 @@ export const facultyemailRelations = relations(facultyemail, ({ one }) => ({
 
 export const semesterRelations = relations(semester, ({ many }) => ({
     facultysemesters: many(facultysemester),
-    facultyteachings: many(facultyteaching),
-    facultyresearches: many(facultyresearch),
 }));
 
 export const facultysemesterRelations = relations(facultysemester, ({ one }) => ({
