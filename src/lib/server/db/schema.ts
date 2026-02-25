@@ -430,6 +430,27 @@ export const facultyextension = pgTable(
     ],
 );
 
+export const facultystudyload = pgTable(
+    'facultystudyload',
+    {
+        facultystudyloadid: serial().primaryKey().notNull(),
+        facultysemesterid: integer(),
+        degreeprogram: varchar({ length: 200 }).notNull(),
+        university: varchar({ length: 150 }).notNull(),
+        studyloadunits: numeric({ precision: 5, scale: 2 }).notNull(),
+        onfulltimeleavewithpay: boolean().notNull(),
+        isfacultyfellowshiprecipient: boolean().notNull(),
+        studyloadcredit: numeric({ precision: 5, scale: 2 }).notNull(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.facultysemesterid],
+            foreignColumns: [facultysemester.facultysemesterid],
+            name: 'facultystudyload_facultysemesterid_fkey',
+        }).onDelete('set null'),
+    ],
+);
+
 export const role = pgTable('role', {
     role: varchar({ length: 50 }).primaryKey().notNull(),
     canaddfaculty: boolean().notNull(),
