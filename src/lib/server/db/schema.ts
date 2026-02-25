@@ -685,13 +685,9 @@ export const researchRelations = relations(research, ({ many }) => ({
 }));
 
 export const facultyresearchRelations = relations(facultyresearch, ({ one }) => ({
-    faculty: one(faculty, {
-        fields: [facultyresearch.facultyid],
-        references: [faculty.facultyid],
-    }),
-    semester: one(semester, {
-        fields: [facultyresearch.acadsemesterid],
-        references: [semester.acadsemesterid],
+    facultysemester: one(facultysemester, {
+        fields: [facultyresearch.facultysemesterid],
+        references: [facultysemester.facultysemesterid],
     }),
     research: one(research, {
         fields: [facultyresearch.researchid],
