@@ -36,6 +36,11 @@
 
     let selectedIds: string[] = $state([]);
 
+    function toggleSelection(id: string) {
+        if (selectedIds.includes(id)) selectedIds = selectedIds.filter((i) => i !== id);
+        else selectedIds = [...selectedIds, id];
+    }
+
     function selectAll() {
         selectedIds = accountList.map(({ userid }) => userid);
     }
@@ -159,7 +164,11 @@
 
         <!-- Rows -->
         {#each accountList as account (account.userid)}
-            <AccountRow {account} />
+            <AccountRow
+                {account}
+                isSelected={selectedIds.includes(account.userid)}
+                onToggle={() => toggleSelection(account.userid)}
+            />
         {/each}
 
         <!-- Account Creation Form -->

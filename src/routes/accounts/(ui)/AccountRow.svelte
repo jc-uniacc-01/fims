@@ -11,9 +11,11 @@
 
     interface Props {
         account: AccountDTO;
+        isSelected: boolean;
+        onToggle: () => void;
     }
 
-    const { account }: Props = $props();
+    const { account, isSelected, onToggle }: Props = $props();
     const { email, role, userid, logTimestamp, logOperation, logMaker }: AccountDTO =
         $derived(account);
 
@@ -34,7 +36,12 @@
         class="flex justify-center [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:bg-white [&>div]:px-6"
     >
         <div class="w-25 justify-center">
-            <input type="checkbox" class="h-5 w-5 rounded-sm checked:bg-fims-gray focus:ring-0" />
+            <input
+                type="checkbox"
+                checked={isSelected}
+                onchange={onToggle}
+                class="h-5 w-5 rounded-sm checked:bg-fims-gray focus:ring-0"
+            />
         </div>
         <div class="w-66 2xl:w-132"><span>{email}</span></div>
         <div class="w-50 justify-center">
