@@ -15,7 +15,7 @@ setup('authenticate it', async ({ page }) => {
   const emailInput = page.getByRole('textbox', { name: 'Email' });
   await expect(emailInput).toBeEmpty();
   await expect(emailInput).toBeEditable();
-  await emailInput.fill('it@up.edu.ph');
+  await emailInput.fill('testacc@up.edu.ph');
 
   // Password
   const pwInput = await page.getByRole('textbox', { name: 'Password' });

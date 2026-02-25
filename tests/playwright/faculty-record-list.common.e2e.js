@@ -28,10 +28,15 @@ test.describe('view faculty records as admin', async () => {
     await expect(page).toHaveURL('/');
 
     // Check faculty records by checking table headers and a dummy row
+    /* see account-list.e2e
     facultyRecordTable.forEach(async val => {
       const cell = await page.getByText(val, { exact: true })
       await expect(cell).toBeVisible();
     });
+    */
+    for (let field of facultyRecordTable) {
+      await expect(page.getByText(field, {exact:true})).toBeVisible()
+    }
   });
 });
 
@@ -44,10 +49,15 @@ test.describe('view faculty records as it', async () => {
     await expect(page).toHaveURL('/');
 
     // Check faculty records by checking table headers and a dummy row
+    /* see account-list.e2e
     facultyRecordTable.forEach(async val => {
       const cell = await page.getByText(val, { exact: true });
       await expect(cell).toBeVisible();
     });
+    */
+    for (let field of facultyRecordTable) {
+      await expect(page.getByText(field, {exact:true})).toBeVisible()
+    }
 
     // Check faculty record change logs by checking the table header alone
     const changeLogCell = await page.getByText('Change Logs', { exact: true });

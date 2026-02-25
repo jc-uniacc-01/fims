@@ -9,7 +9,7 @@ test.describe('log-out as admin', async () => {
     await expect(page).toHaveURL('/');
 
     // Log-out
-    (await page.getByRole('button', { name: 'Log-out' })).click();
+    await page.getByRole('button', { name: 'Log-out' }).click();
 
     // Redirect to /login since user logged-out
     await page.goto('/');
@@ -26,7 +26,7 @@ test.describe('log-out as it', async () => {
     await expect(page).toHaveURL('/');
 
     // Log-out
-    (await page.getByRole('button', { name: 'Log-out' })).click();
+    await page.getByRole('button', { name: 'Log-out' }).click();
 
     // Redirect to /login since user logged-out
     await page.goto('/');

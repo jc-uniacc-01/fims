@@ -19,11 +19,11 @@ test.describe('add account', async () => {
 
       // No input
 
-      // Save Account
-      await page.getByRole('button', { name: '+ Save Account', exact: true }).click();
+      // Save Account (gets the parent of the span)
+      await page.getByText("Save").locator("..").click();
 
       // Confirm
-      await page.getByRole('button', { name: 'Save', exact: true }).click();
+      await page.click("#save-confirm");
 
       // Check message
       await expect(page.getByText('Invalid email.')).toBeVisible();
@@ -40,18 +40,18 @@ test.describe('add account', async () => {
       // Input
 
       // Email
-      const emailInput = page.getByRole('textbox', { name: 'Email', exact: true });
+      const emailInput = page.getByRole('textbox', { name: 'Enter email here', exact: true });
       await expect(emailInput).toBeEmpty();
       await expect(emailInput).toBeEditable();
       await emailInput.fill('dummy@gmail.com');
 
       // No need to input password
 
-      // Save Account
-      await page.getByRole('button', { name: '+ Save Account', exact: true }).click();
+      // Save Account (gets the parent of the span)
+      await page.getByText("Save").locator("..").click();
 
-      // Confirm
-      await page.getByRole('button', { name: 'Save', exact: true }).click();
+      // Confirm (had to add in id due to multiple save buttons.)
+      await page.click("#save-confirm");
 
       // Check message
       const afterMessage = await page.getByText('Invalid email.');
@@ -69,21 +69,21 @@ test.describe('add account', async () => {
       // Input
 
       // Email
-      const emailInput = page.getByRole('textbox', { name: 'Email', exact: true });
+      const emailInput = page.getByRole('textbox', { name: 'Enter email here', exact: true });
       await expect(emailInput).toBeEmpty();
       await expect(emailInput).toBeEditable();
       await emailInput.fill(dummyEmail);
 
       // No need to input password
 
-      // Save Account
-      await page.getByRole('button', { name: '+ Save Account', exact: true }).click();
+      // Save Account (gets the parent of the span)
+      await page.getByText("Save").locator("..").click();
 
-      // Confirm
-      await page.getByRole('button', { name: 'Save', exact: true }).click();
+      // Confirm (had to add in id due to multiple save buttons.)
+      await page.click("#save-confirm");
 
       // Check message
-      const afterMessage = await page.getByText('Invalid password.');
+      const afterMessage = page.getByText('Invalid password.');
       await expect(afterMessage).toBeVisible();
     });
   });
@@ -99,22 +99,22 @@ test.describe('add account', async () => {
     // Input
 
     // Email
-    const emailInput = page.getByRole('textbox', { name: 'Email', exact: true });
+    const emailInput = page.getByRole('textbox', { name: 'Enter email here', exact: true });
     await expect(emailInput).toBeEmpty();
     await expect(emailInput).toBeEditable();
     await emailInput.fill(dummyEmail);
 
     // Password
-    const pwInput = await page.getByRole('textbox', { name: 'Password', exact: true });
+    const pwInput = await page.getByRole('textbox', { name: 'Set initial password', exact: true });
     await expect(pwInput).toBeEmpty();
     await expect(pwInput).toBeEditable();
     await pwInput.fill(dummyPw);
 
-    // Save Account
-    await page.getByRole('button', { name: '+ Save Account', exact: true }).click();
+    // Save Account (gets the parent of the span)
+    await page.getByText("Save").locator("..").click();
 
     // Don't confirm
-    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await page.click("#save-cancel")
 
     // The new email should not be visible
     await expect(page.getByText(dummyEmail)).not.toBeVisible();
@@ -133,22 +133,22 @@ test.describe('add account', async () => {
     // Input
 
     // Email
-    const emailInput = page.getByRole('textbox', { name: 'Email', exact: true });
+    const emailInput = page.getByRole('textbox', { name: 'Enter email here', exact: true });
     await expect(emailInput).toBeEmpty();
     await expect(emailInput).toBeEditable();
     await emailInput.fill(dummyEmail);
 
     // Password
-    const pwInput = await page.getByRole('textbox', { name: 'Password', exact: true });
+    const pwInput = await page.getByRole('textbox', { name: 'Set initial password', exact: true });
     await expect(pwInput).toBeEmpty();
     await expect(pwInput).toBeEditable();
     await pwInput.fill(dummyPw);
 
-    // Save Account
-    await page.getByRole('button', { name: '+ Save Account', exact: true }).click();
+    // Save Account (gets the parent of the span. if correct, there should only be one save button at the moment.)
+    await page.getByText("Save").locator("..").click();
 
     // Confirm
-    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.click("#save-confirm");
 
     // Check message
     const afterMakeMessage = await page.getByText('Created account.');

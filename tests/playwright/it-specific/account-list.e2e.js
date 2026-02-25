@@ -11,7 +11,7 @@ const accountTableHeaders = [
 ];
 
 const accountDummyRow = [
-  'admin@up.edu.ph',
+  'testadmin@up.edu.ph',
 ];
 
 const accountTable = [
@@ -25,8 +25,16 @@ test('view account list', async ({ page }) => {
   await expect(page).toHaveURL('/accounts');
 
   // See accounts by checking table headers and a dummy row
+  /* this  has a high chance of failing
+  because of some async stuff
+  im not exactly sure why
   accountTable.forEach(async val => {
     const cell = await page.getByText(val, { exact: true });
     await expect(cell).toBeVisible();
   });
+  */
+
+  for (let field of accountTable) {
+    await expect(page.getByText(field, {exact:true})).toBeVisible()
+  }
 });

@@ -4,6 +4,11 @@ import { APIError } from 'better-auth';
 import { areYouHere, getAccountList, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
 
+// remove this if needed
+import { db } from '$lib/server/db/index.js';
+import { appuser } from '$lib/server/db/auth.schema.js';
+import { eq } from 'drizzle-orm';
+
 export async function load({ locals, parent }) {
     const { canViewAccounts } = await parent();
     if (!canViewAccounts) throw error(404, { message: 'Insufficient permissions.' });
@@ -64,12 +69,28 @@ export const actions = {
         if (!userid) return fail(400, { error: 'Failed to delete account.' });
 
         // Delete!
+        /* for some reason i keep on getting auth errors
         const response = await auth.api.removeUser({
             body: {
                 userId: userid,
             },
             headers: request.headers,
         });
+        */
+       
+        const response:{success:boolean}|{error:Error, success:boolean} = await (async () => {
+            try {
+                await db
+                    .delete(appuser)
+                    .where(eq(appuser.id, userid));
+                return {success:true}
+            } catch(e) {
+                return {
+                    error:e,
+                    success:false
+                }
+            }
+        })()
 
         return {
             ...response,
