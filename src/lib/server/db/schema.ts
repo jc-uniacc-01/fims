@@ -696,9 +696,9 @@ export const facultyresearchRelations = relations(facultyresearch, ({ one }) => 
 }));
 
 export const facultyextensionRelations = relations(facultyextension, ({ one }) => ({
-    faculty: one(faculty, {
-        fields: [facultyextension.facultyid],
-        references: [faculty.facultyid],
+    facultysemester: one(facultysemester, {
+        fields: [facultyextension.facultysemesterid],
+        references: [facultysemester.facultysemesterid],
     }),
 }));
 
