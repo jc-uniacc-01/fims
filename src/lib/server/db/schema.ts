@@ -669,6 +669,17 @@ export const studentRelations = relations(student, ({ many }) => ({
     facultymentoring: many(facultymentoring),
 }));
 
+export const facultymentoringRelations = relations(facultymentoring, ({ one }) => ({
+    facultysemester: one(facultysemester, {
+        fields: [facultymentoring.facultysemesterid],
+        references: [facultysemester.facultysemesterid],
+    }),
+    student: one(student, {
+        fields: [facultymentoring.studentnumber],
+        references: [student.studentnumber],
+    }),
+}));
+
 export const researchRelations = relations(research, ({ many }) => ({
     facultyresearches: many(facultyresearch),
 }));
