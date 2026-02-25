@@ -517,6 +517,14 @@ export const statusRelations = relations(status, ({ many }) => ({
 }));
 
 export const facultyRelations = relations(faculty, ({ many, one }) => ({
+    changelog: one(changelog, {
+        fields: [faculty.latestchangelogid],
+        references: [changelog.logid],
+    }),
+    status: one(status, {
+        fields: [faculty.statusid],
+        references: [status.statusid],
+    }),
     facultycontactnumbers: many(facultycontactnumber),
     facultyeducationalattainments: many(facultyeducationalattainment),
     facultyfieldofinterests: many(facultyfieldofinterest),
@@ -524,10 +532,6 @@ export const facultyRelations = relations(faculty, ({ many, one }) => ({
     facultyhomeaddresses: many(facultyhomeaddress),
     facultyemails: many(facultyemail),
     facultysemesters: many(facultysemester),
-    changelog: one(changelog, {
-        fields: [faculty.latestchangelogid],
-        references: [changelog.logid],
-    }),
 }));
 
 export const facultycontactnumberRelations = relations(facultycontactnumber, ({ one }) => ({
