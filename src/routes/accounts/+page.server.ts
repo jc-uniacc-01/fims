@@ -142,4 +142,42 @@ export const actions = {
             message: response.success ? 'Deleted account.' : 'Failed to delete account.',
         };
     },
+
+    async deleteAccounts({ locals, request }) {
+        const formData = await request.formData();
+        const useridsStr = formData.get('userids') as string;
+
+        // Validate input
+        if (!useridsStr) return fail(400, { error: 'No accounts selected.' });
+
+        try {
+            const userids: string[] = JSON.parse(useridsStr);
+
+            // Delete user info
+            await deleteUsersInfo(locals.user.id, userids);
+
+            // Delete!
+            let success = true;
+            userids.forEach(async (userid) => {
+                const response = await auth.api.removeUser({
+                    body: {
+                        userId: userid,
+                    },
+                    headers: request.headers,
+                });
+
+                success = response.success;
+            });
+
+            // Refresh account search view
+            await refreshAccountSearchView();
+
+            return {
+                success,
+                message: success ? 'Deleted accounts.' : 'Failed to delete accounts.',
+            };
+        } catch {
+            return fail(500, { error: 'Failed to delete accounts.' });
+        }
+    },
 } satisfies Actions;
