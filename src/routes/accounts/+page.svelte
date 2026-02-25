@@ -11,7 +11,7 @@
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
     const { data, form } = $props();
-    const { accountList, prevCursor, nextCursor, hasPrev, hasNext, filters, userRoles } =
+    const { accountList, prevCursor, nextCursor, hasPrev, hasNext, filters, userRoles, searchTerm } =
         $derived(data);
 
     let isMakingAccount = $state(false);
@@ -69,7 +69,7 @@
     <!-- Search Bar -->
     <div class="mt-25 flex justify-center">
         <div class="flex w-315 items-center 2xl:w-432">
-            <SearchBar bind:isSearching={isSaving} />
+            <SearchBar bind:isSearching={isSaving} {searchTerm} />
         </div>
     </div>
 

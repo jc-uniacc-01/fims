@@ -41,6 +41,9 @@ export async function load({ locals, parent, url }) {
         },
     ];
 
+    // Search
+    const searchTerm = url.searchParams.get('search');
+
     // Get account list
     const { accountList, prevCursor, nextCursor, hasPrev, hasNext } = await getAccountList(
         locals.user.id,
@@ -58,6 +61,7 @@ export async function load({ locals, parent, url }) {
         hasNext,
         filters,
         userRoles,
+        searchTerm,
     };
 }
 

@@ -5,15 +5,17 @@
 
   interface Props {
     isSearching: boolean;
+    searchTerm: string | null;
   }
 
   // eslint-disable-next-line prefer-const, no-useless-assignment -- bindable variable changes state and triggers false-positive no-useless-assignment
-  let { isSearching = $bindable() }: Props = $props();
+  let { isSearching = $bindable(), searchTerm }: Props = $props();
 
-  let searchTerm = $state('');
   const searchParam = 'search';
 
   async function search() {
+    if (!searchTerm) return;
+  
     isSearching = true;
     const url = new URL(page.url);
 
