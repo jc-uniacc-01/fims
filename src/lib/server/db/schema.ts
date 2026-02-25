@@ -512,6 +512,10 @@ export const changelogRelations = relations(changelog, ({ one }) => ({
     }),
 }));
 
+export const statusRelations = relations(status, ({ many }) => ({
+    facultyMembers: many(faculty),
+}));
+
 export const facultyRelations = relations(faculty, ({ many, one }) => ({
     facultycontactnumbers: many(facultycontactnumber),
     facultyeducationalattainments: many(facultyeducationalattainment),
