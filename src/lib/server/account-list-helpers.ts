@@ -1,10 +1,11 @@
-import { and, asc, desc, eq, gt, lt, ne, or, type SQL, type SQLWrapper } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, ilike, lt, ne, or, sql, type SQL, type SQLWrapper } from 'drizzle-orm';
 
 import type { FilterColumn } from '$lib/types/filter';
 
 import { db } from './db';
 
 import {
+    accountSearchView,
     appuser,
     changelog,
     role,
@@ -15,11 +16,21 @@ const pageSize = 50;
 
 export async function getAccountList(
     currentUserId: string,
+    searchTerm: string | null,
     filterMap: FilterColumn[],
     cursor?: number,
     isNext: boolean = true,
     initLoad: boolean = false,
 ) {
+    // Search in search table all appusers affected
+    const searchSQ = await db
+        .select({
+            id: accountSearchView.id,
+        })
+        .from(accountSearchView)
+        .where(searchTerm ? ilike(accountSearchView.searchcontent, `%${searchTerm}%`) : undefined)
+        .as('search_sq');
+
     // Process filter queries
     const filterQueries: Array<SQL | undefined> = [];
     filterMap.forEach(({ obj, column }) => {
@@ -42,6 +53,7 @@ export async function getAccountList(
             latestchangelogid: userinfo.latestchangelogid,
         })
         .from(appuser)
+        .rightJoin(searchSQ, eq(searchSQ.id, appuser.id))
         .leftJoin(userinfo, eq(userinfo.userid, appuser.id))
         .where(
             and(

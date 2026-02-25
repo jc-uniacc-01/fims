@@ -47,6 +47,7 @@ export async function load({ locals, parent, url }) {
     // Get account list
     const { accountList, prevCursor, nextCursor, hasPrev, hasNext } = await getAccountList(
         locals.user.id,
+        searchTerm,
         filterMap,
         newCursor,
         isNext,
