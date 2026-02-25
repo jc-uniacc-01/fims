@@ -665,6 +665,10 @@ export const facultycourseRelations = relations(facultycourse, ({ one }) => ({
     }),
 }));
 
+export const studentRelations = relations(student, ({ many }) => ({
+    facultymentoring: many(facultymentoring),
+}));
+
 export const researchRelations = relations(research, ({ many }) => ({
     facultyresearches: many(facultyresearch),
 }));
