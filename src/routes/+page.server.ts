@@ -1,6 +1,7 @@
 import { fail } from '@sveltejs/kit';
 
-import { deleteFacultyRecords, getFacultyRecordList } from '$lib/server/db-helpers';
+import { deleteFacultyRecords } from '$lib/server/db-helpers';
+import { getFacultyRecordList } from '$lib/server/faculty-records-list-helpers';
 
 export async function load({ url }) {
     // Extract 'search' from the URL (e.g., localhost:5173/?search=Zach)
