@@ -639,6 +639,17 @@ export const facultycommmembershipRelations = relations(facultycommmembership, (
     }),
 }));
 
+export const facultyadminworkRelations = relations(facultyadminwork, ({ one }) => ({
+    facultysemester: one(facultysemester, {
+        fields: [facultyadminwork.facultysemesterid],
+        references: [facultysemester.facultysemesterid],
+    }),
+    office: one(office, {
+        fields: [facultyadminwork.officeid],
+        references: [office.officeid],
+    }),
+}));
+
 export const courseRelations = relations(course, ({ many }) => ({
     facultyteachings: many(facultyteaching),
 }));
