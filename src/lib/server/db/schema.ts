@@ -487,10 +487,18 @@ export const userinfo = pgTable(
     ],
 );
 
-export const facultycontactnumberRelations = relations(facultycontactnumber, ({ one }) => ({
+export const changelogRelations = relations(changelog, ({ one }) => ({
     faculty: one(faculty, {
-        fields: [facultycontactnumber.facultyid],
-        references: [faculty.facultyid],
+        fields: [changelog.logid],
+        references: [faculty.latestchangelogid],
+    }),
+    appuser: one(appuser, {
+        fields: [changelog.userid],
+        references: [appuser.id],
+    }),
+    userinfo: one(userinfo, {
+        fields: [changelog.logid],
+        references: [userinfo.latestchangelogid],
     }),
 }));
 
@@ -511,6 +519,13 @@ export const facultyRelations = relations(faculty, ({ many, one }) => ({
     }),
 }));
 
+export const facultycontactnumberRelations = relations(facultycontactnumber, ({ one }) => ({
+    faculty: one(faculty, {
+        fields: [facultycontactnumber.facultyid],
+        references: [faculty.facultyid],
+    }),
+}));
+
 export const facultyeducationalattainmentRelations = relations(
     facultyeducationalattainment,
     ({ one }) => ({
@@ -525,6 +540,10 @@ export const facultyeducationalattainmentRelations = relations(
     }),
 );
 
+export const fieldofinterestRelations = relations(fieldofinterest, ({ many }) => ({
+    facultyfieldofinterests: many(facultyfieldofinterest),
+}));
+
 export const facultyfieldofinterestRelations = relations(facultyfieldofinterest, ({ one }) => ({
     faculty: one(faculty, {
         fields: [facultyfieldofinterest.facultyid],
@@ -536,8 +555,8 @@ export const facultyfieldofinterestRelations = relations(facultyfieldofinterest,
     }),
 }));
 
-export const fieldofinterestRelations = relations(fieldofinterest, ({ many }) => ({
-    facultyfieldofinterests: many(facultyfieldofinterest),
+export const rankRelations = relations(rank, ({ many }) => ({
+    facultyranks: many(facultyrank),
 }));
 
 export const facultyrankRelations = relations(facultyrank, ({ one }) => ({
@@ -555,17 +574,6 @@ export const facultyrankRelations = relations(facultyrank, ({ one }) => ({
     }),
 }));
 
-export const facultyemailRelations = relations(facultyemail, ({ one }) => ({
-    faculty: one(faculty, {
-        fields: [facultyemail.facultyid],
-        references: [faculty.facultyid],
-    }),
-}));
-
-export const rankRelations = relations(rank, ({ many }) => ({
-    facultyranks: many(facultyrank),
-}));
-
 export const facultyhomeaddressRelations = relations(facultyhomeaddress, ({ one }) => ({
     faculty: one(faculty, {
         fields: [facultyhomeaddress.facultyid],
@@ -573,18 +581,10 @@ export const facultyhomeaddressRelations = relations(facultyhomeaddress, ({ one 
     }),
 }));
 
-export const facultyadminpositionRelations = relations(facultyadminposition, ({ one }) => ({
-    facultysemesters: one(facultysemester, {
-        fields: [facultyadminposition.facultysemesterid],
-        references: [facultysemester.facultysemesterid],
-    }),
-    adminposition: one(adminposition, {
-        fields: [facultyadminposition.adminpositionid],
-        references: [adminposition.adminpositionid],
-    }),
-    office: one(office, {
-        fields: [facultyadminposition.officeid],
-        references: [office.officeid],
+export const facultyemailRelations = relations(facultyemail, ({ one }) => ({
+    faculty: one(faculty, {
+        fields: [facultyemail.facultyid],
+        references: [faculty.facultyid],
     }),
 }));
 
@@ -617,6 +617,25 @@ export const adminpositionRelations = relations(adminposition, ({ many }) => ({
     facultyadminpositions: many(facultyadminposition),
 }));
 
+export const facultyadminpositionRelations = relations(facultyadminposition, ({ one }) => ({
+    facultysemesters: one(facultysemester, {
+        fields: [facultyadminposition.facultysemesterid],
+        references: [facultysemester.facultysemesterid],
+    }),
+    adminposition: one(adminposition, {
+        fields: [facultyadminposition.adminpositionid],
+        references: [adminposition.adminpositionid],
+    }),
+    office: one(office, {
+        fields: [facultyadminposition.officeid],
+        references: [office.officeid],
+    }),
+}));
+
+export const courseRelations = relations(course, ({ many }) => ({
+    facultyteachings: many(facultyteaching),
+}));
+
 export const facultyteachingRelations = relations(facultyteaching, ({ one }) => ({
     faculty: one(faculty, {
         fields: [facultyteaching.facultyid],
@@ -632,8 +651,8 @@ export const facultyteachingRelations = relations(facultyteaching, ({ one }) => 
     }),
 }));
 
-export const courseRelations = relations(course, ({ many }) => ({
-    facultyteachings: many(facultyteaching),
+export const researchRelations = relations(research, ({ many }) => ({
+    facultyresearches: many(facultyresearch),
 }));
 
 export const facultyresearchRelations = relations(facultyresearch, ({ one }) => ({
@@ -651,14 +670,17 @@ export const facultyresearchRelations = relations(facultyresearch, ({ one }) => 
     }),
 }));
 
-export const researchRelations = relations(research, ({ many }) => ({
-    facultyresearches: many(facultyresearch),
-}));
-
 export const facultyextensionRelations = relations(facultyextension, ({ one }) => ({
     faculty: one(faculty, {
         fields: [facultyextension.facultyid],
         references: [faculty.facultyid],
+    }),
+}));
+
+export const roleRelations = relations(role, ({ one }) => ({
+    userinfo: one(userinfo, {
+        fields: [role.role],
+        references: [userinfo.role],
     }),
 }));
 
@@ -674,28 +696,6 @@ export const userinfoRelations = relations(userinfo, ({ one }) => ({
     changelog: one(changelog, {
         fields: [userinfo.latestchangelogid],
         references: [changelog.logid],
-    }),
-}));
-
-export const roleRelations = relations(role, ({ one }) => ({
-    userinfo: one(userinfo, {
-        fields: [role.role],
-        references: [userinfo.role],
-    }),
-}));
-
-export const changelogRelations = relations(changelog, ({ one }) => ({
-    faculty: one(faculty, {
-        fields: [changelog.logid],
-        references: [faculty.latestchangelogid],
-    }),
-    user: one(appuser, {
-        fields: [changelog.userid],
-        references: [appuser.id],
-    }),
-    userinfo: one(userinfo, {
-        fields: [changelog.logid],
-        references: [userinfo.latestchangelogid],
     }),
 }));
 
