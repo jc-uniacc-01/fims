@@ -618,7 +618,7 @@ export const officeRelations = relations(office, ({ many }) => ({
 }));
 
 export const facultyadminpositionRelations = relations(facultyadminposition, ({ one }) => ({
-    facultysemesters: one(facultysemester, {
+    facultysemester: one(facultysemester, {
         fields: [facultyadminposition.facultysemesterid],
         references: [facultysemester.facultysemesterid],
     }),
