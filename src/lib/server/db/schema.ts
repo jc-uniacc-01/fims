@@ -622,10 +622,10 @@ export const accountSearchView = pgMaterializedView('account_search_view').as((q
 
     const searchcontentQuery = sql<string>`
             coalesce(${appuser.email}, '')
-            || coalesce(${userinfo.role}, '')
-            || coalesce(${changelogSq.timestamp}::text, '')
-            || coalesce(${changelogSq.maker}, '')
-            || coalesce(${changelogSq.operation}, '')
+            || ' ' || coalesce(${userinfo.role}, '')
+            || ' ' || coalesce(${changelogSq.timestamp}::text, '')
+            || ' ' || coalesce(${changelogSq.maker}, '')
+            || ' ' || coalesce(${changelogSq.operation}, '')
         `;
 
     const view = qb
