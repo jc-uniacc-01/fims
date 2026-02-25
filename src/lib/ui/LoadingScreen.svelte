@@ -1,5 +1,5 @@
 <div
-    class="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-[rgba(0,0,0,0.9)]"
+    class="fixed top-0 left-0 z-150 flex h-full w-full items-center justify-center bg-[rgba(0,0,0,0.9)]"
 >
     <div class="flex h-[90%] w-[90%] items-center justify-center rounded-2xl bg-fims-beige">
         <div
