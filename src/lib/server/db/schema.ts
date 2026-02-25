@@ -613,6 +613,10 @@ export const adminpositionRelations = relations(adminposition, ({ many }) => ({
     facultyadminpositions: many(facultyadminposition),
 }));
 
+export const officeRelations = relations(office, ({ many }) => ({
+    facultyadminpositions: many(facultyadminposition),
+}));
+
 export const facultyadminpositionRelations = relations(facultyadminposition, ({ one }) => ({
     facultysemesters: one(facultysemester, {
         fields: [facultyadminposition.facultysemesterid],
