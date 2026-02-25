@@ -32,7 +32,7 @@ export const changelog = pgTable(
         foreignKey({
             columns: [table.userid],
             foreignColumns: [appuser.id],
-            name: 'changelog_accountid_fkey',
+            name: 'changelog_userid_fkey',
         }).onDelete('set null'),
     ],
 );
