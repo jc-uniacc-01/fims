@@ -582,7 +582,7 @@ export const semesterRelations = relations(semester, ({ many }) => ({
     facultysemesters: many(facultysemester),
 }));
 
-export const facultysemesterRelations = relations(facultysemester, ({ one }) => ({
+export const facultysemesterRelations = relations(facultysemester, ({ many, one }) => ({
     faculty: one(faculty, {
         fields: [facultysemester.facultyid],
         references: [faculty.facultyid],
@@ -591,14 +591,22 @@ export const facultysemesterRelations = relations(facultysemester, ({ one }) => 
         fields: [facultysemester.acadsemesterid],
         references: [semester.acadsemesterid],
     }),
-    facultyrank: one(facultyrank, {
-        fields: [facultysemester.currentrankid],
-        references: [facultyrank.facultyrankid],
-    }),
     facultyeducationalattainment: one(facultyeducationalattainment, {
         fields: [facultysemester.currenthighesteducationalattainmentid],
         references: [facultyeducationalattainment.facultyeducationalattainmentid],
     }),
+    facultyrank: one(facultyrank, {
+        fields: [facultysemester.currentrankid],
+        references: [facultyrank.facultyrankid],
+    }),
+    facultyadminpositions: many(facultyadminposition),
+    facultycommmemberships: many(facultycommmembership),
+    facultyadminworks: many(facultyadminwork),
+    facultycourses: many(facultycourse),
+    facultymentorings: many(facultymentoring),
+    facultyresearches: many(facultyresearch),
+    facultyextensions: many(facultyextension),
+    facultystudyload: many(facultystudyload),
 }));
 
 export const adminpositionRelations = relations(adminposition, ({ many }) => ({
