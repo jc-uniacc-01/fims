@@ -23,8 +23,11 @@ export const actions = {
 
         try {
             const ids = JSON.parse(idsString);
-            await deleteFacultyRecords(locals.user.id, ids);
-            return { success: true };
+            const response = await deleteFacultyRecords(locals.user.id, ids);
+            return {
+                ...response,
+                message: response.success ? 'Deleted records.' : 'Failed to delete records.',
+            };
         } catch {
             return fail(500, { error: 'Failed to delete records.' });
         }
