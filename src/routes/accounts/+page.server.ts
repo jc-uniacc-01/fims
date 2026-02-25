@@ -3,8 +3,8 @@ import { APIError } from 'better-auth';
 
 import { areYouHere, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
-import { getAccountList, getAllRoles } from '$lib/server/account-list-helpers';
 import type { FilterColumn, FilterObject } from '$lib/types/filter';
+import { getAccountList, getAllRoles } from '$lib/server/account-list-helpers';
 import { userinfo } from '$lib/server/db/schema';
 
 export async function load({ locals, parent, url }) {

@@ -11,8 +11,16 @@
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
     const { data, form } = $props();
-    const { accountList, prevCursor, nextCursor, hasPrev, hasNext, filters, userRoles, searchTerm } =
-        $derived(data);
+    const {
+        accountList,
+        prevCursor,
+        nextCursor,
+        hasPrev,
+        hasNext,
+        filters,
+        userRoles,
+        searchTerm,
+    } = $derived(data);
 
     let isMakingAccount = $state(false);
     let willMake = $state(false);

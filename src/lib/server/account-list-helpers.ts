@@ -1,16 +1,10 @@
-import { and, asc, desc, eq, gt, ilike, lt, ne, or, sql, type SQL, type SQLWrapper } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, ilike, lt, ne, or, type SQL, type SQLWrapper } from 'drizzle-orm';
 
 import type { FilterColumn } from '$lib/types/filter';
 
 import { db } from './db';
 
-import {
-    accountSearchView,
-    appuser,
-    changelog,
-    role,
-    userinfo,
-} from './db/schema';
+import { accountSearchView, appuser, changelog, role, userinfo } from './db/schema';
 
 const pageSize = 50;
 
@@ -28,6 +22,7 @@ export async function getAccountList(
             id: accountSearchView.id,
         })
         .from(accountSearchView)
+        // eslint-disable-next-line no-undefined -- can't use null in Drizzle WHERE queries
         .where(searchTerm ? ilike(accountSearchView.searchcontent, `%${searchTerm}%`) : undefined)
         .as('search_sq');
 

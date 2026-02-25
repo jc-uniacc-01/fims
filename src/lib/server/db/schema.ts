@@ -608,20 +608,19 @@ export const changelogRelations = relations(changelog, ({ one }) => ({
     }),
 }));
 
-export const accountSearchView = pgMaterializedView('account_search_view')
-    .as((qb) => {
-        const changelogSq = qb
-            .select({
-                logid: changelog.logid, 
-                timestamp: changelog.timestamp,
-                maker: appuser.email,
-                operation: changelog.operation,
-            })
-            .from(changelog)
-            .leftJoin(appuser, eq(appuser.id, changelog.userid))
-            .as('changelog_sq');
+export const accountSearchView = pgMaterializedView('account_search_view').as((qb) => {
+    const changelogSq = qb
+        .select({
+            logid: changelog.logid,
+            timestamp: changelog.timestamp,
+            maker: appuser.email,
+            operation: changelog.operation,
+        })
+        .from(changelog)
+        .leftJoin(appuser, eq(appuser.id, changelog.userid))
+        .as('changelog_sq');
 
-        const searchcontentQuery = sql<string>`
+    const searchcontentQuery = sql<string>`
             coalesce(${appuser.email}, '')
             || coalesce(${userinfo.role}, '')
             || coalesce(${changelogSq.timestamp}::text, '')
@@ -629,16 +628,16 @@ export const accountSearchView = pgMaterializedView('account_search_view')
             || coalesce(${changelogSq.operation}, '')
         `;
 
-        const view = qb
-            .select({
-                id: appuser.id,
-                searchcontent: searchcontentQuery.as('search_content'),
-            })
-            .from(appuser)
-            .leftJoin(userinfo, eq(userinfo.userid, appuser.id))
-            .leftJoin(changelogSq, eq(changelogSq.logid, userinfo.latestchangelogid));
+    const view = qb
+        .select({
+            id: appuser.id,
+            searchcontent: searchcontentQuery.as('search_content'),
+        })
+        .from(appuser)
+        .leftJoin(userinfo, eq(userinfo.userid, appuser.id))
+        .leftJoin(changelogSq, eq(changelogSq.logid, userinfo.latestchangelogid));
 
-        index('account_search_idx').using('gin', sql`${searchcontentQuery} gin_trgm_ops`);
+    index('account_search_idx').using('gin', sql`${searchcontentQuery} gin_trgm_ops`);
 
-        return view;
-    });
+    return view;
+});
