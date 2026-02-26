@@ -1,4 +1,4 @@
-import { desc, eq, ne } from 'drizzle-orm';
+import { and, desc, eq, ilike, inArray, or } from 'drizzle-orm';
 
 import { db } from './db';
 
@@ -42,6 +42,8 @@ export async function makeUserInfo(makerid: string, id: string, role: string) {
         })
         .returning();
 
+    if (returnedIds.length === 0) return { success: false };
+
     // Log!
     const [{ userinfoid: tupleid }, _] = returnedIds;
 
@@ -53,6 +55,25 @@ export async function makeUserInfo(makerid: string, id: string, role: string) {
             latestchangelogid: logid,
         })
         .where(eq(userinfo.userinfoid, tupleid));
+
+    return { success: true };
+}
+
+export async function deleteUsersInfo(makerid: string, userids: string[]) {
+    if (!userids || userids.length === 0) return { success: false };
+
+    // Actual action
+    const returnedIds = await db
+        .delete(userinfo)
+        .where(inArray(userinfo.userid, userids))
+        .returning();
+
+    if (returnedIds.length === 0) return { success: false };
+
+    // Log!
+    returnedIds.forEach(async ({ userinfoid: tupleid }) => {
+        await logChange(makerid, tupleid, 'Deleted account.');
+    });
 
     return { success: true };
 }
@@ -69,14 +90,29 @@ export async function getPermissions(userRole: string) {
     return fetchedRole;
 }
 
-export async function getFacultyRecordList() {
-    const [currentSemester] = await db
+export async function getFacultyRecordList(searchQuery: string = '') {
+    // find the absolute latest semester
+    const [latestSemester] = await db
         .select({
             acadsemesterid: semester.acadsemesterid,
         })
         .from(semester)
-        .orderBy(desc(semester.academicyear))
+        .orderBy(desc(semester.academicyear), desc(semester.semester))
         .limit(1);
+
+    // fallback ID in case the semester table is completely empty
+    const latestSemesterId = latestSemester?.acadsemesterid ?? -1;
+
+    // 3. Define the Search Condition
+    // We search across First Name, Last Name, and Status
+    const searchCondition = searchQuery
+        ? or(
+              ilike(faculty.firstname, `%${searchQuery}%`),
+              ilike(faculty.lastname, `%${searchQuery}%`),
+              ilike(faculty.status, `%${searchQuery}%`),
+          )
+        : // eslint-disable-next-line no-undefined -- can't use null in Drizzle WHERE queries
+          undefined;
 
     const shownFields = await db
         .select({
@@ -90,10 +126,16 @@ export async function getFacultyRecordList() {
             logMaker: appuser.email,
             logOperation: changelog.operation,
         })
-        .from(rank)
-        .rightJoin(facultyrank, eq(facultyrank.rankid, rank.rankid))
-        .rightJoin(facultysemester, eq(facultysemester.currentrankid, facultyrank.facultyrankid))
-        .rightJoin(faculty, eq(faculty.facultyid, facultysemester.facultyid))
+        .from(faculty)
+        .leftJoin(
+            facultysemester,
+            and(
+                eq(facultysemester.facultyid, faculty.facultyid),
+                eq(facultysemester.acadsemesterid, latestSemesterId), // Match only the latest semester
+            ),
+        )
+        .leftJoin(facultyrank, eq(facultyrank.facultyrankid, facultysemester.currentrankid))
+        .leftJoin(rank, eq(rank.rankid, facultyrank.rankid))
         .leftJoin(
             facultyadminposition,
             eq(facultyadminposition.facultysemesterid, facultysemester.facultysemesterid),
@@ -104,46 +146,10 @@ export async function getFacultyRecordList() {
         )
         .leftJoin(changelog, eq(changelog.logid, faculty.latestchangelogid))
         .leftJoin(appuser, eq(appuser.id, changelog.userid))
-        .where(eq(facultysemester.acadsemesterid, currentSemester.acadsemesterid));
-
-    return shownFields;
-}
-
-export async function getAccountList(currentUserId: string) {
-    const userSq = db
-        .select({
-            userid: appuser.id,
-            email: appuser.email,
-            role: userinfo.role,
-            latestchangelogid: userinfo.latestchangelogid,
-        })
-        .from(appuser)
-        .leftJoin(userinfo, eq(userinfo.userid, appuser.id))
-        .where(ne(appuser.id, currentUserId))
-        .as('user_sq');
-
-    const changelogSq = db
-        .select({
-            logid: changelog.logid,
-            timestamp: changelog.timestamp,
-            maker: appuser.email,
-            operation: changelog.operation,
-        })
-        .from(changelog)
-        .leftJoin(appuser, eq(appuser.id, changelog.userid))
-        .as('changelog_sq');
-
-    const shownFields = await db
-        .select({
-            userid: userSq.userid,
-            email: userSq.email,
-            role: userSq.role,
-            logTimestamp: changelogSq.timestamp,
-            logMaker: changelogSq.maker,
-            logOperation: changelogSq.operation,
-        })
-        .from(userSq)
-        .leftJoin(changelogSq, eq(changelogSq.logid, userSq.latestchangelogid));
+        .where(
+            // 4. Combine the Semester check AND the Search condition
+            and(eq(facultysemester.acadsemesterid, latestSemester.acadsemesterid), searchCondition),
+        );
 
     return shownFields;
 }
@@ -152,4 +158,20 @@ export async function areYouHere(email: string) {
     const you = await db.select().from(appuser).where(eq(appuser.email, email));
 
     return you.length !== 0;
+}
+
+export async function deleteFacultyRecords(makerid: string, ids: number[]) {
+    if (!ids || ids.length === 0) return { success: false };
+
+    // Actual action
+    const returnedIds = await db.delete(faculty).where(inArray(faculty.facultyid, ids)).returning();
+
+    if (returnedIds.length === 0) return { success: false };
+
+    // Log!
+    returnedIds.forEach(async ({ facultyid: tupleid }) => {
+        await logChange(makerid, tupleid, 'Deleted account.');
+    });
+
+    return { success: true };
 }

@@ -1,14 +1,106 @@
 <script lang="ts">
+    import { enhance } from '$app/forms';
     import Icon from '@iconify/svelte';
     import FacultyRecordRow from './(ui)/FacultyRecordRow.svelte';
-    const { data } = $props();
+    import GreenButton from '$lib/ui/GreenButton.svelte';
+    import RedButton from '$lib/ui/RedButton.svelte';
+    import DeleteConfirmation from '$lib/ui/DeleteConfirmation.svelte';
+    import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
+
+    type FacultyRecord = { facultyid: number };
+    const { data, form } = $props();
     const { facultyRecordList, canViewChangeLogs } = $derived(data);
+
+    let selectedIds = $state<number[]>([]);
+
+    let isModalOpen = $state(false);
+    let isLoading = $state(false);
+    let deleteForm: HTMLFormElement | null = $state(null);
+
+    function toggleSelection(id: number) {
+        if (selectedIds.includes(id)) selectedIds = selectedIds.filter((i) => i !== id);
+        else selectedIds = [...selectedIds, id];
+    }
+
+    function selectAll() {
+        selectedIds = facultyRecordList.map((f: FacultyRecord) => f.facultyid);
+    }
+
+    function deselectAll() {
+        selectedIds = [];
+    }
 </script>
+
+{#if form?.error}
+    <div
+        class="fixed right-3 bottom-3 flex h-8 w-125 items-center rounded-lg border-2 border-fims-red bg-fims-red-100 px-4 py-6"
+    >
+        <Icon icon="tabler:alert-hexagon" class="h-6 w-6 text-fims-red" />
+        <p class="px-8">{form.error}</p>
+    </div>
+{/if}
 
 <br />
 
+{#if form?.message}
+    {#if form?.success}
+        <div
+            class="fixed right-3 bottom-3 flex h-8 w-125 items-center rounded-lg border-2 border-fims-green bg-fims-green-100 px-4 py-6"
+        >
+            <Icon icon="tabler:check" class="h-6 w-6 text-fims-green" />
+            <p class="px-8">{form.message}</p>
+        </div>
+    {:else}
+        <div
+            class="fixed right-3 bottom-3 flex h-8 w-125 items-center rounded-lg border-2 border-[#ceb676] bg-fims-beige px-4 py-6"
+        >
+            <Icon icon="tabler:alert-hexagon" class="h-6 w-6 text-[#ceb676]" />
+            <p class="px-8">{form.message}</p>
+        </div>
+    {/if}
+{/if}
+
+<div class="mx-auto mt-20 w-full max-w-4xl px-6">
+    <form method="GET" action="/" class="flex items-center gap-4">
+        <div class="relative w-full">
+            <input
+                type="text"
+                name="search"
+                value={data.searchTerm}
+                placeholder="Search faculty by name..."
+                class="h-12 w-full rounded-full border-2 border-fims-green bg-white px-6 py-2 outline-none focus:ring-2 focus:ring-fims-green"
+            />
+        </div>
+        <button
+            type="submit"
+            class="hover:bg-opacity-90 h-12 rounded-full bg-fims-green px-8 font-semibold text-white"
+        >
+            Search
+        </button>
+        {#if data.searchTerm}
+            <a href="/" class="font-medium text-fims-red underline">Clear</a>
+        {/if}
+    </form>
+</div>
+
 <div>
-    <div class="mt-60">
+    <div class="mt-15 flex justify-center">
+        <div class="flex h-20 w-315 items-end justify-between 2xl:w-432">
+            {#if selectedIds.length > 0}
+                <div class="flex gap-2">
+                    <GreenButton onclick={selectAll}>Select All</GreenButton>
+                    <RedButton onclick={deselectAll}>Deselect Selection</RedButton>
+                </div>
+                <div>
+                    <RedButton onclick={() => (isModalOpen = true)}>
+                        <Icon icon="tabler:trash" class="mr-2 h-6 w-6" />
+                        <span>Delete ({selectedIds.length})</span>
+                    </RedButton>
+                </div>
+            {/if}
+        </div>
+    </div>
+    <div class="mt-2.5">
         <!-- Faculty Record List Table -->
         <div
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-green [&>div]:px-6"
@@ -38,7 +130,44 @@
 
         <!-- Rows -->
         {#each facultyRecordList as facultyRecord (facultyRecord.facultyid)}
-            <FacultyRecordRow {facultyRecord} {canViewChangeLogs} />
+            <FacultyRecordRow
+                {facultyRecord}
+                {canViewChangeLogs}
+                isSelected={selectedIds.includes(facultyRecord.facultyid)}
+                onToggle={() => toggleSelection(facultyRecord.facultyid)}
+            />
         {/each}
     </div>
 </div>
+
+{#if isLoading}
+    <LoadingScreen />
+{/if}
+
+{#if isModalOpen && !isLoading}
+    <form
+        bind:this={deleteForm}
+        method="POST"
+        action="?/delete"
+        use:enhance={() => {
+            isModalOpen = false;
+            isLoading = true;
+
+            return async ({ update }) => {
+                selectedIds = [];
+                await update();
+                isLoading = false;
+            };
+        }}
+    >
+        <input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
+
+        <DeleteConfirmation
+            text={`Are you sure you want to delete ${selectedIds.length} faculty record(s)?`}
+            onCancel={() => (isModalOpen = false)}
+            onDelete={() => {
+                if (deleteForm) deleteForm.requestSubmit();
+            }}
+        />
+    </form>
+{/if}
