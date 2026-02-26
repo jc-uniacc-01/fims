@@ -1,14 +1,12 @@
 import { expect, test } from '@playwright/test';
 
-import * as consts from '../test-consts';
-
 // NOTE: Log-out button will be checked in some other test
 // TODO: Add first footer section
 
-test.describe('check header and footer as admin', async () => {
+test.describe('check header and footer as admin', () => {
     test.use({ storageState: 'playwright/.auth/admin.json' });
 
-    await test('check header as admin', async ({ page }) => {
+    test('check header as admin', async ({ page }) => {
         // No redirection since user is logged-in
         await page.goto('/');
         await expect(page).toHaveURL('/');
@@ -21,11 +19,11 @@ test.describe('check header and footer as admin', async () => {
         const websiteTitle = await header.getByText('Faculty Information Management System');
         await expect(websiteTitle).toBeVisible();
 
-        const loggedInEmail = header.getByText(consts.AdminAcc);
+        const loggedInEmail = header.getByText(process.env.ADMIN_EMAIL!);
         await expect(loggedInEmail).toBeVisible();
     });
 
-    await test('check footer as admin', async ({ page }) => {
+    test('check footer as admin', async ({ page }) => {
         // No redirection since user is logged-in
         page.goto('/');
         await expect(page).toHaveURL('/');
@@ -43,10 +41,10 @@ test.describe('check header and footer as admin', async () => {
     });
 });
 
-test.describe('check header and footer as it', async () => {
+test.describe('check header and footer as it', () => {
     test.use({ storageState: 'playwright/.auth/it.json' });
 
-    await test('check header as it', async ({ page }) => {
+    test('check header as it', async ({ page }) => {
         // No redirection since user is logged-in
         page.goto('/');
         await expect(page).toHaveURL('/');
@@ -59,11 +57,11 @@ test.describe('check header and footer as it', async () => {
         const websiteTitle = await header.getByText('Faculty Information Management System');
         await expect(websiteTitle).toBeVisible();
 
-        const loggedInEmail = header.getByText(consts.ITAcc);
+        const loggedInEmail = header.getByText(process.env.IT_EMAIL!);
         await expect(loggedInEmail).toBeVisible();
     });
 
-    await test('check footer as it', async ({ page }) => {
+    test('check footer as it', async ({ page }) => {
         // No redirection since user is logged-in
         page.goto('/');
         await expect(page).toHaveURL('/');
