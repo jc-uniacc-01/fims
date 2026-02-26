@@ -181,10 +181,10 @@ export async function getFacultyRecordList(
 }
 
 export interface FacultyRecordDTO {
-    facultyid: number;
-    lastname: string;
-    firstname: string;
-    status: string;
+    facultyid: number | null;
+    lastname: string | null;
+    firstname: string | null;
+    status: string | null;
     ranktitle: string | null;
     adminposition: string | null;
     logTimestamp: Date | null;
