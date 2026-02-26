@@ -94,7 +94,7 @@ export async function deleteFacultyRecords(makerid: string, ids: number[]) {
 
     // Log!
     returnedIds.forEach(async ({ facultyid: tupleid }) => {
-        await logChange(makerid, tupleid, 'Deleted account.');
+        await logChange(makerid, tupleid, 'Deleted record.');
     });
 
     return { success: true };
