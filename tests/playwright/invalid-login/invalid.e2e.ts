@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import * as consts from '../../test-consts' ;
 import { expect, test } from '@playwright/test';
 dotenv.config({ path: '.env.e2e' });
 
@@ -7,16 +8,22 @@ dotenv.config({ path: '.env.e2e' });
 NOTE:
 
 test cases not yet made for:
-auth login
+auth login (too complex)
 accs with invalid roles (that shouldn't be possible i think)
 
 */
 
-const validAcc = process.env.IT_EMAIL!;
+const validAcc = consts.ITAcc;
 
 const emailFail = 'Invalid email.';
 //const emptyPassFail = 'Empty password.';
 const genericFail = 'Invalid email or password'; //for some reason this lacks a period
+
+//seeds dummy data
+//put this here as it's the first test run
+test.beforeAll(async () => {
+    consts.seed();
+})
 
 test.describe('invalid login cases', () => {
     test('non up email', async ({ page }) => {
