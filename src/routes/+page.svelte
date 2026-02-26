@@ -7,6 +7,7 @@
     import GreenButton from '$lib/ui/GreenButton.svelte';
     import RedButton from '$lib/ui/RedButton.svelte';
     import DeleteConfirmation from '$lib/ui/DeleteConfirmation.svelte';
+    import FilterButton from '$lib/ui/FilterButton.svelte';
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
     import SearchBar from '$lib/ui/SearchBar.svelte';
 
@@ -19,6 +20,7 @@
         nextCursor,
         hasPrev,
         hasNext,
+        filters,
         searchTerm,
     } = $derived(data);
 
@@ -86,6 +88,24 @@
     <div class="mt-25 flex justify-center">
         <div class="flex w-315 items-center 2xl:w-432">
             <SearchBar bind:isSearching={isLoading} {searchTerm} />
+        </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="mt-1 flex justify-center">
+        <div class="flex w-315 items-center 2xl:w-432">
+            <span class="mr-1">Show:</span>
+            {#each filters as { name, filter, opts, selectedOpts } (name)}
+                <div class="mr-1">
+                    <FilterButton
+                        {name}
+                        {filter}
+                        {opts}
+                        {selectedOpts}
+                        bind:isFiltering={isLoading}
+                    />
+                </div>
+            {/each}
         </div>
     </div>
 
