@@ -186,3 +186,14 @@ export async function getAllRankTitles() {
     const uniqueValues = uniqueRows.map(({ ranktitle }) => ranktitle);
     return uniqueValues;
 }
+
+export async function getAllAdminPositions() {
+    const uniqueRows = await db
+        .select({
+            name: adminposition.name,
+        })
+        .from(adminposition);
+
+    const uniqueValues = uniqueRows.map(({ name }) => name);
+    return uniqueValues;
+}
