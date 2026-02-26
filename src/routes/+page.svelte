@@ -11,7 +11,6 @@
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
     import SearchBar from '$lib/ui/SearchBar.svelte';
 
-    type FacultyRecord = { facultyid: number };
     const { data, form } = $props();
     const {
         facultyRecordList,
@@ -24,19 +23,20 @@
         searchTerm,
     } = $derived(data);
 
-    let selectedIds = $state<number[]>([]);
+    let selectedIds: Array<number | null> = $state([]);
 
     let willBatchDelete = $state(false);
     let isLoading = $state(false);
     let deleteForm: HTMLFormElement | null = $state(null);
 
-    function toggleSelection(id: number) {
+    function toggleSelection(id: number | null) {
         if (selectedIds.includes(id)) selectedIds = selectedIds.filter((i) => i !== id);
         else selectedIds = [...selectedIds, id];
     }
 
     function selectAll() {
-        selectedIds = facultyRecordList.map((f: FacultyRecord) => f.facultyid);
+        selectedIds = facultyRecordList.map(({ facultyid }) => facultyid);
+        selectedIds = selectedIds.filter(elem => elem !== null);
     }
 
     function deselectAll() {
