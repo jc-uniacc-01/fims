@@ -13,6 +13,7 @@ import {
     facultysemester,
     rank,
     semester,
+    status,
 } from './db/schema';
 
 const pageSize = 50;
@@ -162,4 +163,15 @@ export async function getFacultyRecordList(searchTerm: string | null,
         hasPrev,
         hasNext,
     };
+}
+
+export async function getAllStatuses() {
+    const uniqueRows = await db
+        .select({
+            status: status.status,
+        })
+        .from(status);
+    
+    const uniqueValues = uniqueRows.map(({ status }) => status);
+    return uniqueValues;
 }
