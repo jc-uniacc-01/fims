@@ -13,7 +13,7 @@
 
     let selectedIds = $state<number[]>([]);
 
-    let isModalOpen = $state(false);
+    let willBatchDelete = $state(false);
     let isLoading = $state(false);
     let deleteForm: HTMLFormElement | null = $state(null);
 
@@ -145,15 +145,14 @@
     <LoadingScreen />
 {/if}
 
-{#if isModalOpen && !isLoading}
+{#if willBatchDelete}
     <form
         bind:this={deleteForm}
         method="POST"
         action="?/delete"
         use:enhance={() => {
-            isModalOpen = false;
+            willBatchDelete = false;
             isLoading = true;
-
             return async ({ update }) => {
                 selectedIds = [];
                 await update();
@@ -165,7 +164,7 @@
 
         <DeleteConfirmation
             text={`Are you sure you want to delete ${selectedIds.length} faculty record(s)?`}
-            onCancel={() => (isModalOpen = false)}
+            onCancel={() => (willBatchDelete = false)}
             onDelete={() => {
                 if (deleteForm) deleteForm.requestSubmit();
             }}
