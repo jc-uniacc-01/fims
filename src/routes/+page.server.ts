@@ -60,6 +60,7 @@ export async function load({ url }) {
     // Get faculty record list
     const { facultyRecordList, prevCursor, nextCursor, hasPrev, hasNext } = await getFacultyRecordList(
         searchTerm,
+        filterMap,
         newCursor,
         isNext,
         !newCursorStr && !isNextStr,

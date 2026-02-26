@@ -1,4 +1,6 @@
-import { and, asc, desc, eq, gt, ilike, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, ilike, lt, or, type SQL, type SQLWrapper } from 'drizzle-orm';
+
+import type { FilterColumn } from '$lib/types/filter';
 
 import { db } from './db';
 
@@ -18,7 +20,9 @@ import {
 
 const pageSize = 50;
 
-export async function getFacultyRecordList(searchTerm: string | null,
+export async function getFacultyRecordList(
+    searchTerm: string | null,
+    filterMap: FilterColumn[],
     cursor?: number,
     isNext: boolean = true,
     initLoad: boolean = false,
@@ -52,6 +56,18 @@ export async function getFacultyRecordList(searchTerm: string | null,
         // eslint-disable-next-line no-undefined -- can't use null in Drizzle WHERE queries
         .where(searchTerm ? ilike(facultyRecordSearchView.searchcontent, `%${searchTerm}%`) : undefined)
         .as('search_sq');
+
+    // Process filter queries
+    const filterQueries: Array<SQL | undefined> = [];
+    filterMap.forEach(({ obj, column }) => {
+        const { selectedOpts } = obj;
+        const sameColumnQueries: SQLWrapper[] = [];
+        selectedOpts.forEach((opt) => {
+            sameColumnQueries.push(eq(column, opt));
+        });
+
+        if (sameColumnQueries.length) filterQueries.push(or(...sameColumnQueries));
+    });
 
     // Get faculty records from database
     const facultyRecordCountSq = await db
