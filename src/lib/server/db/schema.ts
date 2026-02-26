@@ -37,9 +37,8 @@ export const changelog = pgTable(
     ],
 );
 
-export const status = pgTable('facultystatus', {
-    statusid: serial().primaryKey().notNull(),
-    status: varchar({ length: 50 }).notNull(),
+export const status = pgTable('status', {
+    status: varchar({ length: 50 }).primaryKey().notNull(),
 });
 
 export const faculty = pgTable(
@@ -51,7 +50,7 @@ export const faculty = pgTable(
         firstname: varchar({ length: 100 }).notNull(),
         suffix: varchar({ length: 50 }),
         birthdate: date().notNull(),
-        statusid: integer(),
+        status: varchar({ length: 50 }).notNull(),
         dateoforiginalappointment: date().notNull(),
         psiitem: varchar({ length: 50 }).notNull(),
         employeenumber: varchar({ length: 50 }).notNull(),
@@ -69,9 +68,9 @@ export const faculty = pgTable(
             name: 'faculty_latestchangelogid_fkey',
         }),
         foreignKey({
-            columns: [table.statusid],
-            foreignColumns: [status.statusid],
-            name: 'faculty_statusid_fkey',
+            columns: [table.status],
+            foreignColumns: [status.status],
+            name: 'faculty_status_fkey',
         }),
     ],
 );
@@ -522,8 +521,8 @@ export const facultyRelations = relations(faculty, ({ many, one }) => ({
         references: [changelog.logid],
     }),
     status: one(status, {
-        fields: [faculty.statusid],
-        references: [status.statusid],
+        fields: [faculty.status],
+        references: [status.status],
     }),
     facultycontactnumbers: many(facultycontactnumber),
     facultyeducationalattainments: many(facultyeducationalattainment),
