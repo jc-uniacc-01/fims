@@ -175,3 +175,14 @@ export async function getAllStatuses() {
     const uniqueValues = uniqueRows.map(({ status }) => status);
     return uniqueValues;
 }
+
+export async function getAllRankTitles() {
+    const uniqueRows = await db
+        .select({
+            ranktitle: rank.ranktitle,
+        })
+        .from(rank);
+
+    const uniqueValues = uniqueRows.map(({ ranktitle }) => ranktitle);
+    return uniqueValues;
+}
