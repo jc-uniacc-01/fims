@@ -1,7 +1,9 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import GreenButton from './GreenButton.svelte';
     import Icon from '@iconify/svelte';
     import { page } from '$app/state';
+    import RedButton from './RedButton.svelte';
 
     interface Props {
         isSearching: boolean;
@@ -14,8 +16,6 @@
     const searchParam = 'search';
 
     async function search() {
-        if (!searchTerm) return;
-
         isSearching = true;
         const url = new URL(page.url);
 
@@ -24,16 +24,17 @@
         url.searchParams.delete('isNext');
 
         // Set search parameter
-        url.searchParams.set(searchParam, searchTerm);
+        if (searchTerm) url.searchParams.set(searchParam, searchTerm);
+        else url.searchParams.delete(searchParam);
 
         await goto(url.toString());
         isSearching = false;
     }
 </script>
 
-<div class="relative h-10 w-full rounded-full bg-white">
+<div class="h-10 w-full flex items-center justify-between *:mx-1">
     <input
-        class="w-full border-0 bg-transparent px-7.5 placeholder-fims-gray focus:ring-0"
+        class="border-0 w-full px-7.5 placeholder-fims-gray focus:ring-0 rounded-full bg-white"
         name="search"
         type="text"
         placeholder="Search"
@@ -43,13 +44,12 @@
             if (event.key === 'Enter') await search();
         }}
     />
-    <button
-        type="button"
-        class="absolute right-4 h-full"
-        onclick={async () => {
-            await search();
-        }}
-    >
-        <Icon icon="line-md:search" class="h-5 w-5 text-fims-gray hover:text-black" />
-    </button>
+    <GreenButton type="button" onclick={async () => { await search() }}>
+        <Icon icon="line-md:search" class="h-5 w-5 mr-2" />
+        <span>Search</span>
+    </GreenButton>
+    <RedButton type="button" onclick={async () => { searchTerm = ''; await search(); }}>
+        <Icon icon="tabler:x" class="h-5 w-5 mr-2" />
+        <span>Clear</span>
+    </RedButton>
 </div>
