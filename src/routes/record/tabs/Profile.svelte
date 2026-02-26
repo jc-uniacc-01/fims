@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Field from "../(ui)/Field.svelte";
+    import Field from "../ui/Field.svelte";
 
     let displayedFields = [
         "Last Name",

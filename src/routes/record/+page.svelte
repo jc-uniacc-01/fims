@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Profile from "./(tabs)/Profile.svelte";
+    import Profile from "./tabs/Profile.svelte";
     import Button from "$lib/ui/Button.svelte";
     import DeleteConfirmation from "$lib/ui/DeleteConfirmation.svelte";
 
