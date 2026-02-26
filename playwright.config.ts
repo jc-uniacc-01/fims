@@ -37,7 +37,7 @@ export default defineConfig({
         },
         {
             name: 'it-specific-tests',
-            dependencies: ['it-auth', 'invalid-logins'],
+            dependencies: ['it-auth', 'invalid-logins', 'common-tests'],
             testDir: 'tests/playwright/it-specific',
             testMatch: /.e2e.(?:js|ts)/u,
         },
