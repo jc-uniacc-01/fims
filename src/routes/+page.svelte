@@ -100,12 +100,13 @@
             {/if}
         </div>
     </div>
+
+    <!-- Faculty Record List Table -->
     <div class="mt-2.5">
-        <!-- Faculty Record List Table -->
+        <!-- Header -->
         <div
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-green [&>div]:px-6"
         >
-            <!-- Header -->
             <div class="w-25 justify-center"><span>Select</span></div>
             <div class={canViewChangeLogs ? 'w-66 2xl:w-132' : 'w-91 2xl:w-182'}>
                 <span>Full Name</span>
