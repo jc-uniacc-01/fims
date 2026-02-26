@@ -110,14 +110,3 @@ export async function getFacultyRecord(facultyID:number) {
 
     return query[0];
 }
-
-// deletes a faculty record by id
-export async function deleteFacultyRecord(facultyID:number) {
-    /*
-    await db
-        .delete(faculty)
-        .where(eq(faculty.facultyid, facultyID));
-    */
-
-    dummyRecordList = dummyRecordList.filter((rec) => rec.facultyid !== facultyID);
-}
