@@ -139,7 +139,7 @@ export const facultyfieldofinterest = pgTable(
     ],
 );
 
-export const rank = pgTable('Rank', {
+export const rank = pgTable('rank', {
     rankid: serial().primaryKey().notNull(),
     ranktitle: varchar({ length: 100 }).notNull(),
     salarygrade: varchar({ length: 10 }).notNull(),
