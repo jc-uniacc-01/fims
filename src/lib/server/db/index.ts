@@ -3,7 +3,6 @@ import { drizzle as pgDrizzle } from 'drizzle-orm/node-postgres';
 import { error } from '@sveltejs/kit';
 import { neon } from '@neondatabase/serverless';
 import { Pool as PgPool } from 'pg';
-import { sql } from 'drizzle-orm';
 
 import { DATABASE_URL, MODE } from '$env/static/private';
 
@@ -29,5 +28,3 @@ function initializeDbClient() {
 }
 
 export const db = initializeDbClient();
-
-await db.execute(sql`CREATE EXTENSION IF NOT EXISTS pg_trgm;`);
