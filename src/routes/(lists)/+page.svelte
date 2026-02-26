@@ -143,7 +143,7 @@
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-green [&>div]:px-6"
         >
             <div class="w-25 justify-center"><span>Select</span></div>
-            <div class={canViewChangeLogs ? 'w-66 2xl:w-132' : 'w-91 2xl:w-182'}>
+            <div class={canViewChangeLogs ? 'w-66 2xl:w-132' : 'w-116 2xl:w-182'}>
                 <span>Full Name</span>
                 <Icon icon="tabler:arrow-up" class="ml-3 h-5 w-5 text-white" />
             </div>
