@@ -4,55 +4,6 @@ import { db } from './db';
 
 import { appuser, changelog, faculty, role, userinfo } from './db/schema';
 
-// got tired of constantly fixing the ddl script
-// so i made this.
-// should only initialize once since it's in the backend
-let dummyRecordList:{
-    facultyid:number,
-    lastname:string,
-    firstname:string,
-    status:string,
-    ranktitle:string|null,
-    adminposition:string|null,
-    logTimestamp:Date|null,
-    logMaker:string|null,
-    logOperation:string|null
-}[] = [
-    {
-        facultyid: 1,
-        lastname: "Dela Cruz",
-        firstname: "John",
-        status: "Active",
-        ranktitle: "Professor 7",
-        adminposition: "Department Chair",
-        logTimestamp: null,
-        logMaker: null,
-        logOperation: null
-    },
-    {
-        facultyid: 2,
-        lastname: "Doe",
-        firstname: "John",
-        status: "Active",
-        ranktitle: "Assistant Prof. 2",
-        adminposition: "Department Head",
-        logTimestamp: null,
-        logMaker: null,
-        logOperation: null
-    },
-    {
-        facultyid: 3,
-        lastname: "Doe",
-        firstname: "Jane",
-        status: "On Leave",
-        ranktitle: null,
-        adminposition: null,
-        logTimestamp: null,
-        logMaker: null,
-        logOperation: null
-    },
-]
-
 export async function logChange(makerid: string, tupleid: number, operation: string) {
     const logids = await db
         .insert(changelog)
