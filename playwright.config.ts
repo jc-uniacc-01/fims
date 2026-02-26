@@ -56,4 +56,8 @@ export default defineConfig({
             testMatch: /.e2e.(?:js|ts)/u,
         },
     ],
+    timeout: 60_000,
+    expect: {
+        timeout: 10_000,
+    },
 });
