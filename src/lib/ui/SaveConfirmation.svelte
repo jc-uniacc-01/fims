@@ -8,13 +8,16 @@
     <div class="w-[90%] max-w-150 rounded-2xl bg-fims-beige px-10 py-15 text-center">
         <p class="mb-7.5 text-black">{text}</p>
 
+        <!-- added id here. it was getting too hard to find the correct save button-->
         <div class="flex justify-around gap-5">
             <button
                 class="cursor-pointer rounded-3xl border-2 border-solid border-fims-green px-7.5 py-2.5 text-base text-fims-green transition-opacity duration-200 hover:opacity-70"
+                id='save-confirm'
                 onclick={onSave}>Save</button
             >
             <button
                 class="cursor-pointer rounded-3xl border-2 border-solid border-fims-red px-7.5 py-2.5 text-base text-fims-red transition-opacity duration-200 hover:opacity-70"
+                id='save-cancel'
                 onclick={onCancel}>Cancel</button
             >
         </div>
