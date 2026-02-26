@@ -223,6 +223,108 @@ test.describe('batch delete faculty records as it', () => {
         await testDb.execute(sql`REFRESH MATERIALIZED VIEW faculty_record_search_view`);
     });
 
+    test('partial search', async ({ page }) => {
+        await page.goto('/');
+        await expect(page).toHaveURL('/');
+
+        const searchBar = page.getByRole('textbox', { name: 'Search', exact: true });
+        const searchButton = page.getByRole('button', { name: 'Search', exact: true });
+
+        await expect(searchBar).toBeVisible();
+        await expect(searchButton).toBeVisible();
+
+        // Search for a record
+        await searchBar.fill('ato'); //should test case sensitivity
+        await searchButton.click();
+
+        await expect(page.getByText('Galinato, Eriene')).toBeVisible();
+        await expect(page.getByText('Camingao, Ericsson Jake')).not.toBeVisible();
+        await expect(page.getByText('Dela Cruz, Gabrielle Zach')).not.toBeVisible();
+        await expect(page.getByText('Mandario, Maricris')).not.toBeVisible();
+    });
+
+    test('no records searched', async ({ page }) => {
+        await page.goto('/');
+        await expect(page).toHaveURL('/');
+
+        const searchBar = page.getByRole('textbox', { name: 'Search', exact: true });
+        const searchButton = page.getByRole('button', { name: 'Search', exact: true });
+
+        await expect(searchBar).toBeVisible();
+        await expect(searchButton).toBeVisible();
+
+        await searchBar.fill('random nonsense');
+        await searchButton.click();
+
+        await expect(page.getByText('Galinato, Eriene')).not.toBeVisible();
+        await expect(page.getByText('Camingao, Ericsson Jake')).not.toBeVisible();
+        await expect(page.getByText('Dela Cruz, Gabrielle Zach')).not.toBeVisible();
+        await expect(page.getByText('Mandario, Maricris')).not.toBeVisible();
+    });
+
+    test('viewing expected record', async ({ page }) => {
+        await page.goto('/');
+
+        const recordEntry = page.getByText('Mandario, Maricris').locator('..');
+        await expect(recordEntry).toBeVisible();
+        await recordEntry.click();
+
+        await expect(page).toHaveURL(/faculty/u); //in faculty route
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible(); //correct record is shown
+
+        const backButton = page.getByRole('link', {
+            name: 'Back to List of Faculty Records',
+            exact: true,
+        });
+        await backButton.click();
+
+        await expect(page).toHaveURL('/');
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible();
+    });
+
+    test('cancelled viewed record deletion', async ({ page }) => {
+        await page.goto('/');
+        const recordFile = page.getByText('Mandario, Maricris').locator('..');
+
+        await expect(recordFile).toBeVisible();
+        await recordFile.click();
+
+        const deleteButton = page.getByRole('button', { name: 'Delete Record', exact: true });
+
+        await deleteButton.click();
+        await page.getByText('Cancel').click();
+
+        await expect(page).toHaveURL(/faculty/u); //still in record view
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible();
+
+        const backButton = page.getByRole('link', {
+            name: 'Back to List of Faculty Records',
+            exact: true,
+        });
+        await backButton.click();
+
+        await expect(page).toHaveURL('/');
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible();
+    });
+
+    test('confirmed viewed record deletion', async ({ page }) => {
+        await page.goto('/');
+        const recordFile = page.getByText('Mandario, Maricris').locator('..');
+
+        await expect(recordFile).toBeVisible();
+        await recordFile.click();
+
+        const deleteButton = page.getByRole('button', { name: 'Delete Record', exact: true });
+        await deleteButton.click();
+
+        const deleteConfirm = page.getByRole('button', { name: 'Delete', exact: true });
+        await expect(deleteConfirm).toBeVisible();
+        await deleteConfirm.click();
+
+        await expect(page).toHaveURL('/'); // redirected back
+        await expect(page.getByText('Mandario, Maricris')).not.toBeVisible();
+    });
+
     test('check selection', async ({ page }) => {
         // No redirection since user is logged-in
         page.goto('/');
@@ -230,58 +332,54 @@ test.describe('batch delete faculty records as it', () => {
 
         // Select an account
         const checkbox1 = await page.getByRole('checkbox').first();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
         await checkbox1.check();
-        expect(checkbox1).toBeChecked();
+        await expect(checkbox1).toBeChecked();
 
         // See if the buttons are showing
         const selectAllBtn = await page.getByRole('button', { name: 'Select All', exact: true });
-        expect(selectAllBtn).toBeVisible();
+        await expect(selectAllBtn).toBeVisible();
 
         const deselectSelectionBtn = await page.getByRole('button', {
             name: 'Deselect Selection',
             exact: true,
         });
-        expect(deselectSelectionBtn).toBeVisible();
+        await expect(deselectSelectionBtn).toBeVisible();
 
         const exportReportsBtn = await page.getByRole('button', {
             name: 'Export Reports',
             exact: true,
         });
-        expect(exportReportsBtn).toBeVisible();
+        await expect(exportReportsBtn).toBeVisible();
 
         const deleteRecordsBtn = await page.getByRole('button', {
             name: 'Delete Record',
             exact: true,
         });
-        expect(deleteRecordsBtn).toBeVisible();
+        await expect(deleteRecordsBtn).toBeVisible();
 
         // Select All
         await selectAllBtn.click();
 
         const checkbox2 = await page.getByRole('checkbox').nth(1);
-        expect(checkbox2).toBeChecked();
+        await expect(checkbox2).toBeChecked();
 
         const checkbox3 = await page.getByRole('checkbox').nth(2);
-        expect(checkbox3).toBeChecked();
-
-        const checkbox4 = await page.getByRole('checkbox').nth(3);
-        expect(checkbox4).toBeChecked();
+        await expect(checkbox3).toBeChecked();
 
         // Unselect one checkbox
         await checkbox1.click();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
 
         // Deselect Selection
         await deselectSelectionBtn.click();
-        expect(checkbox1).not.toBeChecked();
-        expect(checkbox2).not.toBeChecked();
-        expect(checkbox3).not.toBeChecked();
-        expect(checkbox4).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
+        await expect(checkbox2).not.toBeChecked();
+        await expect(checkbox3).not.toBeChecked();
 
-        expect(selectAllBtn).not.toBeVisible();
-        expect(deselectSelectionBtn).not.toBeVisible();
-        expect(deleteRecordsBtn).not.toBeVisible();
+        await expect(selectAllBtn).not.toBeVisible();
+        await expect(deselectSelectionBtn).not.toBeVisible();
+        await expect(deleteRecordsBtn).not.toBeVisible();
     });
 
     test('cancelled deletion', async ({ page }) => {
@@ -291,29 +389,26 @@ test.describe('batch delete faculty records as it', () => {
 
         // Select Faculty Records
         const checkbox1 = await page.getByRole('checkbox').first();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
         await checkbox1.check();
-        expect(checkbox1).toBeChecked();
+        await expect(checkbox1).toBeChecked();
 
         const selectAllBtn = await page.getByRole('button', { name: 'Select All', exact: true });
-        expect(selectAllBtn).toBeVisible();
+        await expect(selectAllBtn).toBeVisible();
         await selectAllBtn.click();
 
         const checkbox2 = await page.getByRole('checkbox').nth(1);
-        expect(checkbox2).toBeChecked();
+        await expect(checkbox2).toBeChecked();
 
         const checkbox3 = await page.getByRole('checkbox').nth(2);
-        expect(checkbox3).toBeChecked();
-
-        const checkbox4 = await page.getByRole('checkbox').nth(3);
-        expect(checkbox4).toBeChecked();
+        await expect(checkbox3).toBeChecked();
 
         // Delete Faculty Records
         const deleteRecordsBtn = await page.getByRole('button', {
             name: 'Delete Records',
             exact: true,
         });
-        expect(deleteRecordsBtn).toBeVisible();
+        await expect(deleteRecordsBtn).toBeVisible();
         await deleteRecordsBtn.click();
 
         // Don't confirm
@@ -329,25 +424,21 @@ test.describe('batch delete faculty records as it', () => {
         const cell2 = page.getByText('Dela Cruz, Gabrielle Zach');
         await expect(cell2).toBeVisible();
 
-        const cell3 = page.getByText('Mandario, Maricris');
-        await expect(cell3).toBeVisible();
-
         // Deselect Selection
         const deselectSelectionBtn = await page.getByRole('button', {
             name: 'Deselect Selection',
             exact: true,
         });
-        expect(deselectSelectionBtn).toBeVisible();
+        await expect(deselectSelectionBtn).toBeVisible();
 
         await deselectSelectionBtn.click();
-        expect(checkbox1).not.toBeChecked();
-        expect(checkbox2).not.toBeChecked();
-        expect(checkbox3).not.toBeChecked();
-        expect(checkbox4).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
+        await expect(checkbox2).not.toBeChecked();
+        await expect(checkbox3).not.toBeChecked();
 
-        expect(selectAllBtn).not.toBeVisible();
-        expect(deselectSelectionBtn).not.toBeVisible();
-        expect(deleteRecordsBtn).not.toBeVisible();
+        await expect(selectAllBtn).not.toBeVisible();
+        await expect(deselectSelectionBtn).not.toBeVisible();
+        await expect(deleteRecordsBtn).not.toBeVisible();
     });
 
     test('deleted', async ({ page }) => {
@@ -357,34 +448,30 @@ test.describe('batch delete faculty records as it', () => {
 
         // Select Faculty Records
         const checkbox1 = await page.getByRole('checkbox').first();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
         await checkbox1.check();
-        expect(checkbox1).toBeChecked();
+        await expect(checkbox1).toBeChecked();
 
         const selectAllBtn = await page.getByRole('button', { name: 'Select All', exact: true });
-        expect(selectAllBtn).toBeVisible();
+        await expect(selectAllBtn).toBeVisible();
         await selectAllBtn.click();
 
         const checkbox2 = await page.getByRole('checkbox').nth(1);
-        expect(checkbox2).toBeChecked();
+        await expect(checkbox2).toBeChecked();
 
         const checkbox3 = await page.getByRole('checkbox').nth(2);
-        expect(checkbox3).toBeChecked();
-
-        const checkbox4 = await page.getByRole('checkbox').nth(3);
-        expect(checkbox4).toBeChecked();
+        await expect(checkbox3).toBeChecked();
 
         const cell = page.getByText('Galinato, Eriene');
         const cell1 = page.getByText('Camingao, Ericsson Jake');
         const cell2 = page.getByText('Dela Cruz, Gabrielle Zach');
-        const cell3 = page.getByText('Mandario, Maricris');
 
         // Delete Faculty Records
         const deleteRecordsBtn = await page.getByRole('button', {
             name: 'Delete Records',
             exact: true,
         });
-        expect(deleteRecordsBtn).toBeVisible();
+        await expect(deleteRecordsBtn).toBeVisible();
         await deleteRecordsBtn.click();
 
         // Confirm
@@ -398,7 +485,6 @@ test.describe('batch delete faculty records as it', () => {
         await expect(cell).not.toBeVisible();
         await expect(cell1).not.toBeVisible();
         await expect(cell2).not.toBeVisible();
-        await expect(cell3).not.toBeVisible();
     });
 });
 
@@ -552,6 +638,107 @@ test.describe('batch delete faculty records as admin', () => {
         // Refresh faculty record search view
         await testDb.execute(sql`REFRESH MATERIALIZED VIEW faculty_record_search_view`);
     });
+    test('partial search', async ({ page }) => {
+        await page.goto('/');
+        await expect(page).toHaveURL('/');
+
+        const searchBar = page.getByRole('textbox', { name: 'Search', exact: true });
+        const searchButton = page.getByRole('button', { name: 'Search', exact: true });
+
+        await expect(searchBar).toBeVisible();
+        await expect(searchButton).toBeVisible();
+
+        // Search for a record
+        await searchBar.fill('ato'); //should test case sensitivity
+        await searchButton.click();
+
+        await expect(page.getByText('Galinato, Eriene')).toBeVisible();
+        await expect(page.getByText('Camingao, Ericsson Jake')).not.toBeVisible();
+        await expect(page.getByText('Dela Cruz, Gabrielle Zach')).not.toBeVisible();
+        await expect(page.getByText('Mandario, Maricris')).not.toBeVisible();
+    });
+
+    test('no records searched', async ({ page }) => {
+        await page.goto('/');
+        await expect(page).toHaveURL('/');
+
+        const searchBar = page.getByRole('textbox', { name: 'Search', exact: true });
+        const searchButton = page.getByRole('button', { name: 'Search', exact: true });
+
+        await expect(searchBar).toBeVisible();
+        await expect(searchButton).toBeVisible();
+
+        await searchBar.fill('random nonsense');
+        await searchButton.click();
+
+        await expect(page.getByText('Galinato, Eriene')).not.toBeVisible();
+        await expect(page.getByText('Camingao, Ericsson Jake')).not.toBeVisible();
+        await expect(page.getByText('Dela Cruz, Gabrielle Zach')).not.toBeVisible();
+        await expect(page.getByText('Mandario, Maricris')).not.toBeVisible();
+    });
+
+    test('viewing expected record', async ({ page }) => {
+        await page.goto('/');
+
+        const recordEntry = page.getByText('Mandario, Maricris').locator('..');
+        await expect(recordEntry).toBeVisible();
+        await recordEntry.click();
+
+        await expect(page).toHaveURL(/faculty/u); //in faculty route
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible(); //correct record is shown
+
+        const backButton = page.getByRole('link', {
+            name: 'Back to List of Faculty Records',
+            exact: true,
+        });
+        await backButton.click();
+
+        await expect(page).toHaveURL('/');
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible();
+    });
+
+    test('cancelled viewed record deletion', async ({ page }) => {
+        await page.goto('/');
+        const recordFile = page.getByText('Mandario, Maricris').locator('..');
+
+        await expect(recordFile).toBeVisible();
+        await recordFile.click();
+
+        const deleteButton = page.getByRole('button', { name: 'Delete Record', exact: true });
+
+        await deleteButton.click();
+        await page.getByText('Cancel').click();
+
+        await expect(page).toHaveURL(/faculty/u); //still in record view
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible();
+
+        const backButton = page.getByRole('link', {
+            name: 'Back to List of Faculty Records',
+            exact: true,
+        });
+        await backButton.click();
+
+        await expect(page).toHaveURL('/');
+        await expect(page.getByText('Mandario, Maricris')).toBeVisible();
+    });
+
+    test('confirmed viewed record deletion', async ({ page }) => {
+        await page.goto('/');
+        const recordFile = page.getByText('Mandario, Maricris').locator('..');
+
+        await expect(recordFile).toBeVisible();
+        await recordFile.click();
+
+        const deleteButton = page.getByRole('button', { name: 'Delete Record', exact: true });
+        await deleteButton.click();
+
+        const deleteConfirm = page.getByRole('button', { name: 'Delete', exact: true });
+        await expect(deleteConfirm).toBeVisible();
+        await deleteConfirm.click();
+
+        await expect(page).toHaveURL('/'); // redirected back
+        await expect(page.getByText('Mandario, Maricris')).not.toBeVisible();
+    });
 
     test('check selection', async ({ page }) => {
         // No redirection since user is logged-in
@@ -560,58 +747,54 @@ test.describe('batch delete faculty records as admin', () => {
 
         // Select an account
         const checkbox1 = await page.getByRole('checkbox').first();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
         await checkbox1.check();
-        expect(checkbox1).toBeChecked();
+        await expect(checkbox1).toBeChecked();
 
         // See if the buttons are showing
         const selectAllBtn = await page.getByRole('button', { name: 'Select All', exact: true });
-        expect(selectAllBtn).toBeVisible();
+        await expect(selectAllBtn).toBeVisible();
 
         const deselectSelectionBtn = await page.getByRole('button', {
             name: 'Deselect Selection',
             exact: true,
         });
-        expect(deselectSelectionBtn).toBeVisible();
+        await expect(deselectSelectionBtn).toBeVisible();
 
         const exportReportsBtn = await page.getByRole('button', {
             name: 'Export Reports',
             exact: true,
         });
-        expect(exportReportsBtn).toBeVisible();
+        await expect(exportReportsBtn).toBeVisible();
 
         const deleteRecordsBtn = await page.getByRole('button', {
             name: 'Delete Record',
             exact: true,
         });
-        expect(deleteRecordsBtn).toBeVisible();
+        await expect(deleteRecordsBtn).toBeVisible();
 
         // Select All
         await selectAllBtn.click();
 
         const checkbox2 = await page.getByRole('checkbox').nth(1);
-        expect(checkbox2).toBeChecked();
+        await expect(checkbox2).toBeChecked();
 
         const checkbox3 = await page.getByRole('checkbox').nth(2);
-        expect(checkbox3).toBeChecked();
-
-        const checkbox4 = await page.getByRole('checkbox').nth(3);
-        expect(checkbox4).toBeChecked();
+        await expect(checkbox3).toBeChecked();
 
         // Unselect one checkbox
         await checkbox1.click();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
 
         // Deselect Selection
         await deselectSelectionBtn.click();
-        expect(checkbox1).not.toBeChecked();
-        expect(checkbox2).not.toBeChecked();
-        expect(checkbox3).not.toBeChecked();
-        expect(checkbox4).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
+        await expect(checkbox2).not.toBeChecked();
+        await expect(checkbox3).not.toBeChecked();
 
-        expect(selectAllBtn).not.toBeVisible();
-        expect(deselectSelectionBtn).not.toBeVisible();
-        expect(deleteRecordsBtn).not.toBeVisible();
+        await expect(selectAllBtn).not.toBeVisible();
+        await expect(deselectSelectionBtn).not.toBeVisible();
+        await expect(deleteRecordsBtn).not.toBeVisible();
     });
 
     test('cancelled deletion', async ({ page }) => {
@@ -621,29 +804,26 @@ test.describe('batch delete faculty records as admin', () => {
 
         // Select Faculty Records
         const checkbox1 = await page.getByRole('checkbox').first();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
         await checkbox1.check();
-        expect(checkbox1).toBeChecked();
+        await expect(checkbox1).toBeChecked();
 
         const selectAllBtn = await page.getByRole('button', { name: 'Select All', exact: true });
-        expect(selectAllBtn).toBeVisible();
+        await expect(selectAllBtn).toBeVisible();
         await selectAllBtn.click();
 
         const checkbox2 = await page.getByRole('checkbox').nth(1);
-        expect(checkbox2).toBeChecked();
+        await expect(checkbox2).toBeChecked();
 
         const checkbox3 = await page.getByRole('checkbox').nth(2);
-        expect(checkbox3).toBeChecked();
-
-        const checkbox4 = await page.getByRole('checkbox').nth(3);
-        expect(checkbox4).toBeChecked();
+        await expect(checkbox3).toBeChecked();
 
         // Delete Faculty Records
         const deleteRecordsBtn = await page.getByRole('button', {
             name: 'Delete Records',
             exact: true,
         });
-        expect(deleteRecordsBtn).toBeVisible();
+        await expect(deleteRecordsBtn).toBeVisible();
         await deleteRecordsBtn.click();
 
         // Don't confirm
@@ -659,25 +839,21 @@ test.describe('batch delete faculty records as admin', () => {
         const cell2 = page.getByText('Dela Cruz, Gabrielle Zach');
         await expect(cell2).toBeVisible();
 
-        const cell3 = page.getByText('Mandario, Maricris');
-        await expect(cell3).toBeVisible();
-
         // Deselect Selection
         const deselectSelectionBtn = await page.getByRole('button', {
             name: 'Deselect Selection',
             exact: true,
         });
-        expect(deselectSelectionBtn).toBeVisible();
+        await expect(deselectSelectionBtn).toBeVisible();
 
         await deselectSelectionBtn.click();
-        expect(checkbox1).not.toBeChecked();
-        expect(checkbox2).not.toBeChecked();
-        expect(checkbox3).not.toBeChecked();
-        expect(checkbox4).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
+        await expect(checkbox2).not.toBeChecked();
+        await expect(checkbox3).not.toBeChecked();
 
-        expect(selectAllBtn).not.toBeVisible();
-        expect(deselectSelectionBtn).not.toBeVisible();
-        expect(deleteRecordsBtn).not.toBeVisible();
+        await expect(selectAllBtn).not.toBeVisible();
+        await expect(deselectSelectionBtn).not.toBeVisible();
+        await expect(deleteRecordsBtn).not.toBeVisible();
     });
 
     test('deleted', async ({ page }) => {
@@ -687,34 +863,30 @@ test.describe('batch delete faculty records as admin', () => {
 
         // Select Faculty Records
         const checkbox1 = await page.getByRole('checkbox').first();
-        expect(checkbox1).not.toBeChecked();
+        await expect(checkbox1).not.toBeChecked();
         await checkbox1.check();
-        expect(checkbox1).toBeChecked();
+        await expect(checkbox1).toBeChecked();
 
         const selectAllBtn = await page.getByRole('button', { name: 'Select All', exact: true });
-        expect(selectAllBtn).toBeVisible();
+        await expect(selectAllBtn).toBeVisible();
         await selectAllBtn.click();
 
         const checkbox2 = await page.getByRole('checkbox').nth(1);
-        expect(checkbox2).toBeChecked();
+        await expect(checkbox2).toBeChecked();
 
         const checkbox3 = await page.getByRole('checkbox').nth(2);
-        expect(checkbox3).toBeChecked();
-
-        const checkbox4 = await page.getByRole('checkbox').nth(3);
-        expect(checkbox4).toBeChecked();
+        await expect(checkbox3).toBeChecked();
 
         const cell = page.getByText('Galinato, Eriene');
         const cell1 = page.getByText('Camingao, Ericsson Jake');
         const cell2 = page.getByText('Dela Cruz, Gabrielle Zach');
-        const cell3 = page.getByText('Mandario, Maricris');
 
         // Delete Faculty Records
         const deleteRecordsBtn = await page.getByRole('button', {
             name: 'Delete Records',
             exact: true,
         });
-        expect(deleteRecordsBtn).toBeVisible();
+        await expect(deleteRecordsBtn).toBeVisible();
         await deleteRecordsBtn.click();
 
         // Confirm
@@ -728,6 +900,5 @@ test.describe('batch delete faculty records as admin', () => {
         await expect(cell).not.toBeVisible();
         await expect(cell1).not.toBeVisible();
         await expect(cell2).not.toBeVisible();
-        await expect(cell3).not.toBeVisible();
     });
 });
