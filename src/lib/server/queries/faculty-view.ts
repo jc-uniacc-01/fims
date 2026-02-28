@@ -3,7 +3,9 @@ import { eq } from 'drizzle-orm';
 import { db } from '../db';
 
 import {
+    adminposition,
     faculty,
+    facultyadminposition,
     facultycontactnumber,
     facultyeducationalattainment,
     facultyemail,
@@ -12,6 +14,7 @@ import {
     facultyrank,
     facultysemester,
     fieldofinterest,
+    office,
     rank,
     semester,
 } from '../db/schema';
@@ -154,6 +157,21 @@ export async function getFacultySemester(facultyid: number, acadYear: number, se
     const [facultySemester] = currentFacultySemester;
 
     return facultySemester;
+}
+
+export async function getFacultyAdminPositions(facultysemesterid: number) {
+    return await db
+        .select({
+            adminPosition: adminposition.name,
+            office: office.name,
+            startDate: facultyadminposition.startdate,
+            endDate: facultyadminposition.enddate,
+            admininstrativeLoadCredit: facultyadminposition.administrativeloadcredit,
+        })
+        .from(facultyadminposition)
+        .leftJoin(adminposition, eq(adminposition.adminpositionid, facultyadminposition.adminpositionid))
+        .leftJoin(office, eq(office.officeid, facultyadminposition.officeid))
+        .where(eq(facultyadminposition.facultysemesterid, facultysemesterid));
 }
 
 export async function getFacultyProfile(facultyid: number) {
