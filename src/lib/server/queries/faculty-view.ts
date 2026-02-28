@@ -63,6 +63,18 @@ export async function getFacultyFieldsOfInterest(facultyid: number) {
     ).map(({ field }) => field);
 }
 
+export async function getFacultyPromotionHistory(facultyid: number) {
+    return await db
+        .select({
+            rankTitle: rank.ranktitle,
+            appointmentStatus: facultyrank.appointmentstatus,
+            dateOfTenureOrRenewal: facultyrank.dateoftenureorrenewal
+        })
+        .from(facultyrank)
+        .leftJoin(rank, eq(rank.rankid, facultyrank.rankid))
+        .where(eq(facultyrank.facultyid, facultyid));
+}
+
 export async function getFacultyProfile(facultyid: number) {
     const response = await db.select().from(faculty).where(eq(faculty.facultyid, facultyid));
     if (response.length === 0) return null;
@@ -78,15 +90,7 @@ export async function getFacultyProfile(facultyid: number) {
     const fieldsOfInterest = getFacultyFieldsOfInterest(facultyid);
 
     // Promotion History
-    const promotionHistory = await db
-        .select({
-            rankTitle: rank.ranktitle,
-            appointmentStatus: facultyrank.appointmentstatus,
-            dateOfTenureOrRenewal: facultyrank.dateoftenureorrenewal
-        })
-        .from(facultyrank)
-        .leftJoin(rank, eq(rank.rankid, facultyrank.rankid))
-        .where(eq(facultyrank.facultyid, facultyid));
+    const promotionHistory = getFacultyPromotionHistory(facultyid);
 
     // Home Addresses
     const homeAddresses = (
