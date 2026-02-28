@@ -29,13 +29,8 @@ export async function getFacultyName(facultyid: number) {
     return record;
 }
 
-export async function getFacultyProfile(facultyid: number) {
-    const response = await db.select().from(faculty).where(eq(faculty.facultyid, facultyid));
-    if (response.length === 0) return null;
-    const [record] = response;
-
-    // Contact Numbers
-    const contactNumbers = (
+export async function getFacultyContactNumbers(facultyid: number) {
+    return (
         await db
             .select({
                 contactnumber: facultycontactnumber.contactnumber,
@@ -43,6 +38,15 @@ export async function getFacultyProfile(facultyid: number) {
             .from(facultycontactnumber)
             .where(eq(facultycontactnumber.facultyid, facultyid))
     ).map(({ contactnumber }) => contactnumber);
+}
+
+export async function getFacultyProfile(facultyid: number) {
+    const response = await db.select().from(faculty).where(eq(faculty.facultyid, facultyid));
+    if (response.length === 0) return null;
+    const [record] = response;
+
+    // Contact Numbers
+    const contactNumbers = getFacultyContactNumbers(facultyid);
 
     // Educational Attainments
     const educationalAttainments = await db
