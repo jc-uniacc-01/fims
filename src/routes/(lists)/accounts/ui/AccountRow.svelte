@@ -5,7 +5,7 @@
     import Icon from '@iconify/svelte';
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
     import DeleteConfirmation from '$lib/ui/DeleteConfirmation.svelte';
-    import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
+    import SelectDropdownCell from '$lib/ui/SelectDropdownCell.svelte';
 
     interface Props {
         account: AccountDTO;
@@ -52,7 +52,7 @@
         </div>
         <div class="w-40">
             <form method="POST" action="" class="w-full">
-                <SelectDropdown name="role" opts={userRoles} selectedOpt={role} />
+                <SelectDropdownCell name="role" opts={userRoles} selectedOpt={role} />
             </form>
         </div>
         <div class="w-85 2xl:w-100">
