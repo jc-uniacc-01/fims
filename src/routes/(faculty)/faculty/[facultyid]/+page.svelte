@@ -8,8 +8,7 @@
     import { enhance } from '$app/forms';
     import { page } from '$app/state';
 
-    const { data, form } = $props();
-    const { lastname, firstname } = $derived(data);
+    const { form } = $props();
 
     let willDelete = $state(false);
     let isLoading = $state(false);
@@ -27,13 +26,6 @@
 {/if}
 
 <div>
-    <a href="/" class="flex h-7 items-center text-fims-green">
-        <Icon icon="line-md:arrow-left-circle" class="mr-2 h-6 w-6" />
-        <span class="underline">Back to List of Faculty Records</span>
-    </a>
-    <h1 class="mt-8 text-3xl font-semibold text-fims-green" id="name-display">
-        {lastname}, {firstname}
-    </h1>
     <div class="mt-4 flex justify-between">
         <GreenButton>
             <Icon icon="tabler:file-export" class="mr-2 h-5 w-5" />
