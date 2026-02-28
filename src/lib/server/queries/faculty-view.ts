@@ -309,3 +309,45 @@ export async function getFacultyProfile(facultyid: number) {
         emailAddresses: relatedInfo[5],
     };
 }
+
+export async function getFacultySemestralRecords(facultyid: number, acadYear: number, semNum: number) {
+    // Semestral Details
+    const facultySemester = await getFacultySemester(facultyid, acadYear, semNum);
+    if (facultySemester === null) return null;
+
+    const { facultysemesterid } = facultySemester;
+
+    // Related Information
+    const relatedInfo = await Promise.all([
+        // Administrative
+        getFacultyAdminPositions(facultysemesterid), // Admin Positions
+        getFacultyCommittees(facultysemesterid), // Committee Memberships
+        getFacultyAdminWorks(facultysemesterid), // Admin Works
+
+        // Teaching
+        getFacultyCoursesTaught(facultysemesterid), // Courses Taught
+        getFacultyMentees(facultysemesterid), // Mentees
+
+        getFacultyResearch(facultysemesterid), // Research
+
+        getFacultyExtension(facultysemesterid), // Extension
+
+        getFacultyStudyLoad(facultysemesterid), // Study Load
+    ]);
+
+    return {
+        ...facultySemester,
+        adminPositions: relatedInfo[0],
+        committees: relatedInfo[1],
+        adminWorks: relatedInfo[2],
+
+        coursesTaught: relatedInfo[3],
+        mentees: relatedInfo[4],
+
+        researchWork: relatedInfo[5],
+
+        extensionWork: relatedInfo[6],
+
+        studyLoad: relatedInfo[7],
+    }
+}
