@@ -98,35 +98,28 @@ export async function getFacultyEmailAddresses(facultyid: number) {
 }
 
 export async function getFacultyProfile(facultyid: number) {
-    const response = await db.select().from(faculty).where(eq(faculty.facultyid, facultyid));
-    if (response.length === 0) return null;
-    const [record] = response;
+    // Personal Information
+    const personalInfoArr = await db.select().from(faculty).where(eq(faculty.facultyid, facultyid));
+    if (personalInfoArr.length === 0) return null;
+    const [personalInfo] = personalInfoArr;
 
-    // Contact Numbers
-    const contactNumbers = getFacultyContactNumbers(facultyid);
-
-    // Educational Attainments
-    const educationalAttainments = getFacultyEducationalAttainments(facultyid);
-
-    // Fields of Interest
-    const fieldsOfInterest = getFacultyFieldsOfInterest(facultyid);
-
-    // Promotion History
-    const promotionHistory = getFacultyPromotionHistory(facultyid);
-
-    // Home Addresses
-    const homeAddresses = getFacultyHomeAddresses(facultyid);
-
-    // Emails
-    const emailAddresses = getFacultyEmailAddresses(facultyid);
+    // Related Information
+    const relatedInfo = await Promise.all([
+        getFacultyContactNumbers(facultyid), // Contact Numbers
+        getFacultyEducationalAttainments(facultyid), // Educational Attainments
+        getFacultyFieldsOfInterest(facultyid), // Fields of Interest
+        getFacultyPromotionHistory(facultyid), // Promotion History
+        getFacultyHomeAddresses(facultyid), // Home Addresses
+        getFacultyEmailAddresses(facultyid), // Emails
+    ]);
 
     return {
-        ...record,
-        contactNumbers,
-        educationalAttainments,
-        fieldsOfInterest,
-        promotionHistory,
-        homeAddresses,
-        emailAddresses,
+        ...personalInfo,
+        contactNumbers: relatedInfo[0],
+        educationalAttainments: relatedInfo[1],
+        fieldsOfInterest: relatedInfo[2],
+        promotionHistory: relatedInfo[3],
+        homeAddresses: relatedInfo[4],
+        emailAddresses: relatedInfo[5],
     };
 }
