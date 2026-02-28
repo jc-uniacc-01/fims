@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 
-import { deleteFacultyRecords, getFacultyRecord } from '$lib/server/db-helpers';
+import { deleteFacultyRecords, getFacultyName } from '$lib/server/db-helpers';
 import { refreshFacultyRecordSearchView } from '$lib/server/faculty-records-list-helpers.js';
 
 export async function load({ params }) {
@@ -10,7 +10,7 @@ export async function load({ params }) {
     // Validate parameter
     if (Number.isNaN(facultyid)) throw error(400, { message: 'Invalid record identifier.' });
 
-    const record = await getFacultyRecord(facultyid);
+    const record = await getFacultyName(facultyid);
 
     // Validate output
     if (record === null) throw error(400, { message: 'Invalid record identifier.' });
