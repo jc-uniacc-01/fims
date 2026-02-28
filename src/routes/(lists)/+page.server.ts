@@ -9,7 +9,7 @@ import {
     getAllStatuses,
     getFacultyRecordList,
     refreshFacultyRecordSearchView,
-} from '$lib/server/faculty-records-list-helpers';
+} from '$lib/server/faculty-list';
 
 export async function load({ url }) {
     // Extract queries
