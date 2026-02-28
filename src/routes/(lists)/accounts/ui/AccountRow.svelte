@@ -1,6 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import type { AccountDTO } from '$lib/server/account-list-helpers';
+    import type { AccountDTO } from '$lib/server/queries/account-list';
     import RedButton from '$lib/ui/RedButton.svelte';
     import Icon from '@iconify/svelte';
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
