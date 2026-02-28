@@ -13,6 +13,7 @@ import {
     facultycourse,
     facultyeducationalattainment,
     facultyemail,
+    facultyextension,
     facultyfieldofinterest,
     facultyhomeaddress,
     facultymentoring,
@@ -252,6 +253,19 @@ export async function getFacultyResearch(facultysemesterid: number) {
         .from(facultyresearch)
             .leftJoin(research, eq(research.researchid, facultyresearch.researchid))
         .where(eq(facultyresearch.facultysemesterid, facultysemesterid));
+}
+
+export async function getFacultyExtension(facultysemesterid: number) {
+    return await db
+        .select({
+            natureOfExtension: facultyextension.natureofextension,
+            agency: facultyextension.agency,
+            startDate: facultyextension.startdate,
+            endDate: facultyextension.enddate,
+            extensionLoadCredit: facultyextension.extensionloadcredit,
+        })
+        .from(facultyextension)
+        .where(eq(facultyextension.facultysemesterid, facultysemesterid));
 }
 
 export async function getFacultyProfile(facultyid: number) {
