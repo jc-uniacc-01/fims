@@ -6,6 +6,7 @@ import {
     adminposition,
     faculty,
     facultyadminposition,
+    facultyadminwork,
     facultycommmembership,
     facultycontactnumber,
     facultyeducationalattainment,
@@ -186,6 +187,19 @@ export async function getFacultyCommittees(facultysemesterid: number) {
         })
         .from(facultycommmembership)
         .where(eq(facultycommmembership.facultysemesterid, facultysemesterid));
+}
+
+export async function getFacultyAdminWorks(facultysemesterid: number) {
+    return await db
+        .select({
+            natureOfWork: facultyadminwork.natureofwork,
+            office: office.name,
+            startDate: facultyadminwork.startdate,
+            endDate: facultyadminwork.enddate,
+            admininstrativeLoadCredit: facultyadminwork.administrativeloadcredit,
+        })
+        .from(facultyadminwork)
+        .where(eq(facultyadminwork.facultysemesterid, facultysemesterid));
 }
 
 export async function getFacultyProfile(facultyid: number) {
