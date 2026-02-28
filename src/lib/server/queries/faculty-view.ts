@@ -153,13 +153,13 @@ export async function getFacultySemester(facultyid: number, acadYear: number, se
             currentHighestDegree: facultyeducationalattainment.degree,
         })
         .from(currentFacultySemesterSq)
-        .leftJoin(facultyrank, eq(facultyrank.facultyrankid, facultysemester.currentrankid))
+        .leftJoin(facultyrank, eq(facultyrank.facultyrankid, currentFacultySemesterSq.currentrankid))
         .leftJoin(rank, eq(rank.rankid, facultyrank.rankid))
         .leftJoin(
             facultyeducationalattainment,
             eq(
                 facultyeducationalattainment.facultyeducationalattainmentid,
-                facultysemester.currenthighesteducationalattainmentid
+                currentFacultySemesterSq.currenthighesteducationalattainmentid
             ),
         );
 
