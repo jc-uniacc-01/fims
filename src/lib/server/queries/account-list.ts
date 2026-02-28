@@ -2,9 +2,9 @@ import { and, asc, desc, eq, gt, ilike, lt, ne, or, type SQL, type SQLWrapper } 
 
 import type { FilterColumn } from '$lib/types/filter';
 
-import { db } from './db';
+import { db } from '../db';
 
-import { accountSearchView, appuser, changelog, role, userinfo } from './db/schema';
+import { accountSearchView, appuser, changelog, role, userinfo } from '../db/schema';
 
 const pageSize = 50;
 

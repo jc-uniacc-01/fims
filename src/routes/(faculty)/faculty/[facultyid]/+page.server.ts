@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 
-import { deleteFacultyRecords, getFacultyProfile } from '$lib/server/db-helpers';
-import { refreshFacultyRecordSearchView } from '$lib/server/faculty-list';
+import { deleteFacultyRecords, getFacultyProfile } from '$lib/server/queries/db-helpers';
+import { refreshFacultyRecordSearchView } from '$lib/server/queries/faculty-list';
 
 export async function load({ params }) {
     const { facultyid: facultyidStr } = params;

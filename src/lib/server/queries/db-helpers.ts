@@ -1,6 +1,6 @@
 import { eq, inArray } from 'drizzle-orm';
 
-import { db } from './db';
+import { db } from '../db';
 
 import {
     appuser,
@@ -16,7 +16,7 @@ import {
     rank,
     role,
     userinfo,
-} from './db/schema';
+} from '../db/schema';
 
 export async function logChange(makerid: string, tupleid: number, operation: string) {
     const logids = await db
