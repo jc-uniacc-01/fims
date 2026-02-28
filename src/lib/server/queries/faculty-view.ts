@@ -17,10 +17,12 @@ import {
     facultyhomeaddress,
     facultymentoring,
     facultyrank,
+    facultyresearch,
     facultysemester,
     fieldofinterest,
     office,
     rank,
+    research,
     semester,
     student,
 } from '../db/schema';
@@ -235,6 +237,21 @@ export async function getFacultyMentees(facultysemesterid: number) {
         .from(facultymentoring)
             .leftJoin(student, eq(student.studentnumber, facultymentoring.studentnumber))
         .where(eq(facultymentoring.facultysemesterid, facultysemesterid));
+}
+
+export async function getFacultyResearch(facultysemesterid: number) {
+    return await db
+        .select({
+            title: research.title,
+            startDate: research.startdate,
+            endDate: research.enddate,
+            funding: research.funding,
+            researchLoadCredit: facultyresearch.researchloadcredit,
+            remarks: facultyresearch.remarks,
+        })
+        .from(facultyresearch)
+            .leftJoin(research, eq(research.researchid, facultyresearch.researchid))
+        .where(eq(facultyresearch.facultysemesterid, facultysemesterid));
 }
 
 export async function getFacultyProfile(facultyid: number) {
