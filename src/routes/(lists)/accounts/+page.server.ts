@@ -8,7 +8,7 @@ import {
     getAccountList,
     getAllRoles,
     refreshAccountSearchView,
-} from '$lib/server/account-list-helpers';
+} from '$lib/server/account-list';
 import { userinfo } from '$lib/server/db/schema';
 
 export async function load({ locals, parent, url }) {
