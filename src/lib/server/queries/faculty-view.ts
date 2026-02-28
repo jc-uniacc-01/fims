@@ -51,6 +51,18 @@ export async function getFacultyEducationalAttainments(facultyid: number) {
         .where(eq(facultyeducationalattainment.facultyid, facultyid));
 }
 
+export async function getFacultyFieldsOfInterest(facultyid: number) {
+    return (
+        await db
+            .select({
+                field: fieldofinterest.field,
+            })
+            .from(facultyfieldofinterest)
+            .leftJoin(fieldofinterest, eq(fieldofinterest.fieldofinterestid, facultyfieldofinterest.fieldofinterestid))
+            .where(eq(facultyfieldofinterest.facultyid, facultyid))
+    ).map(({ field }) => field);
+}
+
 export async function getFacultyProfile(facultyid: number) {
     const response = await db.select().from(faculty).where(eq(faculty.facultyid, facultyid));
     if (response.length === 0) return null;
@@ -63,15 +75,7 @@ export async function getFacultyProfile(facultyid: number) {
     const educationalAttainments = getFacultyEducationalAttainments(facultyid);
 
     // Fields of Interest
-    const fieldsOfInterest = (
-        await db
-            .select({
-                field: fieldofinterest.field,
-            })
-            .from(facultyfieldofinterest)
-            .leftJoin(fieldofinterest, eq(fieldofinterest.fieldofinterestid, facultyfieldofinterest.fieldofinterestid))
-            .where(eq(facultyfieldofinterest.facultyid, facultyid))
-    ).map(({ field }) => field);
+    const fieldsOfInterest = getFacultyFieldsOfInterest(facultyid);
 
     // Promotion History
     const promotionHistory = await db
