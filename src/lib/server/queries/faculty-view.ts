@@ -40,6 +40,17 @@ export async function getFacultyContactNumbers(facultyid: number) {
     ).map(({ contactnumber }) => contactnumber);
 }
 
+export async function getFacultyEducationalAttainments(facultyid: number) {
+    return await db
+        .select({
+            degree: facultyeducationalattainment.degree,
+            institution: facultyeducationalattainment.institution,
+            graduationYear: facultyeducationalattainment.graduationyear,
+        })
+        .from(facultyeducationalattainment)
+        .where(eq(facultyeducationalattainment.facultyid, facultyid));
+}
+
 export async function getFacultyProfile(facultyid: number) {
     const response = await db.select().from(faculty).where(eq(faculty.facultyid, facultyid));
     if (response.length === 0) return null;
@@ -49,14 +60,7 @@ export async function getFacultyProfile(facultyid: number) {
     const contactNumbers = getFacultyContactNumbers(facultyid);
 
     // Educational Attainments
-    const educationalAttainments = await db
-        .select({
-            degree: facultyeducationalattainment.degree,
-            institution: facultyeducationalattainment.institution,
-            graduationYear: facultyeducationalattainment.graduationyear,
-        })
-        .from(facultyeducationalattainment)
-        .where(eq(facultyeducationalattainment.facultyid, facultyid));
+    const educationalAttainments = getFacultyEducationalAttainments(facultyid);
 
     // Fields of Interest
     const fieldsOfInterest = (
