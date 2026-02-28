@@ -1,6 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 
-import { deleteFacultyRecords, getFacultyProfile } from '$lib/server/queries/db-helpers';
+import { deleteFacultyRecords } from '$lib/server/queries/db-helpers';
+import { getFacultyProfile } from '$lib/server/queries/faculty-view';
 import { refreshFacultyRecordSearchView } from '$lib/server/queries/faculty-list';
 
 export async function load({ params }) {
