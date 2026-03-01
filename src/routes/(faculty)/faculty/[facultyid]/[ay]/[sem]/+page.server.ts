@@ -24,6 +24,8 @@ export async function load({ params }) {
     if (semestralRecord === null) throw error(400, { message: 'No semestral record found.' });
 
     return {
+        acadYear,
         semestralRecord,
+        semNum,
     };
 }
