@@ -8,21 +8,11 @@
 
     import { enhance } from '$app/forms';
     import { page } from '$app/state';
-    import { setContext } from 'svelte';
-    import { writable } from 'svelte/store';
+
+    import { chosenSemestralRecord } from './states/chosen-semestral-record.svelte.js';
 
     const { data, children } = $props();
     const { facultyid, lastName, firstName } = $derived(data);
-
-    const currentAcadYear = (new Date).getFullYear();
-    const currentSemNum = 2; // TODO: Find a better way to know current semester
-
-    // Store the chosen academic year and semester for semestral records
-    const acadYearStore = writable(currentAcadYear);
-    const semNumStore = writable(currentSemNum);
-
-    // Propagate the link to the child semestral records
-    setContext('semestralRecord', { acadYearStore, semNumStore });
 
     let willDelete = $state(false);
     let isLoading = $state(false);
@@ -56,7 +46,10 @@
         <!-- Tabs -->
         <div class="mb-1 mt-5 w-full flex items-end justify-start">
             <Tab href="/faculty/{facultyid}" name="Profile" />
-            <Tab href="/faculty/{facultyid}/{$acadYearStore}/{$semNumStore}" name="Semestral Records" />
+            <Tab
+                href="/faculty/{facultyid}/{chosenSemestralRecord.acadYear}/{chosenSemestralRecord.semNum}"
+                name="Semestral Records"
+            />
             <div class="border-b-2 border-fims-green w-full"></div>
         </div>
 
