@@ -1,8 +1,13 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
 
+    import { resetViewState } from './states/view-state.svelte.js';
+    
     const { data, form } = $props();
     const { profile } = $derived(data);
+
+    // Ensure view isn't set to editing state on load
+    resetViewState();
 </script>
 
 {#if form?.error}
