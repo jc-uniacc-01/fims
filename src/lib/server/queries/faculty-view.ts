@@ -352,3 +352,14 @@ export async function getFacultySemestralRecords(facultyid: number, acadYear: nu
         studyLoad: relatedInfo[7],
     }
 }
+
+export async function getAllFacultySemesters(facultyid: number) {
+    return await db
+        .select({
+            acadYear: semester.academicyear,
+            semNum: semester.semester,
+        })
+        .from(facultysemester)
+        .leftJoin(semester, eq(semester.acadsemesterid, facultysemester.acadsemesterid))
+        .where(eq(facultysemester.facultyid, facultyid));
+}
