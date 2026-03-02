@@ -36,6 +36,7 @@ export async function load({ params }) {
         acadYearOpts,
         allSemStrs,
         existingOpts,
+        facultyid,
         semestralRecord,
         semNum,
     };
