@@ -19,7 +19,9 @@
 
 {#if viewState.isEditing}
     <div class="flex items-center gap-2">
-        <GreenButton>
+        <GreenButton onclick={() => {
+            if (makeForm) makeForm.requestSubmit();
+        }}>
             <Icon icon="tabler:device-floppy" class="h-5 w-5 mr-2" />
             <span>Save Record</span>
         </GreenButton>
