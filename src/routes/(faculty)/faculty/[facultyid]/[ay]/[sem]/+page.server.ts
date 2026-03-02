@@ -32,12 +32,10 @@ export async function load({ params }) {
     if (!acadYearOpts.includes(acadYear)) throw error(400, { message: 'Invalid academic year.' });
 
     return {
-        acadYear,
         acadYearOpts,
         allSemStrs,
         existingOpts,
         facultyid,
         semestralRecord,
-        semNum,
     };
 }
