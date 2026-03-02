@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
 import { getAllFacultySemesters, getAllSemesterms, getFacultySemestralRecords } from '$lib/server/queries/faculty-view';
 
@@ -21,7 +21,7 @@ export async function load({ params }) {
     const semestralRecord = await getFacultySemestralRecords(facultyid, acadYear, semNum);
 
     // Validate output
-    if (semestralRecord === null) throw error(400, { message: 'No semestral record found.' });
+    if (semestralRecord === null) throw redirect(307, `/faculty/${facultyid}/${acadYear}/${semNum}/create`);
 
     // Get all possible semestral record options
     const existingOpts = await getAllFacultySemesters(facultyid);
