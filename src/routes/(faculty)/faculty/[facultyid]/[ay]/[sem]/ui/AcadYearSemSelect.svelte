@@ -145,8 +145,8 @@
                             type="button"
                             class="flex w-full rounded-sm p-3 hover:bg-[#e9e9e9] text-fims-green"
                             onclick={async () => {
-                                chooseSemestralRecord(chosenSemestralRecord.acadYear, allSemStrs.indexOf(opt));
-                                await goToPage(chosenSemestralRecord.acadYear, allSemStrs.indexOf(opt));
+                                chooseSemestralRecord(newAcadYear, allSemStrs.indexOf(opt));
+                                await goToPage(newAcadYear, allSemStrs.indexOf(opt));
                             }}
                         >
                             <span class="w-8 pr-2">+</span>
