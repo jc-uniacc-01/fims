@@ -2,21 +2,18 @@
     import { enhance } from '$app/forms';
     import Icon from '@iconify/svelte';
 
+    import AcadYearSemSelect from './ui/AcadYearSemSelect.svelte';
     import GreenButton from '$lib/ui/GreenButton.svelte';
     import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
     import RedButton from '$lib/ui/RedButton.svelte';
 
-    import { chooseSemestralRecord } from '../../states/chosen-semestral-record.svelte.js';
     import { viewState, setToEdit, resetViewState } from '../../states/view-state.svelte.js';
 
     const { data } = $props();
-    const { acadYear, semestralRecord, semNum } = $derived(data);
+    const { acadYearOpts, allSemStrs, existingOpts, facultyid, semestralRecord } = $derived(data);
 
     // Ensure view isn't set to editing state on load
     resetViewState();
-
-    // Persist chosen semestral record
-    $effect(() => (chooseSemestralRecord(acadYear, semNum)));
 
     let isLoading = $state(false);
 
@@ -42,6 +39,7 @@
             <span>Edit</span>
         </GreenButton>
     {/if}
+    <AcadYearSemSelect {acadYearOpts} {allSemStrs} {existingOpts} {facultyid} />
 </div>
 
 <form
