@@ -236,3 +236,17 @@ export async function getAllAdminPositions() {
     const uniqueValues = uniqueRows.map(({ name }) => name);
     return uniqueValues;
 }
+
+// TODO: still need to differentiate between user and faculty id
+export async function getFacultyRecordChangelogs(facultyid: number, limit: number, offset:number) {
+    const changelogs = await db
+        .select({
+            logOperaion: changelog.operation,
+        })
+        .from(changelog)
+        .where(eq(changelog.tupleid, facultyid))
+        .limit(limit)
+        .offset(offset) // for pages if needed.
+
+    return changelogs
+}
