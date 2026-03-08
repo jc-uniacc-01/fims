@@ -187,7 +187,7 @@ export async function getFacultyRecordList(
     };
 }
 
-export interface FacultyRecordDTO {
+export interface FacultyListDTO {
     facultyid: number | null;
     lastname: string | null;
     firstname: string | null;
