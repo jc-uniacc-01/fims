@@ -191,7 +191,7 @@ export async function getFacultyCommittees(facultysemesterid: number) {
             committee: facultycommmembership.committee,
             startDate: facultycommmembership.startdate,
             endDate: facultycommmembership.enddate,
-            admininstrativeLoadCredit: facultycommmembership.administrativeloadcredit,
+            administrativeLoadCredit: facultycommmembership.administrativeloadcredit,
         })
         .from(facultycommmembership)
         .where(eq(facultycommmembership.facultysemesterid, facultysemesterid));
