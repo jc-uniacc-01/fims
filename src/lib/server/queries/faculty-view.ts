@@ -204,7 +204,7 @@ export async function getFacultyAdminWorks(facultysemesterid: number) {
             office: office.name,
             startDate: facultyadminwork.startdate,
             endDate: facultyadminwork.enddate,
-            admininstrativeLoadCredit: facultyadminwork.administrativeloadcredit,
+            administrativeLoadCredit: facultyadminwork.administrativeloadcredit,
         })
         .from(facultyadminwork)
         .leftJoin(office, eq(office.officeid, facultyadminwork.officeid))
