@@ -176,7 +176,7 @@ export async function getFacultyAdminPositions(facultysemesterid: number) {
             office: office.name,
             startDate: facultyadminposition.startdate,
             endDate: facultyadminposition.enddate,
-            admininstrativeLoadCredit: facultyadminposition.administrativeloadcredit,
+            administrativeLoadCredit: facultyadminposition.administrativeloadcredit,
         })
         .from(facultyadminposition)
         .leftJoin(adminposition, eq(adminposition.adminpositionid, facultyadminposition.adminpositionid))
