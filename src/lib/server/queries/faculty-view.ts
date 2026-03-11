@@ -69,16 +69,14 @@ export async function getFacultyEducationalAttainments(facultyid: number) {
 }
 
 export async function getFacultyFieldsOfInterest(facultyid: number) {
-    return (
-        await db
-            .select({
-                tupleid: facultyfieldofinterest.facultyfieldofinterestid,
-                field: fieldofinterest.field,
-            })
-            .from(facultyfieldofinterest)
-            .leftJoin(fieldofinterest, eq(fieldofinterest.fieldofinterestid, facultyfieldofinterest.fieldofinterestid))
-            .where(eq(facultyfieldofinterest.facultyid, facultyid))
-    ).map(({ field }) => field);
+    return await db
+        .select({
+            tupleid: facultyfieldofinterest.facultyfieldofinterestid,
+            field: fieldofinterest.field,
+        })
+        .from(facultyfieldofinterest)
+        .leftJoin(fieldofinterest, eq(fieldofinterest.fieldofinterestid, facultyfieldofinterest.fieldofinterestid))
+        .where(eq(facultyfieldofinterest.facultyid, facultyid));
 }
 
 export async function getFacultyPromotionHistory(facultyid: number) {
