@@ -425,3 +425,13 @@ export async function getAllAppointmentStatuses() {
     
     return appointmentStatuses.map(({ appointmentstatus }) => appointmentstatus);
 }
+
+export async function getAllAdminPositions() {
+    const adminPositions = await db
+        .select({
+            adminPosition: adminposition.name,
+        })
+        .from(adminposition);
+
+    return adminPositions.map(({ adminPosition }) => adminPosition);
+}
