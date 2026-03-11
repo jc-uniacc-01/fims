@@ -445,3 +445,14 @@ export async function getAllOffices() {
     
     return offices.map(({ officeName }) => officeName);
 }
+
+export async function getAllResearches() {
+    return await db
+        .select({
+            title: research.title,
+            startDate: research.startdate,
+            endDate: research.enddate,
+            funding: research.funding,
+        })
+        .from(research);
+}
