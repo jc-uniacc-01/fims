@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 
-import { getAllAdminPositions, getAllCourses, getAllFacultySemesters, getAllOffices, getAllSemesterms, getFacultyEducationalAttainments, getFacultyPromotionHistory, getFacultySemestralRecords } from '$lib/server/queries/faculty-view';
+import { getAllAdminPositions, getAllCourses, getAllFacultySemesters, getAllOffices, getAllResearches, getAllSemesterms, getFacultyEducationalAttainments, getFacultyPromotionHistory, getFacultySemestralRecords } from '$lib/server/queries/faculty-view';
 
 export async function load({ params }) {
     const {
@@ -47,6 +47,12 @@ export async function load({ params }) {
     const courses = await getAllCourses();
     opts.set('courseTitles', courses.map(({ title }) => title));
     dependencyMaps.set('courseTitlesToCourseUnits', new Map(courses.map(({ title, units }) => [title, units.toString()])));
+
+    const researches = await getAllResearches();
+    opts.set('researchTitles', researches.map(({ title }) => title));
+    dependencyMaps.set('researchTitlesToResearchStartDates', new Map(researches.map(({ title, startDate }) => [title, startDate])));
+    dependencyMaps.set('researchTitlesToResearchEndDates', new Map(researches.map(({ title, endDate }) => [title, endDate])));
+    dependencyMaps.set('researchTitlesToResearchFunding', new Map(researches.map(({ title, funding }) => [title, funding ?? ''])));
     
     return {
         acadYearOpts,
