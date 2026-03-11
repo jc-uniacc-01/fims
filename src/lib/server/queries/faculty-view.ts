@@ -48,7 +48,7 @@ export async function getFacultyContactNumbers(facultyid: number) {
     return await db
         .select({
             tupleid: facultycontactnumber.facultycontactnumberid,
-            contactnumber: facultycontactnumber.contactnumber,
+            contactNum: facultycontactnumber.contactnumber,
         })
         .from(facultycontactnumber)
         .where(eq(facultycontactnumber.facultyid, facultyid));
