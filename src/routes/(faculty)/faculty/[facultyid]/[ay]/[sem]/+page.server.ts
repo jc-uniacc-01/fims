@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 
-import { getAllAdminPositions, getAllFacultySemesters, getAllOffices, getAllSemesterms, getFacultyEducationalAttainments, getFacultyPromotionHistory, getFacultySemestralRecords } from '$lib/server/queries/faculty-view';
+import { getAllAdminPositions, getAllCourses, getAllFacultySemesters, getAllOffices, getAllSemesterms, getFacultyEducationalAttainments, getFacultyPromotionHistory, getFacultySemestralRecords } from '$lib/server/queries/faculty-view';
 
 export async function load({ params }) {
     const {
@@ -33,6 +33,7 @@ export async function load({ params }) {
 
     // Get input dropdown options and dependency mappings
     const opts: Map<string, Array<any>> = new Map();
+    const dependencyMaps: Map<string, Map<string, string>> = new Map();
 
     const ranks = await getFacultyPromotionHistory(facultyid);
     const educationalAttainments = await getFacultyEducationalAttainments(facultyid);
@@ -43,6 +44,10 @@ export async function load({ params }) {
     opts.set('adminPositions', await getAllAdminPositions());
     opts.set('offices', await getAllOffices());
 
+    const courses = await getAllCourses();
+    opts.set('courseTitles', courses.map(({ title }) => title));
+    dependencyMaps.set('courseTitlesToCourseUnits', new Map(courses.map(({ title, units }) => [title, units.toString()])));
+    
     return {
         acadYearOpts,
         allSemStrs,
@@ -50,5 +55,6 @@ export async function load({ params }) {
         facultyid,
         semestralRecord,
         opts,
+        dependencyMaps,
     };
 }
