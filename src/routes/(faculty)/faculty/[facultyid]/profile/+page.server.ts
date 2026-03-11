@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 
 import { deleteFacultyRecords } from '$lib/server/queries/db-helpers';
-import { getAllFieldsOfInterest, getFacultyProfile } from '$lib/server/queries/faculty-view';
+import { getAllAppointmentStatuses, getAllFieldsOfInterest, getFacultyProfile } from '$lib/server/queries/faculty-view';
 import { refreshFacultyRecordSearchView } from '$lib/server/queries/faculty-list';
 
 export async function load({ params }) {
@@ -20,6 +20,7 @@ export async function load({ params }) {
     const opts: Map<string, Array<any>> = new Map();
 
     opts.set('fieldsOfInterest', await getAllFieldsOfInterest());
+    opts.set('appointmentStatuses', await getAllAppointmentStatuses());
 
     return { profile, opts };
 }
