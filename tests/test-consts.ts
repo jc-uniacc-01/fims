@@ -11,6 +11,150 @@ export const AdminPass = 'password';
 export const ITConfig = 'playwright/.auth/it.json';
 export const AdminConfig = 'playwright/.auth/admin.json';
 
+// for editing records
+// currently untested fields:
+// - fieldsofinterest
+export function getFieldTest() {
+    return {
+        firstname: 'test-name',
+        lastname: 'test=name2',
+        middlename: 'test-name3',
+        suffix: 'A',
+        birthdate: new Date(),
+        maidenname: 'maiden-name',
+        philhealth: `${Math.floor(Math.random()*9999)}`,
+        pagibig: `${Math.floor(Math.random()*9999)}`,
+        psiitem: `${Math.floor(Math.random()*9999)}`,
+        tin: `${Math.floor(Math.random()*9999)}`,
+        gsisbp:`${Math.floor(Math.random()*9999)}`,
+        empnum: `${Math.floor(Math.random()*9999)}`,
+        status: expectedStatuses[Math.floor(Math.random()*3)],
+        dateoforiginalappointment: new Date(),
+        promHist: {
+            rankofrenewalortenure: 'Insstructor 1', //todo: random picking of roles
+            salarygrade: '10-2',
+            salaryrate: '100000.00',
+            appointmentstatus: 'Tenured',
+            dateoftenureorrenewal: new Date(),
+        },
+        remarks: 'wow',
+        emails: ['test@up.edu.ph'],
+        contactnums: ['1234567890'],
+        homeaddrs: ['up street'],
+        eduattain: [{
+            degree:'BS Test Degree',
+            institution:'UP Diliman',
+            year: '3000',
+        }],
+    };
+};
+
+//note: just choose the first office if needed
+export function samplePosition() {
+    return {
+        position: 'Department Head',
+        startdate: new Date(),
+        enddate: new Date(),
+        credit: 2
+    };
+}
+
+export function sampleMembership() {
+    return {
+        natureofmembership: 'membership-test',
+        comittee: 'test committee',
+        startdate: new Date(),
+        enddate: new Date(),
+        credit: 2,
+    };
+}
+
+export function sampleAdminWork() {
+    return {
+        natureofadminwork: 'admin-test',
+        startdate: new Date(),
+        enddate: new Date(),
+        credit: 2,
+    };
+}
+
+export function sampleClass() {
+    return {
+        course: 'Econ 11',
+        section: 'Section ABC',
+        studentnum: '11',
+        credit: 2,
+        SET: 5.0000
+    };
+}
+
+export function sampleMentor() {
+    return {
+        menteelast: 'Lastname',
+        menteefirst: 'Firstname',
+        menteemiddle: 'Middlename',
+        category: 'Test Category',
+        startdate: new Date(),
+        enddate: new Date(),
+        credit: 2
+    };
+}
+
+export function sampleResearch() {
+    return {
+        title: 'Title Testing',
+        startDate: new Date(),
+        endDate: new Date(),
+        funding: '100000.00',
+        credit: 2,
+        remarks: 'testmark',
+    };
+}
+
+export function sampleExt() {
+    return {
+        natureofext: 'Test Extension',
+        agency: 'Test Agency',
+        startdate: new Date(),
+        enddate: new Date(),
+        credit: 2,
+    };
+}
+
+export function sampleStudy() {
+    return {
+        degree:'BS More Test',
+        uni: 'UP Diliman 2',
+        units: 20,
+        isLeaveWithPay: Math.random() < 0.5,
+        isRecipientofFF: Math.random() < 0.5,
+        credit:2,
+    };
+}
+
+//todo: proper types
+export function getSemestralRecordTest(
+    expectedPosition:any,
+    expectedMembership:any,
+    expectedAdminWork:any,
+    expectedclass:any,
+    expectedmentor:any,
+    expectedResearch:any,
+    expectedExt:any,
+    expectedStudy:any,
+) {
+    return {
+        position: expectedPosition,
+        membership: expectedMembership,
+        adminwork: expectedAdminWork,
+        classes: expectedclass,
+        mentors: expectedmentor,
+        research: expectedResearch,
+        exts: expectedExt,
+        studies: expectedStudy,
+    }
+}
+
 // in the case your sample data is different
 export const expectedFacultyName = 'Dela Cruz, Juan';
 
