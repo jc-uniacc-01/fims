@@ -456,3 +456,12 @@ export async function getAllResearches() {
         })
         .from(research);
 }
+
+export async function getAllCourses() {
+    return await db
+        .select({
+            title: course.coursename,
+            units: course.units,
+        })
+        .from(course);
+}
