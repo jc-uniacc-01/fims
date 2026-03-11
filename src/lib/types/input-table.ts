@@ -18,3 +18,9 @@ export interface InputColumnType {
     dependentOn?: number,
     dependencyMap?: Map<string, string>;
 }
+
+export interface InputRowValue {
+    rowNum: number;
+    row: InputCellValue[];
+    tupleid?: number;
+}
