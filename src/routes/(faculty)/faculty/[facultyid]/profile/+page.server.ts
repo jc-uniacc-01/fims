@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 
 import { deleteFacultyRecords } from '$lib/server/queries/db-helpers';
-import { getFacultyProfile } from '$lib/server/queries/faculty-view';
+import { getAllFieldsOfInterest, getFacultyProfile } from '$lib/server/queries/faculty-view';
 import { refreshFacultyRecordSearchView } from '$lib/server/queries/faculty-list';
 
 export async function load({ params }) {
@@ -16,7 +16,12 @@ export async function load({ params }) {
     // Validate output
     if (profile === null) throw error(400, { message: 'No record found.' });
 
-    return { profile };
+    // Get input dropdown options and dependency mappings
+    const opts: Map<string, Array<any>> = new Map();
+
+    opts.set('fieldsOfInterest', await getAllFieldsOfInterest());
+
+    return { profile, opts };
 }
 
 export const actions = {
