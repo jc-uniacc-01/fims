@@ -171,6 +171,11 @@ export const facultyrank = pgTable(
             foreignColumns: [rank.rankid],
             name: 'facultyrank_rankid_fkey',
         }),
+        foreignKey({
+            columns: [table.appointmentstatus],
+            foreignColumns: [appointmentstatus.appointmentstatus],
+            name: 'facultyrank_appointmentstatus_fkey',
+        }),
     ],
 );
 
