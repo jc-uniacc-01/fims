@@ -217,15 +217,19 @@
                 <Icon icon="tabler:device-floppy" class="h-5 w-5 mr-2" />
                 <span>Save Record</span>
             </GreenButton>
-            <RedButton type="reset">
-                <Icon icon="tabler:database-off" class="h-5 w-5 mr-2" />
-                <span>Discard Changes</span>
-            </RedButton>
+            {#if !isCreating}
+                <RedButton type="reset">
+                    <Icon icon="tabler:database-off" class="h-5 w-5 mr-2" />
+                    <span>Discard Changes</span>
+                </RedButton>
+            {/if}
         {:else}
-            <GreenButton onclick={setToEdit}>
-                <Icon icon="tabler:edit" class="h-5 w-5 mr-2" />
-                <span>Edit</span>
-            </GreenButton>
+            {#if !isCreating}
+                <GreenButton onclick={setToEdit}>
+                    <Icon icon="tabler:edit" class="h-5 w-5 mr-2" />
+                    <span>Edit</span>
+                </GreenButton>
+            {/if}
         {/if}
     </div>
 
