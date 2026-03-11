@@ -209,7 +209,7 @@
                     />
                 </div>
                 <div class="w-40">
-                    <SelectDropdownCell name="role" opts={userRoles} selectedOpt={userRoles[0]} />
+                    <SelectDropdownCell name="role" opts={userRoles} defaultSelectedOpt={userRoles[0]} isEditable={true} />
                 </div>
                 <div class="w-85 2xl:w-100"></div>
                 <div class="w-50 justify-center">
