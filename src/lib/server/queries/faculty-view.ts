@@ -223,6 +223,7 @@ export async function getFacultyAdminWorks(facultysemesterid: number) {
 export async function getFacultyCoursesTaught(facultysemesterid: number) {
     return await db
         .select({
+            tupleid: facultycourse.facultycourseid,
             title: course.coursename,
             units: course.units,
             section: facultycourse.section,
