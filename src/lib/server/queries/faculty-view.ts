@@ -435,3 +435,13 @@ export async function getAllAdminPositions() {
 
     return adminPositions.map(({ adminPosition }) => adminPosition);
 }
+
+export async function getAllOffices() {
+    const offices = await db
+        .select({
+            officeName: office.name,
+        })
+        .from(office);
+    
+    return offices.map(({ officeName }) => officeName);
+}
