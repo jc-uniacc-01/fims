@@ -110,6 +110,7 @@ export async function getFacultyEmailAddresses(facultyid: number) {
     return (
         await db
             .select({
+                tupleid: facultyemail.facultyemailid,
                 email: facultyemail.email,
             })
             .from(facultyemail)
