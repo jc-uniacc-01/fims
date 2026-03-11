@@ -4,6 +4,7 @@ import { db } from '../db';
 
 import {
     adminposition,
+    appointmentstatus,
     course,
     faculty,
     facultyadminposition,
@@ -413,4 +414,14 @@ export async function getAllRanks() {
             salaryRate: rank.salaryrate,
         })
         .from(rank);
+}
+
+export async function getAllAppointmentStatuses() {
+    const appointmentStatuses = await db
+        .select({
+            appointmentstatus: appointmentstatus.appointmentstatus,
+        })
+        .from(appointmentstatus);
+    
+    return appointmentStatuses.map(({ appointmentstatus }) => appointmentstatus);
 }
