@@ -14,10 +14,10 @@
     let isDropdownOpen = $state(false);
 </script>
 
-<div class="relative w-full">
+<div class="relative h-full w-full">
     <button
         type="button"
-        class="relative w-full"
+        class="relative h-full w-full"
         onclick={() => {
             isDropdownOpen = !isDropdownOpen;
         }}
@@ -25,7 +25,7 @@
         <span>{selectedOpt ? selectedOpt : defaultSelectedOpt}</span>
         <Icon
             icon={isDropdownOpen ? 'tabler:chevron-up' : 'tabler:chevron-down'}
-            class="absolute top-1 right-0 h-4 w-4"
+            class="absolute right-1 h-full top-0 w-4"
         />
     </button>
 
@@ -44,7 +44,7 @@
                     }}
                 >
                     <Icon icon="tabler:check" class="h-6 w-8 pr-2 text-fims-green" />
-                    <span>{selectedOpt}</span>
+                    <span class="text-left">{selectedOpt}</span>
                 </button>
             {:else}
                 <button
@@ -55,7 +55,7 @@
                     }}
                 >
                     <div class="w-8 pr-2"></div>
-                    <span>{opt}</span>
+                    <span class="text-left">{opt}</span>
                 </button>
             {/if}
         {/each}
