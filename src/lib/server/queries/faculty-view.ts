@@ -261,6 +261,8 @@ export async function getFacultyMentees(facultysemesterid: number) {
         .where(eq(facultymentoring.facultysemesterid, facultysemesterid));
 }
 
+export type FacultyMenteesDTO = Awaited<ReturnType<typeof getFacultyMentees>>;
+
 export async function getFacultyResearch(facultysemesterid: number) {
     return await db
         .select({
