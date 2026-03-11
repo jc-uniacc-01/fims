@@ -52,7 +52,7 @@
         </div>
         <div class="w-40">
             <form method="POST" action="" class="w-full">
-                <SelectDropdownCell name="role" opts={userRoles} selectedOpt={role} />
+                <SelectDropdownCell name="role" opts={userRoles} defaultSelectedOpt={role} isEditable={true} />
             </form>
         </div>
         <div class="w-85 2xl:w-100">
