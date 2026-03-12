@@ -12,147 +12,132 @@ export const ITConfig = 'playwright/.auth/it.json';
 export const AdminConfig = 'playwright/.auth/admin.json';
 
 // for editing records
-// currently untested fields:
-// - fieldsofinterest
 export function getFieldTest() {
-    return {
-        firstname: 'test-name',
-        lastname: 'test=name2',
-        middlename: 'test-name3',
-        suffix: 'A',
-        birthdate: new Date(),
-        maidenname: 'maiden-name',
-        philhealth: `${Math.floor(Math.random()*9999)}`,
-        pagibig: `${Math.floor(Math.random()*9999)}`,
-        psiitem: `${Math.floor(Math.random()*9999)}`,
-        tin: `${Math.floor(Math.random()*9999)}`,
-        gsisbp:`${Math.floor(Math.random()*9999)}`,
-        empnum: `${Math.floor(Math.random()*9999)}`,
-        status: expectedStatuses[Math.floor(Math.random()*3)],
-        dateoforiginalappointment: new Date(),
-        promHist: {
-            rankofrenewalortenure: 'Insstructor 1', //todo: random picking of roles
-            salarygrade: '10-2',
-            salaryrate: '100000.00',
-            appointmentstatus: 'Tenured',
-            dateoftenureorrenewal: new Date(),
-        },
-        remarks: 'wow',
-        emails: ['test@up.edu.ph'],
-        contactnums: ['1234567890'],
-        homeaddrs: ['up street'],
-        eduattain: [{
-            degree:'BS Test Degree',
-            institution:'UP Diliman',
-            year: '3000',
-        }],
-    };
+    return [
+        'test-name', // Last name
+        'test=name2', // First name 
+        'test-name3', // Middle name
+        'mm.', // suffix
+        new Date().toLocaleDateString('en-GB'), // birth date
+        new Date().toLocaleDateString('en-GB'), // date of original appointment
+        'maiden-name', // maiden name
+        //the numbers
+        `${Math.floor(Math.random()*9999)}`,
+        `${Math.floor(Math.random()*9999)}`,
+        `${Math.floor(Math.random()*9999)}`,
+        `${Math.floor(Math.random()*9999)}`,
+        `${Math.floor(Math.random()*9999)}`,
+        `${Math.floor(Math.random()*9999)}`,
+        expectedStatuses[Math.floor(Math.random()*3)], // status
+        new Date().toLocaleDateString('en-GB'), // date of original appointment
+        'test remarks', // remarks
+    ];
 };
+
+export function sampleEmails() { return ['test@up.edu.ph'];}
+export function sampleContactNums() {return ['123456'];}
+export function sampleHomeAddrs() {return ['up street'];}
+export function sampleEduAttain() {
+    return [
+        'BS Test Degree',
+        'UP Diliman',
+        '3000',
+    ]
+}
+export function sampleFieldsInterest() {
+    return ['Test Interest'];
+}
+export function samplePromHist() {
+    return [
+        'Instructor 1', //todo: random picking of roles
+        '10-2',
+        '100000.00',
+        'Tenured',
+        new Date().toLocaleDateString('en-GB'),
+    ]
+}
 
 //note: just choose the first office if needed
 export function samplePosition() {
-    return {
-        position: 'Department Head',
-        startdate: new Date(),
-        enddate: new Date(),
-        credit: 2
-    };
+    return [
+        'Department Head',
+        new Date().toLocaleDateString('en-GB'),
+        new Date().toLocaleDateString('en-GB'),
+        '2'
+    ];
 }
 
 export function sampleMembership() {
-    return {
-        natureofmembership: 'membership-test',
-        comittee: 'test committee',
-        startdate: new Date(),
-        enddate: new Date(),
-        credit: 2,
-    };
+    return [
+        'membership-test',
+        'test committee',
+        new Date().toLocaleDateString('en-GB'),
+        new Date().toLocaleDateString('en-GB'),
+        '2',
+    ];
 }
 
 export function sampleAdminWork() {
-    return {
-        natureofadminwork: 'admin-test',
-        startdate: new Date(),
-        enddate: new Date(),
-        credit: 2,
-    };
+    return [
+        'admin-test',
+        new Date().toLocaleDateString('en-GB'),
+        new Date().toLocaleDateString('en-GB'),
+        '2',
+    ];
 }
 
 export function sampleClass() {
-    return {
-        course: 'Econ 11',
-        section: 'Section ABC',
-        studentnum: '11',
-        credit: 2,
-        SET: 5.0000
-    };
+    return [
+        'Econ 11',
+        'Section ABC',
+        '11',
+        '2',
+        '5.0000',
+    ];
 }
 
 export function sampleMentor() {
-    return {
-        menteelast: 'Lastname',
-        menteefirst: 'Firstname',
-        menteemiddle: 'Middlename',
-        category: 'Test Category',
-        startdate: new Date(),
-        enddate: new Date(),
-        credit: 2
-    };
+    return [
+        'Lastname',
+        'Firstname',
+        'Middlename',
+        'Test Category',
+        new Date().toLocaleDateString('en-GB'),
+        new Date().toLocaleDateString('en-GB'),
+        2
+    ];
 }
 
 export function sampleResearch() {
-    return {
-        title: 'Title Testing',
-        startDate: new Date(),
-        endDate: new Date(),
-        funding: '100000.00',
-        credit: 2,
-        remarks: 'testmark',
-    };
+    return [
+        'Title Testing',
+        new Date().toLocaleDateString('en-GB'),
+        new Date().toLocaleDateString('en-GB'),
+        '100000.00',
+        '2',
+        'testmark',
+    ];
 }
 
 export function sampleExt() {
-    return {
-        natureofext: 'Test Extension',
-        agency: 'Test Agency',
-        startdate: new Date(),
-        enddate: new Date(),
-        credit: 2,
-    };
+    return [
+        'Test Extension',
+        'Test Agency',
+        new Date().toLocaleDateString('en-GB'),
+        new Date().toLocaleDateString('en-GB'),
+        '2',
+    ];
 }
 
 export function sampleStudy() {
-    return {
-        degree:'BS More Test',
-        uni: 'UP Diliman 2',
-        units: 20,
-        isLeaveWithPay: Math.random() < 0.5,
-        isRecipientofFF: Math.random() < 0.5,
-        credit:2,
-    };
-}
-
-//todo: proper types
-export function getSemestralRecordTest(
-    expectedPosition:any,
-    expectedMembership:any,
-    expectedAdminWork:any,
-    expectedclass:any,
-    expectedmentor:any,
-    expectedResearch:any,
-    expectedExt:any,
-    expectedStudy:any,
-) {
-    return {
-        position: expectedPosition,
-        membership: expectedMembership,
-        adminwork: expectedAdminWork,
-        classes: expectedclass,
-        mentors: expectedmentor,
-        research: expectedResearch,
-        exts: expectedExt,
-        studies: expectedStudy,
-    }
+    return [
+        'BS More Test',
+        'UP Diliman 2',
+        '29',
+        `${Math.random() < 0.5}`,
+        `${Math.random() < 0.5}`,
+        '2',
+    ];
 }
 
 // in the case your sample data is different
@@ -265,3 +250,47 @@ export async function seed() {
     }
     */
 }
+
+// for list input
+export type possibleInputs = Array<'textbox'|'dropdown'|'numeric'|'date'|'remarks'|'checkbox'>;
+export const emailInputs:possibleInputs = ['textbox'];
+export const contactNumInputs:possibleInputs = ['textbox'];
+export const homeAddrsInputs:possibleInputs = ['textbox'];
+export const eduAttainInputs:possibleInputs = ['textbox', 'textbox', 'textbox'];
+export const fieldInterestInputs:possibleInputs = ['dropdown'];
+export const promHistInputs:possibleInputs = ['dropdown', 'dropdown', 'date'];
+
+export const adminPosInputs:possibleInputs = ['dropdown', 'dropdown', 'date', 'date', 'numeric'];
+export const membershipInputs:possibleInputs = ['textbox', 'textbox', 'date', 'date', 'numeric'];
+export const adminWorkInputs:possibleInputs = ['textbox', 'dropdown', 'date', 'date', 'numeric'];
+export const classesInputs:possibleInputs = ['dropdown', 'textbox', 'numeric', 'numeric', 'numeric'];
+export const mentorInputs:possibleInputs = ['textbox', 'textbox', 'textbox', 'textbox', 'date', 'date', 'numeric'];
+export const researchInputs:possibleInputs = ['textbox', 'numeric', 'remarks'];
+export const extInputs:possibleInputs = ['textbox', 'textbox', 'date', 'date', 'numeric'];
+export const studyInputs:possibleInputs = ['textbox', 'textbox', 'numeric', 'checkbox', 'checkbox', 'numeric'];
+
+//for field input
+
+export const profileTabFields = [
+    'Last Name',
+    'First Name',
+    'Middle Name',
+    'Suffix',
+    'Birth Date',
+    'Maiden Name',
+    'PhilHealth No.',
+    'Pag-IBIG No.',
+    'PSI Item No.',
+    'TIN',
+    'GSIS BP No.',
+    'Employee No.',
+    'Status',
+    'Date of Original Appointment',
+    'Remarks',
+]
+
+export const semRecsFields = [
+    'Current Rank',
+    'Current Highest Educational Attainment',
+    'Remarks',
+]
