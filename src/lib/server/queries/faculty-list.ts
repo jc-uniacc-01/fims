@@ -46,19 +46,15 @@ export async function getFacultyRecordList(
     // fallback ID in case there are no entries for current semester
     const currentSemesterId = latestSemester?.acadsemesterid ?? -1;
 
-    // Search in search table all faculty records affected
+    // eslint-disable-next-line no-undefined
+    const searchFilter = searchTerm ? ilike(facultyRecordSearchView.searchcontent, `%${searchTerm}%`) : undefined;
+
     const searchSq = await db
         .selectDistinct({
             id: facultyRecordSearchView.id,
         })
         .from(facultyRecordSearchView)
-
-        .where(
-            searchTerm
-                ? ilike(facultyRecordSearchView.searchcontent, `%${searchTerm}%`)
-                : // eslint-disable-next-line no-undefined -- can't use null in Drizzle WHERE queries
-                  undefined,
-        )
+        .where(searchFilter)
         .as('search_sq');
 
     // Process filter queries
@@ -91,6 +87,11 @@ export async function getFacultyRecordList(
         )
         .as('admin_position_sq');
 
+    // eslint-disable-next-line no-undefined
+    let cursorFilter: SQL | undefined = undefined;
+    if (cursor) {
+        cursorFilter = isNext ? gt(faculty.facultyid, cursor) : lt(faculty.facultyid, cursor);
+    }
     // Get faculty records from database
     const facultyRecordCountSq = await db
         .select({
@@ -119,12 +120,7 @@ export async function getFacultyRecordList(
         )
         .where(
             and(
-                cursor
-                    ? isNext
-                        ? gt(faculty.facultyid, cursor)
-                        : lt(faculty.facultyid, cursor)
-                    : // eslint-disable-next-line no-undefined -- can't use null in Drizzle WHERE queries
-                      undefined,
+                cursorFilter,
                 and(...filterQueries),
             ),
         )

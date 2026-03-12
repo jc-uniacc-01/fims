@@ -101,25 +101,25 @@ export const actions = {
         const semNumStr = params.sem;
         const semNum = parseInt(semNumStr, 10);
 
-        if (Number.isNaN(facultyid) || Number.isNaN(acadYear) || Number.isNaN(semNum)) 
+        if (Number.isNaN(facultyid) || Number.isNaN(acadYear) || Number.isNaN(semNum)) {
             return fail(400, { error: 'Invalid URL parameters.' });
-        
+        }
 
         // Extract fields (Current Rank, Degree, Remarks)
-        const getVal = (key: string) => {
-            if (!formData.has(key)) return undefined;
+        function getVal(key: string) {
+            if (!formData.has(key)) return null; 
             const val = formData.get(key) as string;
-            return val === '' || val === '-' ? null : val;
-        };
+            return (val === '' || val === '-') ? null : val;
+        }
 
         const basicSemestralData = {
             currentRankTitle: getVal('current-rank'),
             currentHighestDegree: getVal('current-highest-educational-attainment'),
-            remarks: getVal('remarks'),
+            remarks: getVal('remarks')
         };
 
         // Helper function to parse dynamic tables
-        const parseTable = (tableName: string, colNames: string[]) => {
+        function parseTable(tableName: string, colNames: string[]) {
             const numOfRowsStr = formData.get(`${tableName}-num-of-rows`) as string;
             const deletedRowsStr = formData.get(`${tableName}-deletion`) as string;
 
@@ -127,9 +127,9 @@ export const actions = {
             const deletedRows: number[] = JSON.parse(deletedRowsStr || '[]');
 
             const parsedRecords = {
-                create: [] as Record<string, any>[],
-                update: [] as Record<string, any>[],
-                delete: [] as number[],
+                create: [] as Record<string, unknown>[],
+                update: [] as Record<string, unknown>[],
+                delete: [] as number[]
             };
 
             for (let i = 0; i < numOfRows; i++) {
@@ -141,100 +141,72 @@ export const actions = {
                     continue;
                 }
 
-                const rowData: Record<string, any> = {};
-                colNames.forEach((col) => {
-                    let val = formData.get(`${i}[${col}]`);
-
-                    if (val === 'on' || val === 'true') 
-                        val = true as any;
-                     else if (val === 'false' || val === undefined) 
-                        val = false as any;
+                const rowData: Record<string, unknown> = {};
+                colNames.forEach(col => {
+                    let val: unknown = formData.get(`${i}[${col}]`);
                     
-
-                    if (val === '' || val === '-' || val === null) val = null;
+                    if (val === 'on' || val === 'true') {
+                         val = true;
+                    } else if (val === 'false' || val === null) {
+                         val = false;
+                    }
+                    
+                    if (val === '' || val === '-') val = null;
                     rowData[col] = val;
                 });
 
                 if (tupleid) {
                     parsedRecords.update.push({ tupleid, ...rowData });
                 } else {
-                    const hasData = Object.values(rowData).some(
-                        (val) => val !== null && val !== false,
-                    );
+                    const hasData = Object.values(rowData).some(val => val !== null && val !== false);
                     if (hasData) parsedRecords.create.push(rowData);
                 }
             }
             return parsedRecords;
-        };
+        }
 
         // Parse semestral sections
         const dynamicTables = {
             // Admin
             adminPositions: parseTable('administrative-positions', [
-                'administrative-position-title',
-                'administrative-position-office',
-                'administrative-position-start-date',
-                'administrative-position-end-date',
-                'administrative-position-load-credit',
+                'administrative-position-title', 'administrative-position-office',
+                'administrative-position-start-date', 'administrative-position-end-date',
+                'administrative-position-load-credit'
             ]),
             committees: parseTable('committee-memberships', [
-                'committee-membership-nature',
-                'committee-membership-committee',
-                'committee-membership-start-date',
-                'committee-membership-end-date',
-                'committee-membership-load-credit',
+                'committee-membership-nature', 'committee-membership-committee',
+                'committee-membership-start-date', 'committee-membership-end-date',
+                'committee-membership-load-credit'
             ]),
             adminWorks: parseTable('administrative-works', [
-                'administrative-work-nature',
-                'administrative-work-committee',
-                'administrative-work-start-date',
-                'administrative-work-end-date',
-                'administrative-work-load-credit',
+                'administrative-work-nature', 'administrative-work-committee',
+                'administrative-work-start-date', 'administrative-work-end-date',
+                'administrative-work-load-credit'
             ]),
 
             // Teaching
             courses: parseTable('courses', [
-                'course-title',
-                'course-units',
-                'course-section',
-                'course-num-of-students',
-                'course-load-credit',
-                'course-section-set',
+                'course-title', 'course-units', 'course-section', 
+                'course-num-of-students', 'course-load-credit', 'course-section-set'
             ]),
             mentees: parseTable('mentees', [
-                'mentee-lastname',
-                'mentee-firstname',
-                'mentee-middlename',
-                'mentee-category',
-                'mentee-start-date',
-                'mentee-end-date',
-                'mentee-load-credit',
+                'mentee-lastname', 'mentee-firstname', 'mentee-middlename',
+                'mentee-category', 'mentee-start-date', 'mentee-end-date', 'mentee-load-credit'
             ]),
 
             // Research, extension, study
             research: parseTable('research', [
-                'research-title',
-                'research-start-date',
-                'research-end-date',
-                'research-funding',
-                'research-load-credit',
-                'research-remarks',
+                'research-title', 'research-start-date', 'research-end-date',
+                'research-funding', 'research-load-credit', 'research-remarks'
             ]),
             extension: parseTable('extension', [
-                'extension-nature',
-                'extension-agency',
-                'extension-start-date',
-                'extension-end-date',
-                'extension-load-credit',
+                'extension-nature', 'extension-agency', 'extension-start-date',
+                'extension-end-date', 'extension-load-credit'
             ]),
             studyLoad: parseTable('study-load', [
-                'study-load-degree',
-                'study-load-university',
-                'study-load-units',
-                'study-load-on-leave-with-pay',
-                'study-load-fellowship-recipient',
-                'study-load-credit',
-            ]),
+                'study-load-degree', 'study-load-university', 'study-load-units',
+                'study-load-on-leave-with-pay', 'study-load-fellowship-recipient', 'study-load-credit'
+            ])
         };
 
         // Database update calls
@@ -243,13 +215,13 @@ export const actions = {
             acadYear,
             semNum,
             basicSemestralData,
-            dynamicTables,
+            dynamicTables
         );
 
-        if (!success) 
+        if (!success) {
             return fail(500, { error: 'Failed to update semestral records.' });
-        
+        }
 
         return { success: true };
-    },
+    }
 };
