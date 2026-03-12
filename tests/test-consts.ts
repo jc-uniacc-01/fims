@@ -11,6 +11,10 @@ export const AdminPass = 'password';
 export const ITConfig = 'playwright/.auth/it.json';
 export const AdminConfig = 'playwright/.auth/admin.json';
 
+// as of making this, the save confirmation hasn't yet been made
+// so i made this preemtively
+export const SaveConfirmText = 'Save'
+
 // for editing records
 export function getFieldTest() {
     return [
@@ -57,10 +61,10 @@ export function samplePromHist() {
     ]
 }
 
-//note: just choose the first office if needed
 export function samplePosition() {
     return [
         'Department Head',
+        'Test Office',
         new Date().toLocaleDateString('en-GB'),
         new Date().toLocaleDateString('en-GB'),
         '2'
@@ -289,8 +293,19 @@ export const profileTabFields = [
     'Remarks',
 ]
 
+
 export const semRecsFields = [
     'Current Rank',
     'Current Highest Educational Attainment',
     'Remarks',
+]
+
+// to spot the headers and stuff. basically gets a unique header from each list
+export const profileTabHeaders = [
+    'Emails',
+    'Contact Numbers',
+    'Home Addresses',
+    'Degree', //education attainment
+    'Fields of Interest',
+    'Rank of Renewal/Tenure' //promotion history
 ]

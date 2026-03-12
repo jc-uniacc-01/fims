@@ -8,7 +8,7 @@ export function semRecsTab(page:Page):Locator {
 	return page.locator('a').getByText('Semestral Records')
 }
 
-export async function testField(field:string, input:string, page:Page) {
+export async function inputField(field:string, input:string, page:Page) {
 	let elem = page.getByRole('textbox', {name: field, exact:true});
 	await expect(elem).toBeVisible();
 	await elem.fill(input);
@@ -30,7 +30,7 @@ export async function testList(listHeader:string, inputs:string[], inputTypes:co
 
 	await addButton.click();
 
-	let listDiv = header.locator('..');
+	let listDiv = header.locator('..').locator('..');
 	await expect(listDiv).toBeVisible();
 
 	let inputRow = listDiv.locator('div').last();
