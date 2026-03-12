@@ -73,6 +73,24 @@ export async function getFacultyRecordList(
         if (sameColumnQueries.length) filterQueries.push(or(...sameColumnQueries));
     });
 
+    // Get only the single most recent admin position per semester
+    const adminPositionSq = db
+        .selectDistinctOn([facultyadminposition.facultysemesterid], {
+            facultysemesterid: facultyadminposition.facultysemesterid,
+            positions: adminposition.name,
+        })
+        .from(facultyadminposition)
+        .leftJoin(
+            adminposition,
+            eq(adminposition.adminpositionid, facultyadminposition.adminpositionid),
+        )
+        .orderBy(
+            facultyadminposition.facultysemesterid,
+            desc(facultyadminposition.startdate), // Prioritize the latest start date
+            desc(facultyadminposition.facultyadminpositionid), // Tiebreaker: highest ID
+        )
+        .as('admin_position_sq');
+
     // Get faculty records from database
     const facultyRecordCountSq = await db
         .select({
@@ -81,7 +99,7 @@ export async function getFacultyRecordList(
             firstname: faculty.firstname,
             status: faculty.status,
             ranktitle: rank.ranktitle,
-            adminposition: adminposition.name,
+            adminposition: adminPositionSq.positions,
             latestchangelogid: faculty.latestchangelogid,
         })
         .from(faculty)
@@ -96,12 +114,8 @@ export async function getFacultyRecordList(
         .leftJoin(facultyrank, eq(facultyrank.facultyrankid, facultysemester.currentrankid))
         .leftJoin(rank, eq(rank.rankid, facultyrank.rankid))
         .leftJoin(
-            facultyadminposition,
-            eq(facultyadminposition.facultysemesterid, facultysemester.facultysemesterid),
-        )
-        .leftJoin(
-            adminposition,
-            eq(adminposition.adminpositionid, facultyadminposition.adminpositionid),
+            adminPositionSq,
+            eq(adminPositionSq.facultysemesterid, facultysemester.facultysemesterid),
         )
         .where(
             and(
