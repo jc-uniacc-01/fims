@@ -187,9 +187,19 @@ export async function seed() {
     await testDB.delete(schema.facultyrank);
     await testDB.delete(schema.facultysemester);
     await testDB.delete(schema.facultyadminposition);
+    await testDB.delete(schema.office);
+    await testDB.delete(schema.office);
 
     await testDB.execute(sql`REFRESH MATERIALIZED VIEW account_search_view`);
     await testDB.execute(sql`REFRESH MATERIALIZED VIEW faculty_record_search_view`);
+
+    //push office
+    await testDB
+        .insert(schema.office)
+        .values({
+            officeid: 1,
+            name: 'Test Office' 
+        });
 
     // push faculty
     await testDB

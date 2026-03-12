@@ -38,14 +38,25 @@ export default defineConfig({
             testMatch: /.common.e2e.(?:js|ts)/u,
             fullyParallel: false,
         },
+
+        // record editing tests
+        {
+            name: 'record-edits',
+            dependencies: ['common-tests'],
+            testDir: 'tests/playwright/record-editing',
+            testMatch: /.e2e.(?:js|ts)/u,
+            fullyParallel: true,
+        },
+
         // common destructive tests, as they can't be easily parallelized due to deletions and stuff
         {
             name: 'common-destructive-tests',
-            dependencies: ['common-tests'],
+            dependencies: ['record-edits'],
             testDir: 'tests/playwright/destructive',
             testMatch: /.e2e.(?:js|ts)/u,
         },
         
+        // it-specifc (account handling) tests
         {
             name: 'it-specific-tests-indiv',
             dependencies: ['common-tests', 'common-destructive-tests', 'it-auth'],
