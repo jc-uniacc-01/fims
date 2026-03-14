@@ -34,25 +34,25 @@
     >
 </div>
 
-{#if isDialogOpen}
-    <div
-        class="fixed top-0 left-0 z-150 flex h-full w-full items-center justify-center bg-[rgba(0,0,0,0.9)]"
-    >
-        <div class="h-[90%] w-[90%] rounded-2xl bg-white">
-            <div class="flex h-[7.5%] items-center justify-end pr-2">
-                <RedButton onclick={() => (isDialogOpen = false)}>
-                    <Icon icon="tabler:x" class="mr-2 h-5 w-5" />
-                    <span>Close</span>
-                </RedButton>
-            </div>
-            <textarea
-                class="h-[92.5%] w-full whitespace-pre-wrap {isDeleted ? 'text-fims-gray' : ''}"
-                disabled={!viewState.isEditing ||
-                    (immutable && defaultValue !== undefined && defaultValue !== '') ||
-                    isDeleted}
-                defaultValue={defaultValue ?? ''}
-                bind:value
-            ></textarea>
+<div
+    class="fixed top-0 left-0 z-150 flex h-full w-full items-center justify-center bg-[rgba(0,0,0,0.9)] {isDialogOpen
+        ? ''
+        : 'hidden'}"
+>
+    <div class="h-[90%] w-[90%] rounded-2xl bg-white">
+        <div class="flex h-[7.5%] items-center justify-end pr-2">
+            <RedButton type="button" onclick={() => (isDialogOpen = false)}>
+                <Icon icon="tabler:x" class="mr-2 h-5 w-5" />
+                <span>Close</span>
+            </RedButton>
         </div>
+        <textarea
+            class="h-[92.5%] w-full whitespace-pre-wrap {isDeleted ? 'text-fims-gray' : ''}"
+            disabled={!viewState.isEditing ||
+                (immutable && defaultValue !== undefined && defaultValue !== '') ||
+                isDeleted}
+            defaultValue={defaultValue ?? ''}
+            bind:value
+        ></textarea
     </div>
-{/if}
+</div>
