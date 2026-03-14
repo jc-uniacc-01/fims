@@ -21,13 +21,15 @@
 <div class="relative flex w-full items-center">
     <input
         type="text"
-        value={value ?? defaultValue ?? ''}
-        class="h-8 w-[90%] truncate border-0 focus:ring-0 {isDeleted ? 'text-fims-gray' : ''}"
+        defaultValue={defaultValue ?? ''}
+        class="h-8 w-full truncate border-0 focus:ring-0 {isDeleted ? 'text-fims-gray' : ''}"
         disabled
+        {name}
+        bind:value
     />
     <button
         type="button"
-        class="h-8 w-[10%] bg-white text-fims-gray hover:text-black"
+        class="h-8 w-fit text-right bg-white text-fims-gray pr-2 hover:text-black"
         onclick={() => (isDialogOpen = true)}>Expand</button
     >
 </div>
@@ -44,14 +46,13 @@
                 <span>Close</span>
             </RedButton>
         </div>
-
         <textarea
-            {name}
             class="h-[92.5%] w-full whitespace-pre-wrap {isDeleted ? 'text-fims-gray' : ''}"
             disabled={!viewState.isEditing ||
                 (immutable && defaultValue !== undefined && defaultValue !== '') ||
                 isDeleted}
+            defaultValue={defaultValue ?? ''}
             bind:value
-        ></textarea>
+        ></textarea
     </div>
 </div>
