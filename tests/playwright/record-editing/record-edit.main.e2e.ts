@@ -6,7 +6,13 @@ import * as fieldHelp from '../../test-helpers/field-test';
 async function getFields(page: Page, fields: string[]) {
     const res: string[] = [];
     for (let idx = 0; idx < fields.length; idx++)
-        res.push(await page.getByRole('textbox', { name: fields[idx], exact: true }).inputValue());
+		switch (fields[idx]) {
+			case 'Status':
+				res.push(await page.getByRole('combobox', { name: fields[idx], exact: true }).inputValue());
+				break;
+			default:
+				res.push(await page.getByRole('textbox', { name: fields[idx], exact: true }).inputValue());
+		}
 
     return res;
 }
@@ -100,36 +106,32 @@ test.describe('editing record under profile tab', () => {
         await verifyProfileFields(page, sampleInputs);
     });
 
-    /*
 	test('cancelled editing lists', async ({page}) => {
 		//go to faculty record
 		await page.goto('/')
 		await page.getByText('Dela Cruz, Gabrielle Zach').click() // some random record
-
-		//get the last of each list
-		let compares:consts.testRowTuple[] = []
-		for (let e of sampleListInputs) {
-			const header = e[0]
-			const addButton = e[1]
-			compares.push([
-				header, addButton, await fieldHelp.getLastEntry(header, page), e[3]
-			])
-		}
 
 		//edit
 		let editButton = page.getByRole('button', {name: 'Edit'});
 		await expect(editButton).toBeVisible();
 		await editButton.click();
 
-		await editLists(page, sampleListInputs);
+		// add email to empty record
+		fieldHelp.testList(
+			'Emails',
+			['test@up.edu.ph'],
+			['textbox'],
+			'+ Add Email',
+			page
+		)
 
 		//cancel changes
 		let cancelButton = page.getByRole('button', {name:'Discard Changes', exact:true});
 		await expect(cancelButton).toBeVisible();
 		await cancelButton.click();
 
-		//check if lists remain unchanged
-		verifyLists(page, compares)
+		//check if email did not change
+		await expect(page.getByText('test@up.edu.ph')).not.toBeVisible();
 	});
 	test ('confirm editing of lists by adding entries', async ({page}) => {
 
@@ -142,39 +144,111 @@ test.describe('editing record under profile tab', () => {
 		await expect(editButton).toBeVisible();
 		await editButton.click();
 
-		await editLists(page, sampleListInputs);
+		//add email
+		fieldHelp.testList(
+			'Emails',
+			['test@up.edu.ph'],
+			['textbox'],
+			'+ Add Email',
+			page
+		)
 
 		//save changes
 		let saveButton = page.getByRole('button', {name:'Save Record', exact:true});
 		await expect(saveButton).toBeVisible();
 		await saveButton.click();
 
-		//check if lists contain new results
-		await verifyLists(page, sampleListInputs);
+		//check if lists contain new email
+		await expect(page.getByText('test@up.edu.ph')).not.toBeVisible();
 
 	});
 	test ('cancel editing of lists by deleting entries', async ({page}) => {
-		//TODO
+		//go to faculty record
+		await page.goto('/')
+		await page.getByText('Galinato, Eriene').click() // some random unmodified record
+
+		//edit
+		let editButton = page.getByRole('button', {name: 'Edit'});
+		await expect(editButton).toBeVisible();
+		await editButton.click();
+
+		//attempt to delete email
+		fieldHelp.deleteLastOfList('Emails', page)
+
+		//cancel changes
+		let cancelButton = page.getByRole('button', {name:'Discard Changes', exact:true});
+		await expect(cancelButton).toBeVisible();
+		await cancelButton.click();
+
+		//check if lists contain no email
+		await expect(page.getByText('test@up.edu.ph')).not.toBeVisible();
 	});
-	*/
 });
 
-/*
-semestral records tab is still very buggy
 test.describe('editing record under semestral records tab', () => {
 	test.use({storageState:consts.AdminConfig});
 	let sampleListInputs = consts.semRecsTabListSample();
 
-	/* i am not sure how to test this at its current state
 	test('cancelled editing fields', async ({page}) => {
+		//go to faculty record under semestral records tab
+		await page.goto('/');
+		await page.getByText('Camingao, Ericsson Jake').click(); // some random record with multiple promotion histories
+		await page.getByRole('link', {name: 'Semestral Records', exact: true}).click();
 
+		//edit
+		let editButton = page.getByRole('button', {name: 'Edit'});
+		await expect(editButton).toBeVisible();
+		await editButton.click();
+
+		// get current rank
+		let rankField = page.getByRole('combobox', {name: 'Current Rank', exact: true})
+		await rankField.isVisible()	
+		let currentRank = await rankField.inputValue()
+
+		// put in a different rank
+		await rankField.selectOption('Instructor 2');
+		
+		// cancel changes
+		let cancelButton = page.getByRole('button', {name:'Discard Changes', exact:true});
+		await expect(cancelButton).toBeVisible();
+		await cancelButton.click();
+
+		let confirmButton = page.getByRole('button', {name: consts.SaveConfirmText, exact:true});
+		await expect(confirmButton).toBeVisible();
+		await confirmButton.click();
+	
+		// compare
+		expect(await rankField.inputValue()).toBe(currentRank)
 	})
 	test('confirmed editing fields', async ({page}) => {
+		//go to faculty record under semestral records tab
+		await page.goto('/');
+		await page.getByText('Camingao, Ericsson Jake').click(); // some random record with multiple promotion histories
+		await page.getByRole('link', {name: 'Semestral Records', exact: true}).click();
 
+		//edit
+		let editButton = page.getByRole('button', {name: 'Edit'});
+		await expect(editButton).toBeVisible();
+		await editButton.click();
+
+		// get current rank
+		let rankField = page.getByRole('combobox', {name: 'Current Rank', exact: true})
+		await rankField.isVisible()	
+		let currentRank = await rankField.inputValue()
+
+		// put in a different rank
+		await rankField.selectOption('Instructor 2');
+		
+
+		//save changes
+		let saveButton = page.getByRole('button', {name:'Save Record', exact:true});
+		await expect(saveButton).toBeVisible();
+		await saveButton.click();
+
+		// compare
+		expect(await rankField.inputValue()).not.toBe(currentRank)
 	})
-	*/
 
-/*
 	test('cancelled editing lists', async ({page}) => {
 		//go to faculty record under semestral records tab
 		await page.goto('/');
@@ -196,48 +270,65 @@ test.describe('editing record under semestral records tab', () => {
 		await expect(editButton).toBeVisible();
 		await editButton.click();
 
-		await editLists(page, sampleListInputs);
+		//edit list
+		fieldHelp.testList(
+			'Nature of Membership',
+			consts.sampleMembership(),
+			consts.membershipInputs,
+			'+ Add Committee Membership',
+			page
+		)
 
 		//cancel changes
 		let cancelButton = page.getByRole('button', {name:'Discard Changes', exact:true});
 		await expect(cancelButton).toBeVisible();
 		await cancelButton.click();
 
-		//check if lists remain unchanged
-		verifyLists(page, compares)
+		//confirm cancel
+		let confirmCancel = page.getByRole('button', {name:'Discard', exact:true});
+		await expect(confirmCancel).toBeVisible()
+		await confirmCancel.click()
+
+		//check if list remain unchanged
+		await expect(page.getByText('membership-test')).not.toBeVisible()
 	});
 
-	test ('confirm editing of lists by adding entries', async ({page}) => {
+	test ('confirm editing of lists', async ({page}) => {
 		//go to faculty record under semestral records tab
 		await page.goto('/');
 		await page.getByText('Camingao, Ericsson Jake').click(); // some random unmodified record
 		await page.getByRole('link', {name: 'Semestral Records', exact: true}).click();
 
-		//go to faculty record
-		await page.goto('/')
-		await page.getByText('Dela Cruz, Gabrielle Zach').click() // some random unmodified record
+		//get the last of each list
+		let compares:consts.testRowTuple[] = []
+		for (let e of sampleListInputs) {
+			const header = e[0]
+			const addButton = e[1]
+			compares.push([
+				header, addButton, await fieldHelp.getLastEntry(header, page), e[3]
+			])
+		}
 
 		//edit
 		let editButton = page.getByRole('button', {name: 'Edit'});
 		await expect(editButton).toBeVisible();
 		await editButton.click();
 
-		await editLists(page, sampleListInputs);
+		//edit list
+		fieldHelp.testList(
+			'Nature of Membership',
+			consts.sampleMembership(),
+			consts.membershipInputs,
+			'+ Add Committee Membership',
+			page
+		)
 
 		//save changes
 		let saveButton = page.getByRole('button', {name:'Save Record', exact:true});
 		await expect(saveButton).toBeVisible();
 		await saveButton.click();
 
-		let confirmButton = page.getByRole('button', {name: consts.SaveConfirmText, exact:true});
-		await expect(confirmButton).toBeVisible();
-		await confirmButton.click();
-
-		//check if lists contain new results
-		await verifyLists(page, sampleListInputs);
-	});
-	test ('confirm editing of lists by deleting entries', async ({page}) => {
-		// TODO
+		//check if list remain unchanged
+		await expect(page.getByText('membership-test')).toBeVisible()
 	});
 });
-*/

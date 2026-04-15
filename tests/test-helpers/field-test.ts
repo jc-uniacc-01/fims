@@ -17,17 +17,34 @@ export async function semrecstab(page: Page): Promise<Locator> {
 }
 
 export async function inputField(field: string, input: string, page: Page) {
+    switch (field) {
+        case 'Status':
+            let combo = page.getByRole('combobox', { name: field, exact: true });
+            await combo.selectOption(field)
+            break;
+        default:
+            let tb = page.getByRole('textbox', { name: field, exact: true });
+            await tb.fill(input);
+    }
     console.log(`Filled ${field} with ${input}`);
-    const elem = page.getByRole('textbox', { name: field, exact: true });
-    await expect(elem).toBeVisible();
-    await elem.fill(input);
 }
 
 export async function compareField(field: string, cmp: string, page: Page) {
-    const elem = page.getByRole('textbox', { name: field, exact: true });
-    await expect(elem).toBeVisible();
-    console.log(`comparing ${field}: ${await elem.inputValue()} with ${cmp}`);
-    expect(await elem.inputValue()).toBe(cmp);
+    let valCmp = ""
+
+    switch (field) {
+        case 'Status':
+            const combo = page.getByRole('combobox', { name: field, exact: true });
+            await expect(combo).toBeVisible();
+            valCmp = await combo.inputValue()
+            break;
+        default:
+            const tb = page.getByRole('textbox', { name: field, exact: true });
+            await expect(tb).toBeVisible();
+            valCmp = await tb.inputValue()
+    }
+    console.log(`comparing ${field}: ${valCmp} with ${cmp}`);
+    expect(valCmp).toBe(cmp);
 }
 
 //inputs something to the list
@@ -84,6 +101,19 @@ export async function testList(
                 break;
         }
     }
+}
+
+export async function deleteLastOfList(listHeader:string, page:Page) {
+    const listDiv = page.getByTestId('list-table').filter({ hasText: listHeader }).first();
+    await expect(listDiv).toBeVisible();
+
+    const inputRow = listDiv.getByTestId('list-table-input').last();
+    await expect(inputRow).toBeVisible();
+
+    const deleteButton = await inputRow.getByRole('button')
+    await expect(deleteButton).toBeVisible();
+
+    await deleteButton.click()
 }
 
 //compares the last entry in the header

@@ -154,7 +154,6 @@ test.describe('faculty file tests', async () => {
         );
     });
 
-    /*
 	test('fauclty service record', async ({page}) => {
 		await page.goto('/')
 		await selectRecords(page, ['Dela Cruz, Gabrielle Zach']);
@@ -231,10 +230,8 @@ test.describe('faculty file tests', async () => {
 		expect(downloadButtons.length).toBe(1) // aggregate, should only be one file
 		await downloadManually(page, pathPrefix, downloadButtons, '.xlsx');
 	});
-	*/
 });
 
-/*
 test.describe('course tests', async () => {
 	test.use({storageState: testConsts.AdminConfig});
 	test('by faculty - subject taught', async ({page}) => {
@@ -275,9 +272,7 @@ test.describe('course tests', async () => {
 		await downloadManually(page, pathPrefix, downloadButtons, '.xlsx');
 	});
 });
-*/
 
-/*
 test.describe('csv download', async () => {
 	test.use({storageState: testConsts.AdminConfig});
 
@@ -299,4 +294,3 @@ test.describe('csv download', async () => {
 		await downloadManually(page, pathPrefix, await page.getByRole('link', {name: 'Download'}).all(), '.csv');
 	});
 });
-*/
