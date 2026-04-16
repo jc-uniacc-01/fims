@@ -19,11 +19,13 @@ export async function semrecstab(page: Page): Promise<Locator> {
 export async function inputField(field: string, input: string, page: Page) {
     switch (field) {
         case 'Status':
-            let combo = page.getByRole('combobox', { name: field, exact: true });
-            await combo.selectOption(field)
+            let combo = page.getByRole('combobox', { name: field });
+
+            let comboOptions = await combo.allInnerTexts();
+            combo.selectOption(input)
             break;
         default:
-            let tb = page.getByRole('textbox', { name: field, exact: true });
+            let tb = page.getByRole('textbox', { name: field });
             await tb.fill(input);
     }
     console.log(`Filled ${field} with ${input}`);
@@ -34,12 +36,10 @@ export async function compareField(field: string, cmp: string, page: Page) {
 
     switch (field) {
         case 'Status':
-            const combo = page.getByRole('combobox', { name: field, exact: true });
+            const combo = page.getByRole('combobox', { name: field });
             await expect(combo).toBeVisible();
-            valCmp = await combo.inputValue()
-            break;
         default:
-            const tb = page.getByRole('textbox', { name: field, exact: true });
+            const tb = page.getByRole('textbox', { name: field });
             await expect(tb).toBeVisible();
             valCmp = await tb.inputValue()
     }

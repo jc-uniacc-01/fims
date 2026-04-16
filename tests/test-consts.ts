@@ -339,14 +339,7 @@ export const profileTabFields = [
     'Suffix',
     'Birth Date',
     'Maiden Name',
-    'PhilHealth No.',
-    'Pag-IBIG No.',
-    'PSI Item No.',
-    'TIN',
-    'GSIS BP No.',
-    'Employee No.',
     'Status',
-    'Date of Original Appointment',
     'Remarks',
 ];
 

@@ -8,10 +8,10 @@ async function getFields(page: Page, fields: string[]) {
     for (let idx = 0; idx < fields.length; idx++)
 		switch (fields[idx]) {
 			case 'Status':
-				res.push(await page.getByRole('combobox', { name: fields[idx], exact: true }).inputValue());
+				res.push(await page.getByRole('combobox', { name: fields[idx]}).inputValue());
 				break;
 			default:
-				res.push(await page.getByRole('textbox', { name: fields[idx], exact: true }).inputValue());
+				res.push(await page.getByRole('textbox', { name: fields[idx] }).inputValue());
 		}
 
     return res;
