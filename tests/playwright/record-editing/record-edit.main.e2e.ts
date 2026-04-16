@@ -77,6 +77,10 @@ test.describe('editing record under profile tab', () => {
         await expect(cancelButton).toBeVisible();
         await cancelButton.click();
 
+		let confirmButton = page.getByRole('button', {name: consts.SaveConfirmText, exact:true});
+		await expect(confirmButton).toBeVisible();
+		await confirmButton.click();
+
         //check if nothing changed
         await verifyProfileFields(page, prevInputs);
     });
